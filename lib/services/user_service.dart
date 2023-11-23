@@ -77,6 +77,7 @@ Future<String> login(String username, String password) async {
       if(data.get('username').toString() == username) {
         await auth.signInWithEmailAndPassword(email: data.get('email'), password: password);
         refreshUser();
+        return 'Success';
       }
     }
     return 'Account not found';
