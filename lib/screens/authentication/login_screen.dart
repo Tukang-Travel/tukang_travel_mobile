@@ -31,40 +31,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool isLoading = false;
 
-  void _loginAuth(loginType) async {
-    ApiResponseModel apiResponse = await login(usernameTxt.text, passTxt.text);
-    if(apiResponse.err == null) {
+  void _loginAuth() async {
+    String apiResponse = await login(usernameTxt.text, passTxt.text);
+    if(apiResponse == 'Success') {
       // save user info and redirect to home
-      _successfulLogin(apiResponse.data as UserModel);
+      _successfulLogin();
     }
     else {
       setState(() {
         isLoading = !isLoading;
       });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('${apiResponse.err}')
+        content: Text(apiResponse)
       ));
     }
   }
 
   /* didefinisikan variabel dengan tipe data User pada parameter fungsi dibawah */
-  void _successfulLogin(UserModel user) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    /* sehingga nantinya variabel tersebut dapat mengakses atribut ataupun fungsi yang ada pada class User */
-    await pref.setString('token', user.token ?? '');
-    await pref.setInt('userId', user.id ?? 0);
+  void _successfulLogin() async {
 
-    Map<String, dynamic> userData = {
-      'username': user.username,
-      'email': user.email,
-      'user_type': user.userType,
-      'profile': user.profile,
-      'token': user.token,
-      'login_type': user.loginType,
-    };
+    
 
     // Set user data using the UserProvider
-    Provider.of<UserProvider>(context, listen: false).setUser(userData);
+    // Provider.of<UserProvider>(context, listen: false).setUser(userData);
 
     Navigator.of(context).pushAndRemoveUntil(
       PageRouteBuilder(
@@ -105,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
-                        'asset/tuktra_logo.png'
+                        'asset/images/tuktra_logo.png'
                       ),
                       fit: BoxFit.cover
                     ),
@@ -121,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: 35,
                       ),
                       
-                      // username/ email text field
+                      // username text field
                       Container(
                         decoration: BoxDecoration(
                           color: Colors.white,
@@ -288,29 +277,29 @@ class _LoginScreenState extends State<LoginScreen> {
                               String uname = googleUser.email.split('@')[0];
 
                               if (exists) {
-                                ApiResponseModel apiResponse = await login(uname, 'G0ogl3!!');
-                                if(apiResponse.err == null) {
+                                String apiResponse = await loginGoogle();
+                                if(apiResponse == 'Success') {
                                   // save user info and redirect to home
-                                  _successfulLogin(apiResponse.data as UserModel);
+                                  _successfulLogin();
                                 }
                                 else {
                                   setState(() {
                                     isLoading = !isLoading;
                                   });
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content: Text('${apiResponse.err}')
+                                    content: Text(apiResponse)
                                   ));
                                 }
                               } else {
-                                ApiResponseModel apiResponse = await register(uname, googleUser.email, 'G0ogl3!!', 'G0ogl3!!', 'google');
-                                if(apiResponse.err == null) {
-                                  _successfulLogin(apiResponse.data as UserModel);
+                                String apiResponse = await registerGoogle();
+                                if(apiResponse == 'Success') {
+                                  _successfulLogin();
                                 }
                                 else {
                                   setState(() {
                                     isLoading = !isLoading;
                                   });
-                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${apiResponse.err}')));
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(apiResponse)));
                                 }
                               }
 
@@ -349,7 +338,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
-                              'asset/google_logo.webp',
+                              'asset/images/google_logo.webp',
                               width: 24.0, 
                               height: 24.0, 
                             ),
@@ -375,7 +364,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           if(formKey.currentState!.validate()) {
                             setState(() {
                             isLoading = true;
-                            _loginAuth('form');
+                            _loginAuth();
                           }); 
                         }
                         },

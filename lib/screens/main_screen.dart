@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:tuktraapp/screens/admin/admin_feed_screen.dart';
-import 'package:tuktraapp/screens/admin/admin_home_screen.dart';
-import 'package:tuktraapp/screens/admin/admin_pedia_screen.dart';
-import 'package:tuktraapp/screens/admin/admin_profile_screen.dart';
+import 'package:tuktraapp/screens/owner/owner_feed_screen.dart';
+import 'package:tuktraapp/screens/owner/owner_home_screen.dart';
+import 'package:tuktraapp/screens/owner/owner_pedia_screen.dart';
+import 'package:tuktraapp/screens/owner/owner_profile_screen.dart';
 import 'package:tuktraapp/screens/user/diary_screen.dart';
 import 'package:tuktraapp/screens/user/feed/feed_screen.dart';
 import 'package:tuktraapp/screens/user/home_screen.dart';
@@ -18,7 +18,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-
   int currScreenCount = 0;
 
   final List<Widget> screens = [
@@ -63,46 +62,61 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageStorage(
-        bucket: bucket, 
+        bucket: bucket,
         child: currScreen,
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-        child: GNav( // tab button hover color
-          tabBorderRadius: 30, 
-          color: const Color.fromARGB(189, 121, 140, 223),
-          gap: 8, // the tab button gap between icon and text  // unselected icon color
-          activeColor: Colors.white, // selected icon and text color
-          iconSize: 24, // tab button icon size // selected tab background color
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20), // navigation bar padding
-          tabBackgroundColor: const Color.fromARGB(255, 82, 114, 255),
-          tabs: [
-            if(user)
-              for(int i = 0; i < screens.length; i++)
-                GButton(
-                  icon: icons[i], 
-                  text: menus[i], 
-                  onPressed: () {
-                    setState(() {
-                      currScreen = screens[i];
-                      currScreenCount = i;
-                    });
-                  },
-                ),
-            if(!user)
-              for(int i = 0; i < adminScreens.length; i++)
-                GButton(
-                  icon: adminIcons[i], 
-                  text: adminMenus[i], 
-                  onPressed: () {
-                    setState(() {
-                      currScreen = adminScreens[i];
-                      currScreenCount = i;
-                    });
-                  },
-                ),
-          ],
-        ),
+        child: Stack(children: [
+          GNav(
+            // tab button hover color
+            tabBorderRadius: 30,
+            color: const Color.fromARGB(189, 121, 140, 223),
+            gap:
+                8, // the tab button gap between icon and text  // unselected icon color
+            activeColor: Colors.white, // selected icon and text color
+            iconSize:
+                24, // tab button icon size // selected tab background color
+            padding: const EdgeInsets.symmetric(
+                horizontal: 10, vertical: 20), // navigation bar padding
+            tabBackgroundColor: const Color.fromARGB(255, 82, 114, 255),
+            tabs: [
+              if (user)
+                for (int i = 0; i < screens.length; i++)
+                  GButton(
+                    icon: icons[i],
+                    text: menus[i],
+                    onPressed: () {
+                      setState(() {
+                        currScreen = screens[i];
+                        currScreenCount = i;
+                      });
+                    },
+                  ),
+              if (!user)
+                for (int i = 0; i < adminScreens.length; i++)
+                  GButton(
+                    icon: adminIcons[i],
+                    text: adminMenus[i],
+                    onPressed: () {
+                      setState(() {
+                        currScreen = adminScreens[i];
+                        currScreenCount = i;
+                      });
+                    },
+                  ),
+            ],
+          ),
+          Positioned(
+            bottom: 16,
+            child: FloatingActionButton(
+              onPressed: () {
+                // Add your FAB action here
+              },
+              child: const Icon(Icons.add),
+            ),
+          ),
+        ]),
       ),
     );
   }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>707520215944-1oa6s2fiqc1h5omfrlugcpe0u6i5kukr.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.707520215944-1oa6s2fiqc1h5omfrlugcpe0u6i5kukr</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>707520215944-0jscob4fb5ri0h0sift9pbh8b5n2mjm3.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyA68yqSFHDc54BAvSIAZmBBQn30Dv_I21E</string>
+	<key>GCM_SENDER_ID</key>
+	<string>707520215944</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.tuktraapp.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>tukang-travel</string>
+	<key>STORAGE_BUCKET</key>
+	<string>tukang-travel.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:707520215944:ios:bdf070777291e4ba1bd83d</string>
+</dict>
+</plist>

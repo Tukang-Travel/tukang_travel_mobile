@@ -1,92 +1,130 @@
-import 'dart:convert';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tuktraapp/models/api_response_model.dart';
 import 'package:tuktraapp/models/user_model.dart';
-import 'package:tuktraapp/utils/constant.dart';
-import 'package:http/http.dart' as http;
+
+User? currUser = FirebaseAuth.instance.currentUser;
+
+void refreshUser() {
+  currUser = FirebaseAuth.instance.currentUser;
+}
 
 //register
-Future<ApiResponseModel> register(String username, String email, String password, String confirm, String loginType) async {
-  ApiResponseModel apiResponse = ApiResponseModel();
-
+Future<String> register(String name, String username, String email,
+    String password, String userType) async {
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
   try {
-    final response = await http.post(
-      Uri.parse(registerURL),
-      headers: {'Accept': 'application/json'},
-      body: {
-        'username': username,
-        'email': email,
-        'password': password,
-        'password_confirmation': confirm,
-        'login_type':loginType,
-      });
-
-      switch(response.statusCode) {
-        case 200:
-          apiResponse.data = UserModel.fromJson(jsonDecode(response.body));
-          break;
-        
-        case 422:
-          final errors = jsonDecode(response.body)['errors'];
-          apiResponse.err = errors[errors.keys.elementAt(0)][0];
-          break;
-        
-        default:
-          apiResponse.err = other;
-          break;
-      }
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    )
+        .then((response) {
+      refreshUser();
+      currUser?.updateDisplayName(name);
+      users.add(UserModel(response.user?.uid, name, username, email, userType)
+          .toMap());
+    });
+    return 'Success';
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'weak-password') {
+      return 'The password provided is too weak.';
+    } else if (e.code == 'email-already-in-use') {
+      return 'The account already exists for that email.';
+    }
+    return e.code;
   } catch (e) {
-    apiResponse.err = serverError;
+    return e.toString();
   }
+}
 
-  return apiResponse;
+//register google
+Future<String> registerGoogle() async {
+  // CollectionReference users = FirebaseFirestore.instance.collection('users');
+  // try {
+  //   await FirebaseAuth.instance
+  //       .createUserWithEmailAndPassword(
+  //     email: email,
+  //     password: password,
+  //   )
+  //       .then((response) {
+  //     refreshUser();
+  //     currUser?.updateDisplayName(name);
+  //     users.add(UserModel(response.user?.uid, name, username, email, userType)
+  //         .toMap());
+  //   });
+  //   return 'Success';
+  // } on FirebaseAuthException catch (e) {
+  //   if (e.code == 'weak-password') {
+  //     return 'The password provided is too weak.';
+  //   } else if (e.code == 'email-already-in-use') {
+  //     return 'The account already exists for that email.';
+  //   }
+  //   return e.code;
+  // } catch (e) {
+  //   return e.toString();
+  // }
+  return '';
 }
 
 // login
-Future<ApiResponseModel> login(String username, String password) async {
-  ApiResponseModel apiResponse = ApiResponseModel();
-
+Future<String> login(String username, String password) async {
+   FirebaseAuth auth = FirebaseAuth.instance;
   try {
-    final response = await http.post(
-      Uri.parse(loginURL),
-      headers: {'Accept': 'application/json'},
-      body: {'username': username, 'password': password}
-    );
-
-    switch(response.statusCode) {
-      case 200:
-        apiResponse.data = UserModel.fromJson(jsonDecode(response.body));
-        // apiResponse.err = 'case 200';
-        break;
-      
-      case 422:
-        final errors = jsonDecode(response.body)['errors'];
-        apiResponse.err = errors[errors.keys.elementAt(0)][0];
-        // apiResponse.err = 'case 422';
-        break;
-      
-      case 403:
-        apiResponse.err = jsonDecode(response.body)['message'];
-        // apiResponse.err = 'case 403';
-        break;
-
-      default:
-        apiResponse.err = other;
-        // apiResponse.err = 'case other';
-        break;
-    } 
-  } catch(e) {
-    apiResponse.err = serverError;
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    QuerySnapshot querySnapshot = await users.get();
+    for (var data in querySnapshot.docs) {
+      if(data.get('username').toString() == username) {
+        await auth.signInWithEmailAndPassword(email: data.get('email'), password: password);
+        refreshUser();
+      }
+    }
+    return 'Account not found';
+  } on FirebaseAuthException catch (e) {
+    if (e.code == 'user-not-found') {
+      return 'No user found for that email.';
+    } else if (e.code == 'wrong-password') {
+      return 'Wrong password provided.';
+    }
+  } catch (e) {
+    return e.toString();
   }
+  return '';
+}
 
-  return apiResponse; 
+// login
+Future<String> loginGoogle() async {
+  //  FirebaseAuth auth = FirebaseAuth.instance;
+  // try {
+  //   CollectionReference users = FirebaseFirestore.instance.collection('users');
+  //   QuerySnapshot querySnapshot = await users.get();
+  //   for (var data in querySnapshot.docs) {
+  //     if(data.get('username').toString() == username) {
+  //       await auth.signInWithEmailAndPassword(email: data.get('email'), password: password);
+  //       refreshUser();
+  //     }
+  //   }
+  //   return 'Account not found';
+  // } on FirebaseAuthException catch (e) {
+  //   if (e.code == 'user-not-found') {
+  //     return 'No user found for that email.';
+  //   } else if (e.code == 'wrong-password') {
+  //     return 'Wrong password provided.';
+  //   }
+  // } catch (e) {
+  //   return e.toString();
+  // }
+  return '';
 }
 
 // logout
 Future<bool> logout() async {
-  SharedPreferences pref = await SharedPreferences.getInstance();
-  return await pref.remove('token');
+  try {
+    FirebaseAuth.instance.signOut();
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 // get user token
@@ -101,36 +139,34 @@ Future<int> getUserId() async {
   return pref.getInt('userId') ?? 0;
 }
 
-// user detail
-Future<ApiResponseModel> getUserDetail() async {
-  ApiResponseModel apiResponse = ApiResponseModel();
+// // user detail
+// Future<ApiResponseModel> getUserDetail() async {
+//   ApiResponseModel apiResponse = ApiResponseModel();
 
-  try {
-    String token = await getToken();
+//   try {
+//     String token = await getToken();
 
-    final response = await http.get(
-      Uri.parse(userURL),
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token'
-      });
+//     final response = await http.get(Uri.parse(userURL), headers: {
+//       'Accept': 'application/json',
+//       'Authorization': 'Bearer $token'
+//     });
 
-      switch(response.statusCode) {
-        case 200:
-          apiResponse.data = UserModel.fromJson(jsonDecode(response.body));
-          break;
+//     switch (response.statusCode) {
+//       case 200:
+//         apiResponse.data = UserModel.fromJson(jsonDecode(response.body));
+//         break;
 
-        case 401:
-          apiResponse.err = unauthorized;
-          break;
-        
-        default:
-          apiResponse.err = other;
-          break;
-      }
-  } catch (e) {
-    apiResponse.err = serverError;
-  }
+//       case 401:
+//         apiResponse.err = unauthorized;
+//         break;
 
-  return apiResponse;
-}
+//       default:
+//         apiResponse.err = other;
+//         break;
+//     }
+//   } catch (e) {
+//     apiResponse.err = serverError;
+//   }
+
+//   return apiResponse;
+// }

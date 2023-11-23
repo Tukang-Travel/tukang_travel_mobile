@@ -73,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Padding(
               padding: const EdgeInsets.only(left: 80.0, top: 80.0, right: 80.0, bottom: 20.0),
               child: Image.asset(
-                'asset/default_profile.png',
+                'asset/images/default_profile.png',
                 width: 150,
                 height: 150,
               ),

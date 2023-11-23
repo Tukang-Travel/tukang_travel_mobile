@@ -46,7 +46,7 @@ Container authenticationOption(double w, double h, String auth) {
       borderRadius: BorderRadius.circular(25),
       image: const DecorationImage(
         image: AssetImage(
-          'asset/signup_login_page.jpg'
+          'asset/images/signup_login_page.jpg'
         ),
         fit: BoxFit.cover
       ),

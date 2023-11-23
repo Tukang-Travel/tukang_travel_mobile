@@ -23,8 +23,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
   late Future<void> _animationFuture;
 
   Future<void> _loadUserInfo() async {
-    String token = await getToken();
-    if (token == '') {
+    if (currUser == null) {
       Navigator.of(context).pushAndRemoveUntil(
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
@@ -45,66 +44,25 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         (route) => false,
       );
     } else {
-      ApiResponseModel apiResponse = await getUserDetail();
-      if (apiResponse.err == null) {
-        UserModel user = apiResponse.data as UserModel;
+      Navigator.of(context).pushAndRemoveUntil(
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const MainScreen(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = 0.0;
+            const end = 1.0;
+            const curve = Curves.easeInOut;
 
-        Map<String, dynamic> userData = {
-          'username': user.username,
-          'email': user.email,
-          'user_type': user.userType,
-          'profile': user.profile,
-          'token': user.token,
-        };
+            var tween =
+                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var fadeAnimation = animation.drive(tween);
 
-        // Set user data using the UserProvider
-        Provider.of<UserProvider>(context, listen: false).setUser(userData);
-
-        Navigator.of(context).pushAndRemoveUntil(
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const MainScreen(),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              const begin = 0.0;
-              const end = 1.0;
-              const curve = Curves.easeInOut;
-
-              var tween =
-                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-              var fadeAnimation = animation.drive(tween);
-
-              return FadeTransition(opacity: fadeAnimation, child: child);
-            },
-            transitionDuration: const Duration(milliseconds: 1000),
-          ),
-          (route) => false,
-        );
-      } else if (apiResponse.err == unauthorized) {
-        Navigator.of(context).pushAndRemoveUntil(
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const LoginScreen(),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              const begin = 0.0;
-              const end = 1.0;
-              const curve = Curves.easeInOut;
-
-              var tween =
-                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-              var fadeAnimation = animation.drive(tween);
-
-              return FadeTransition(opacity: fadeAnimation, child: child);
-            },
-            transitionDuration: const Duration(milliseconds: 1000),
-          ),
-          (route) => false,
-        );
-      } else {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('${apiResponse.err}')));
-      }
+            return FadeTransition(opacity: fadeAnimation, child: child);
+          },
+          transitionDuration: const Duration(milliseconds: 1000),
+        ),
+        (route) => false,
+      );
     }
   }
 
@@ -146,7 +104,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       children: [
         Positioned.fill(
           child: Image.asset(
-            "asset/main_bg.jpg",
+            "asset/images/main_bg.jpg",
             fit: BoxFit.cover,
           ),
         ),
@@ -156,7 +114,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           child: FadeTransition(
             opacity: _fadeAnimation,
             child: Image.asset(
-              "asset/tuktra_logo.png",
+              "asset/images/tuktra_logo.png",
               width: 400,
               height: 400,
             ),
@@ -171,7 +129,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
       children: [
         Positioned.fill(
           child: Image.asset(
-            "asset/main_bg.jpg",
+            "asset/images/main_bg.jpg",
             fit: BoxFit.cover,
           ),
         ),
@@ -181,7 +139,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           child: FadeTransition(
             opacity: _fadeAnimation,
             child: Image.asset(
-              "asset/tuktra_logo.png",
+              "asset/images/tuktra_logo.png",
               width: 400,
               height: 400,
             ),
