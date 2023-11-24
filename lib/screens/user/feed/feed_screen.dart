@@ -1,8 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
-import 'package:http/http.dart' as http;
-import 'package:tuktraapp/models/feed_model.dart';
+import 'package:tuktraapp/screens/user/feed/feed_detail_screen.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -14,33 +15,33 @@ class FeedScreen extends StatefulWidget {
 class _FeedScreenState extends State<FeedScreen> {
   List<dynamic>? data;
   var posts = <Widget>[];
-  // CollectionReference collections =
-  //     FirebaseFirestore.instance.collection("destinations");
+  CollectionReference collections =
+      FirebaseFirestore.instance.collection("destinations");
 
   Future<dynamic> getData() async {
     // Get docs from collection reference
 
-    // QuerySnapshot querySnapshot = await collections.get();
+    QuerySnapshot querySnapshot = await collections.get();
 
     // Get data from docs and convert map to List
 
-    List<FeedModel> response = [
-      FeedModel(
-          1,
-          [
-            'https://c4.wallpaperflare.com/wallpaper/560/855/635/spy-x-family-anya-forger-hd-wallpaper-preview.jpg'
-          ],
-          'stevenwj12',
-          true)
-    ]; //sementara belum hit api
+    // List<FeedModel> response = [
+    //   FeedModel(
+    //       1,
+    //       [
+    //         'https://c4.wallpaperflare.com/wallpaper/560/855/635/spy-x-family-anya-forger-hd-wallpaper-preview.jpg'
+    //       ],
+    //       'stevenwj12',
+    //       true)
+    // ]; //sementara belum hit api
 
-    //querySnapshot.docs.map((e) => e.data()).toList();
+    data = querySnapshot.docs.map((e) => e.data()).toList();
 
     posts.add(buildTitle(context));
 
-    for (var i = 0; i < response.length; i++) {
+    for (var i = 0; i < data!.length; i++) {
       posts.add(
-        buildPostCard(context, response[i]),
+        buildPostCard(context, data?[i]),
       );
     }
   }
@@ -108,27 +109,27 @@ class _FeedScreenState extends State<FeedScreen> {
             Expanded(
               child:  */
             RefreshIndicator(
-              onRefresh: _pullRefresh,
-              child: FutureBuilder(
-                future: getData(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return SizedBox.expand(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: ListView(
-                          children: posts,
-                          physics: const AlwaysScrollableScrollPhysics(),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                },
-              ),
-            ),
-            /* ),
+          onRefresh: _pullRefresh,
+          child: FutureBuilder(
+            future: getData(),
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return SizedBox.expand(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: posts,
+                    ),
+                  ),
+                );
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        ),
+        /* ),
           ],
         ), */
       ),
@@ -289,10 +290,20 @@ Widget buildPostCard(BuildContext context, dynamic data) {
                           Expanded(
                             child: TextButton(
                               style: TextButton.styleFrom(
-                                  primary: Colors.grey,
+                                  foregroundColor: Colors.grey,
                                   textStyle: const TextStyle(fontSize: 12),
                                   padding: EdgeInsets.zero),
-                              onPressed: () {},
+                              onPressed: () {
+                                NavigationUtils.pushTransition(
+                                    context,
+                                    FeedDetailScreen(
+                                        name: data["name"],
+                                        location: data["location"],
+                                        description: data["description"],
+                                        file: generateUrl(data["image"]),
+                                        rating: data["rating"],
+                                        estimasi: data["estimasi"]));
+                              },
                               child: const Text(
                                 'Lihat selengkapnya',
                               ),

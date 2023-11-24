@@ -8,6 +8,7 @@ import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/user/edit_preferences_screen.dart';
 import 'package:tuktraapp/screens/user/insert_pedia_screen.dart';
 import 'package:tuktraapp/screens/user/user_feed_screen.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -54,7 +55,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  final List<ProfileMenu> profile_menus = [
+  final List<ProfileMenu> profileMenu = [
     ProfileMenu(menuName: 'Atur Feed Saya', menuWidget: const UserFeedScreen(), menuIcon: Icons.video_collection_rounded),
     ProfileMenu(menuName: 'Tulis Artikel Baru', menuWidget: const InsertPediaScreen(), menuIcon: Icons.article_rounded),
     ProfileMenu(menuName: 'Atur Preferensimu', menuWidget: const EditPreferencesScreen(), menuIcon: Icons.edit_square),
@@ -79,20 +80,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           ),
-          Container(
-            child: Text(
-              '${user?['username']}',
-              style: const TextStyle(
-                fontWeight: FontWeight.w900,
-                fontSize: 25.0
-              ),
+          Text(
+            '${user?['username']}',
+            style: const TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 25.0
             ),
           ),
           const SizedBox(height: 10.0,),
-          Container(
-            child: Text(
-              '@${user?['email']}',
-            ),
+          Text(
+            '@${user?['email']}',
           ),
           const SizedBox(height: 15.0,),
           ElevatedButton(
@@ -112,14 +109,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             )
           ),
           const SizedBox(height: 30.0,),
-          Container(
-            child: const Text(
-              'Konten',
-              style: TextStyle(
-                color: Color.fromARGB(255, 82, 114, 255),
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-              ),
+          const Text(
+            'Konten',
+            style: TextStyle(
+              color: Color.fromARGB(255, 82, 114, 255),
+              fontWeight: FontWeight.bold,
+              fontSize: 18.0,
             ),
           ),
           const Divider(
@@ -127,32 +122,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             height: 10.0,
           ),
           const SizedBox(height: 20.0,),
-          for(int i = 0; i < profile_menus.length; i++)
+          for(int i = 0; i < profileMenu.length; i++)
             GestureDetector(
               onTap: () {
-                if(i == profile_menus.length - 1) {
+                if(i == profileMenu.length - 1) {
                   isLoading? 
                     const Center(child: CircularProgressIndicator(),)
                     :
                     _logoutAuth(user?['login_type']);
                 }
-                Navigator.of(context).pushAndRemoveUntil(
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation, secondaryAnimation) => profile_menus[i].menuWidget,
-                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                      const begin = 0.0;
-                      const end = 1.0;
-                      const curve = Curves.easeInOut;
-
-                      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                      var fadeAnimation = animation.drive(tween);
-
-                      return FadeTransition(opacity: fadeAnimation, child: child);
-                    },
-                    transitionDuration: const Duration(milliseconds: 1000),
-                  ),
-                  (route) => false,
-                );
+                NavigationUtils.pushRemoveTransition(context, profileMenu[i].menuWidget);
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 8.0),
@@ -161,13 +140,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Icon(
-                      profile_menus[i].menuIcon,
+                      profileMenu[i].menuIcon,
                       size: 40.0,
                       color: Colors.black,
                     ),
                     const SizedBox(width: 10.0,),
                     Text(
-                      profile_menus[i].menuName,
+                      profileMenu[i].menuName,
                       style: const TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w600,

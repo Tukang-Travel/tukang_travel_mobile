@@ -2,18 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuktraapp/models/api_response_model.dart';
 import 'package:tuktraapp/models/login_api_model.dart';
-import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/services/user_service.dart';
-import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/authentication/register_screen.dart';
 import 'package:tuktraapp/screens/user/forgot_pass_screen.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({ super.key });
@@ -55,23 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // Set user data using the UserProvider
     // Provider.of<UserProvider>(context, listen: false).setUser(userData);
 
-    Navigator.of(context).pushAndRemoveUntil(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => const MainScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = 0.0;
-          const end = 1.0;
-          const curve = Curves.easeInOut;
-
-          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          var fadeAnimation = animation.drive(tween);
-
-          return FadeTransition(opacity: fadeAnimation, child: child);
-        },
-        transitionDuration: const Duration(milliseconds: 1000),
-      ),
-      (route) => false,
-    );
+    NavigationUtils.pushRemoveTransition(context, const MainScreen());
   }
 
   @override
@@ -177,23 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          Navigator.of(context).pushAndRemoveUntil(
-                            PageRouteBuilder(
-                              pageBuilder: (context, animation, secondaryAnimation) => RegisterScreen(),
-                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                const begin = 0.0;
-                                const end = 1.0;
-                                const curve = Curves.easeInOut;
-
-                                var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                                var fadeAnimation = animation.drive(tween);
-
-                                return FadeTransition(opacity: fadeAnimation, child: child);
-                              },
-                              transitionDuration: const Duration(milliseconds: 1000),
-                            ),
-                            (route) => false,
-                          );
+                          NavigationUtils.pushRemoveTransition(context, RegisterScreen());
                         }
                       ),
                       const TextSpan(
@@ -217,23 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     recognizer: TapGestureRecognizer()
                     ..onTap = () {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        PageRouteBuilder(
-                          pageBuilder: (context, animation, secondaryAnimation) => const ForgotPasswordScreen(),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            const begin = 0.0;
-                            const end = 1.0;
-                            const curve = Curves.easeInOut;
-
-                            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                            var fadeAnimation = animation.drive(tween);
-
-                            return FadeTransition(opacity: fadeAnimation, child: child);
-                          },
-                          transitionDuration: const Duration(milliseconds: 1000),
-                        ),
-                        (route) => false,
-                      );
+                      NavigationUtils.pushRemoveTransition(context, const ForgotPasswordScreen());
                     }
                   ),
                 ),
@@ -303,23 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                               }
 
-                              Navigator.of(context).pushAndRemoveUntil(
-                                PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) => const MainScreen(),
-                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                    const begin = 0.0;
-                                    const end = 1.0;
-                                    const curve = Curves.easeInOut;
-
-                                    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                                    var fadeAnimation = animation.drive(tween);
-
-                                    return FadeTransition(opacity: fadeAnimation, child: child);
-                                  },
-                                  transitionDuration: const Duration(milliseconds: 1000),
-                                ),
-                                (route) => false,
-                              );
+                              NavigationUtils.pushRemoveTransition(context, const MainScreen());
                             } else {
                               print('returns null');
                             }

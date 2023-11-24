@@ -5,25 +5,27 @@ import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 import 'package:intl/intl.dart';
 
 class FeedDetailScreen extends StatefulWidget {
-  const FeedDetailScreen({super.key});
+  const FeedDetailScreen(
+      {super.key,
+      required this.name,
+      required this.location,
+      required this.description,
+      required this.file,
+      required this.rating,
+      required this.estimasi});
+
+  final String name;
+  final String location;
+  final String description;
+  final List<String> file;
+  final double rating;
+  final String estimasi;
 
   @override
   State<FeedDetailScreen> createState() => _FeedDetailScreenState();
 }
 
-class ScreenArguments {
-  String name = "";
-  String location = "";
-  String description = "";
-  List<String> file = [];
-  double rating = 0.0;
-  String estimasi = "0";
-
-  ScreenArguments(this.name, this.location, this.description, this.file,this.rating, this.estimasi);   
-}
-
 class _FeedDetailScreenState extends State<FeedDetailScreen> {
-  ScreenArguments? args;
   final oCcy = NumberFormat("#,##0.00", "en_US");
 
   Widget _customScrollView() {
@@ -34,19 +36,20 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
           floating: false,
           pinned: true,
           flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              title: Text(args!.name,
+              centerTitle: false,
+              title: Text(widget.name,
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 16.0,
                   )),
               background: Swiper(
-                itemCount: args!.file.length,
+                itemCount: widget.file.length,
                 itemBuilder: (BuildContext context, int index) => Image.network(
-                  args!.file[index],
+                  widget.file[index],
                   fit: BoxFit.cover,
                 ),
-                autoplay: (args!.file.length != 1) ? true : false,
+                autoplay: (widget.file.length != 1) ? true : false,
                 loop: true,
               )),
         ),
@@ -80,8 +83,6 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final temp = ModalRoute.of(context)!.settings.arguments as ScreenArguments;
-    args = temp;
     return Scaffold(
       body: _customScrollView(),
       bottomNavigationBar: BottomAppBar(
@@ -119,7 +120,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
               ),
             ),
             AutoSizeText(
-              "Rp ${oCcy.format(int.parse(args!.estimasi))}",
+              "Rp ${oCcy.format(int.parse(widget.estimasi))}",
               style: const TextStyle(
                 fontFamily: 'Poppins',
                 fontSize: 18,
@@ -143,7 +144,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             AutoSizeText(
-              args!.name,
+              widget.name,
               maxLines: 10,
               style: const TextStyle(
                 fontFamily: 'PoppinsBold',
@@ -155,7 +156,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
             ),
             const Divider(height: 5),
             AutoSizeText(
-              args!.location,
+              widget.location,
               maxLines: 10,
               style: const TextStyle(
                 fontFamily: 'Poppins',
@@ -174,7 +175,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 RatingBarIndicator(
-                  rating: args!.rating,
+                  rating: widget.rating,
                   itemBuilder: (context, index) => const Icon(
                     Icons.star,
                     color: Colors.amber,
@@ -182,16 +183,21 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                   itemCount: 5,
                   itemSize: 30.0,
                 ),
-                const SizedBox(width: 10,),
+                const SizedBox(
+                  width: 10,
+                ),
                 Column(
                   children: [
-                    const SizedBox(height: 5,),
+                    const SizedBox(
+                      height: 5,
+                    ),
                     Text(
-                      args!.rating.toString(),
+                      widget.rating.toString(),
                       style: const TextStyle(
                         fontFamily: 'PoppinsBold',
                         fontSize: 16,
-                        color: Color.fromARGB(255, 187, 142, 7),//Color.fromRGBO(239, 90, 38, 1.0),
+                        color: Color.fromARGB(255, 187, 142,
+                            7), //Color.fromRGBO(239, 90, 38, 1.0),
                         fontWeight: FontWeight.w600,
                         height: 1.2,
                       ),
@@ -233,7 +239,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
           color: Colors.black,
         ),
         AutoSizeText(
-          args!.description,
+          widget.description,
           textAlign: TextAlign.justify,
           style: const TextStyle(
             fontFamily: 'Poppins',

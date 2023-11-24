@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:tuktraapp/models/api_response_model.dart';
-import 'package:tuktraapp/models/user_model.dart';
-import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
-import 'package:tuktraapp/utils/constant.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -24,45 +20,9 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
   Future<void> _loadUserInfo() async {
     if (currUser == null) {
-      Navigator.of(context).pushAndRemoveUntil(
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              const LoginScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = 0.0;
-            const end = 1.0;
-            const curve = Curves.easeInOut;
-
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-            var fadeAnimation = animation.drive(tween);
-
-            return FadeTransition(opacity: fadeAnimation, child: child);
-          },
-          transitionDuration: const Duration(milliseconds: 1000),
-        ),
-        (route) => false,
-      );
+      NavigationUtils.pushRemoveTransition(context, const LoginScreen());
     } else {
-      Navigator.of(context).pushAndRemoveUntil(
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) =>
-              const MainScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = 0.0;
-            const end = 1.0;
-            const curve = Curves.easeInOut;
-
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-            var fadeAnimation = animation.drive(tween);
-
-            return FadeTransition(opacity: fadeAnimation, child: child);
-          },
-          transitionDuration: const Duration(milliseconds: 1000),
-        ),
-        (route) => false,
-      );
+      NavigationUtils.pushRemoveTransition(context, const MainScreen());
     }
   }
 

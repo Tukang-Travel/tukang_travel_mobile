@@ -5,9 +5,10 @@ import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/user/forgot_pass_screen.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class RegisterScreen extends StatefulWidget {
-  RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
@@ -25,25 +26,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool isLoading = false;
 
   void _successfulLogin() async {
-    Navigator.of(context).pushAndRemoveUntil(
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            const MainScreen(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = 0.0;
-          const end = 1.0;
-          const curve = Curves.easeInOut;
-
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          var fadeAnimation = animation.drive(tween);
-
-          return FadeTransition(opacity: fadeAnimation, child: child);
-        },
-        transitionDuration: const Duration(milliseconds: 1000),
-      ),
-      (route) => false,
-    );
+    NavigationUtils.pushRemoveTransition(context, const MainScreen());
   }
 
   void _regisAuth() async {
@@ -348,32 +331,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Navigator.of(context).pushAndRemoveUntil(
-                                    PageRouteBuilder(
-                                      pageBuilder: (context, animation,
-                                              secondaryAnimation) =>
-                                          const LoginScreen(),
-                                      transitionsBuilder: (context, animation,
-                                          secondaryAnimation, child) {
-                                        const begin = 0.0;
-                                        const end = 1.0;
-                                        const curve = Curves.easeInOut;
-
-                                        var tween = Tween(
-                                                begin: begin, end: end)
-                                            .chain(CurveTween(curve: curve));
-                                        var fadeAnimation =
-                                            animation.drive(tween);
-
-                                        return FadeTransition(
-                                            opacity: fadeAnimation,
-                                            child: child);
-                                      },
-                                      transitionDuration:
-                                          const Duration(milliseconds: 1000),
-                                    ),
-                                    (route) => false,
-                                  );
+                                  NavigationUtils.pushRemoveTransition(context, const LoginScreen());
                                 }),
                           const TextSpan(
                               text: 'disini.',
@@ -395,29 +353,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              Navigator.of(context).pushAndRemoveUntil(
-                                PageRouteBuilder(
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      const ForgotPasswordScreen(),
-                                  transitionsBuilder: (context, animation,
-                                      secondaryAnimation, child) {
-                                    const begin = 0.0;
-                                    const end = 1.0;
-                                    const curve = Curves.easeInOut;
-
-                                    var tween = Tween(begin: begin, end: end)
-                                        .chain(CurveTween(curve: curve));
-                                    var fadeAnimation = animation.drive(tween);
-
-                                    return FadeTransition(
-                                        opacity: fadeAnimation, child: child);
-                                  },
-                                  transitionDuration:
-                                      const Duration(milliseconds: 1000),
-                                ),
-                                (route) => false,
-                              );
+                              NavigationUtils.pushRemoveTransition(context, const ForgotPasswordScreen());
                             }),
                     ),
                     const SizedBox(
