@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuktraapp/models/login_api_model.dart';
@@ -61,10 +62,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ProfileMenu(menuName: 'Atur Preferensimu', menuWidget: const EditPreferencesScreen(), menuIcon: Icons.edit_square),
     ProfileMenu(menuName: 'Keluar', menuWidget: const LoginScreen(), menuIcon: Icons.logout_rounded),
   ];
+  
+  Map<String, dynamic>? user;
+
+  @override
+  void didChangeDependencies() async {
+    // TODO: implement initState
+    super.didChangeDependencies();
+
+    List<dynamic> results = await Future.wait([
+      getUser(currUser!.uid),
+    ]);
+    
+    setState(() {
+      user = results[0];
+    });
+
+    print(user);
+  }
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic>? user = Provider.of<UserProvider>(context).user;
 
     return Scaffold(
       body: Column(
@@ -109,53 +127,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             )
           ),
           const SizedBox(height: 30.0,),
-          const Text(
-            'Konten',
-            style: TextStyle(
-              color: Color.fromARGB(255, 82, 114, 255),
-              fontWeight: FontWeight.bold,
-              fontSize: 18.0,
-            ),
-          ),
-          const Divider(
-            color: Color.fromARGB(255, 82, 114, 255),
-            height: 10.0,
-          ),
-          const SizedBox(height: 20.0,),
-          for(int i = 0; i < profileMenu.length; i++)
-            GestureDetector(
-              onTap: () {
-                if(i == profileMenu.length - 1) {
-                  isLoading? 
-                    const Center(child: CircularProgressIndicator(),)
-                    :
-                    _logoutAuth(user?['login_type']);
-                }
-                NavigationUtils.pushRemoveTransition(context, profileMenu[i].menuWidget);
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 8.0),
-                child: 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(
-                      profileMenu[i].menuIcon,
-                      size: 40.0,
-                      color: Colors.black,
-                    ),
-                    const SizedBox(width: 10.0,),
-                    Text(
-                      profileMenu[i].menuName,
-                      style: const TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            )
         ],
       ),
     );

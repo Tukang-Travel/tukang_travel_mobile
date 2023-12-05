@@ -9,6 +9,23 @@ void refreshUser() {
   currUser = FirebaseAuth.instance.currentUser;
 }
 
+Future<Map<String, dynamic>?> getUser(String uid) async {
+  try {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+    DocumentSnapshot userDocument = await users.doc(uid).get();
+
+    if (userDocument.exists) {
+      return userDocument.data() as Map<String, dynamic>;
+    } else {
+      print('User not found');
+      return null;
+    }
+  } catch (e) {
+    print('Error retrieving user data: $e');
+    return null;
+  }
+}
+
 //register
 Future<String> register(String name, String username, String email,
     String password, String userType) async {

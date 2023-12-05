@@ -12,6 +12,52 @@ const serverError = 'Server error';
 const unauthorized = 'Unauthorized';
 const other = 'Something went wrong, try again!';
 
+class TagCheckbox extends StatefulWidget {
+  final ValueChanged<bool?>? onChanged;
+  final String text;
+
+  const TagCheckbox({Key? key, this.onChanged, required this.text}) : super(key: key);
+
+  @override
+  _TagCheckboxState createState() => _TagCheckboxState();
+}
+
+class _TagCheckboxState extends State<TagCheckbox> {
+  bool isChecked = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          isChecked = !isChecked;
+          widget.onChanged?.call(isChecked);
+        });
+      },
+      child: Container(
+        width: 120,
+        height: 50,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: isChecked ? const Color.fromARGB(255, 82, 114, 255): Colors.grey,
+            width: 2.0, // Border width
+          ),
+          borderRadius: BorderRadius.circular(20.0), // Border radius
+          color: isChecked ? const Color.fromARGB(255, 82, 114, 255).withOpacity(0.2) : Colors.transparent, 
+        ),
+        child: Center(
+          child: Text(
+            widget.text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: isChecked ? Colors.blue : Colors.black,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 InputDecoration formInputDecoration(String hint, Icon icon) {
   return InputDecoration(
@@ -84,6 +130,4 @@ Container primaryButton(double w, double h, String hint, DecorationImage img) {
         ),
       ),
   );
-
-  
 }

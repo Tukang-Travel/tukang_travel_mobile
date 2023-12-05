@@ -26,7 +26,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool isLoading = false;
 
   void _successfulLogin() async {
-    NavigationUtils.pushRemoveTransition(context, const MainScreen());
+    NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0,));
   }
 
   void _regisAuth() async {

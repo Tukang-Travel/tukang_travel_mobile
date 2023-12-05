@@ -22,7 +22,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     if (currUser == null) {
       NavigationUtils.pushRemoveTransition(context, const LoginScreen());
     } else {
-      NavigationUtils.pushRemoveTransition(context, const MainScreen());
+      NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0,));
     }
   }
 

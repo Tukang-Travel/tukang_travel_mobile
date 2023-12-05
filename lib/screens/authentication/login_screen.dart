@@ -52,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
     // Set user data using the UserProvider
     // Provider.of<UserProvider>(context, listen: false).setUser(userData);
 
-    NavigationUtils.pushRemoveTransition(context, const MainScreen());
+    NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0,));
   }
 
   @override
@@ -252,7 +252,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 }
                               }
 
-                              NavigationUtils.pushRemoveTransition(context, const MainScreen());
+                              NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0,));
                             } else {
                               print('returns null');
                             }
