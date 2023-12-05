@@ -69,7 +69,7 @@ Future<String> registerGoogle() async {
 
 // login
 Future<String> login(String username, String password) async {
-   FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
   try {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     QuerySnapshot querySnapshot = await users.get();
