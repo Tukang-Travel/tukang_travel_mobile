@@ -49,7 +49,6 @@ dependencies:
   firebase_analytics: ^10.7.1
   cloud_firestore: ^4.13.2
   webview_flutter: ^4.4.2
-  
 
 dev_dependencies:
   flutter_test:

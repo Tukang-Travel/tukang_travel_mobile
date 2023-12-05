@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tuktraapp/screens/owner/pedia/owner_pedia_screen.dart';
+import 'package:tuktraapp/screens/owner/profile/owner_profile.dart';
 import 'package:tuktraapp/screens/user/planner/planner_screen.dart';
 import 'package:tuktraapp/screens/user/feed/feed_screen.dart';
-import 'package:tuktraapp/screens/user/home_screen.dart';
-import 'package:tuktraapp/screens/user/pedia_screen.dart';
-import 'package:tuktraapp/screens/user/profile_screen.dart';
+import 'package:tuktraapp/screens/user/home/home_screen.dart';
+import 'package:tuktraapp/screens/user/pedia/pedia_screen.dart';
+import 'package:tuktraapp/screens/user/profile/profile_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 
 class MainScreen extends StatefulWidget {
@@ -56,12 +58,10 @@ class _MainScreenState extends State<MainScreen> {
     const ProfileScreen(),
   ];
 
-  // final List<Widget> ownerScreens = [
-  //   const AdminHomeScreen(),
-  //   const AdminPediaScreen(),
-  //   const AdminFeedScreen(),
-  //   const AdminProfileScreen(),
-  // ];
+  final List<Widget> ownerScreens = [
+    const OwnerPediaScreen(),
+    const OwnerProfileScreen()
+  ];
 
   final List<IconData> icons = [
     Icons.home_filled,
@@ -73,13 +73,11 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<IconData> ownerIcons = [
     Icons.home_filled,
-    Icons.article_rounded,
-    Icons.video_collection_rounded,
     Icons.person,
   ];
 
   final List<String> menus = ['Home', 'Pedia', 'Diary', 'Profile'];
-  final List<String> ownerMenus = ['Home', 'Pedia', 'Feed', 'Profile'];
+  final List<String> ownerMenus = ['Home', 'Profile'];
 
   final PageStorageBucket bucket = PageStorageBucket();
 
@@ -133,18 +131,18 @@ class _MainScreenState extends State<MainScreen> {
                       });
                     },
                   ),
-              // if (user?['type'] == 'owner')
-              //   for (int i = 0; i < ownerScreens.length; i++)
-              //     GButton(
-              //       icon: ownerIcons[i],
-              //       text: ownerMenus[i],
-              //       onPressed: () {
-              //         setState(() {
-              //           currScreen = ownerScreens[i];
-              //           currScreenCount = i;
-              //         });
-              //       },
-              //     ),
+              if (user?['type'] == 'owner')
+                for (int i = 0; i < ownerScreens.length; i++)
+                  GButton(
+                    icon: ownerIcons[i],
+                    text: ownerMenus[i],
+                    onPressed: () {
+                      setState(() {
+                        currScreen = ownerScreens[i];
+                        currScreenCount = i;
+                      });
+                    },
+                  ),
             ],
           ),
         ]),

@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/user/edit_preferences_screen.dart';
-import 'package:tuktraapp/screens/user/insert_pedia_screen.dart';
 import 'package:tuktraapp/screens/user/user_feed_screen.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
@@ -55,13 +54,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     }
   }
-
-  final List<ProfileMenu> profileMenu = [
-    ProfileMenu(menuName: 'Atur Feed Saya', menuWidget: const UserFeedScreen(), menuIcon: Icons.video_collection_rounded),
-    ProfileMenu(menuName: 'Tulis Artikel Baru', menuWidget: const InsertPediaScreen(), menuIcon: Icons.article_rounded),
-    ProfileMenu(menuName: 'Atur Preferensimu', menuWidget: const EditPreferencesScreen(), menuIcon: Icons.edit_square),
-    ProfileMenu(menuName: 'Keluar', menuWidget: const LoginScreen(), menuIcon: Icons.logout_rounded),
-  ];
   
   Map<String, dynamic>? user;
 

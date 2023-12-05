@@ -33,6 +33,7 @@ class _InsertPlannerState extends State<InsertPlanner> {
     );
 
     if (picked != null && picked != _selectedStartDate) {
+      print(picked);
       setState(() {
         _selectedStartDate = picked;
         _dateStartController.text = _selectedStartDate!.toLocal().toString().split(' ')[0];

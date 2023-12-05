@@ -5,13 +5,23 @@ import 'package:tuktraapp/screens/user/planner/update_itinerary.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class DetailPlanner extends StatefulWidget {
-  const DetailPlanner({super.key});
+  final String id; 
+  const DetailPlanner({super.key, required this.id});
 
   @override
   State<DetailPlanner> createState() => _DetailPlannerState();
 }
 
 class _DetailPlannerState extends State<DetailPlanner> {
+  late Map<String, dynamic> plan;
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    
+  } 
+
   @override
   Widget build(BuildContext context) {
 
@@ -131,7 +141,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                           backgroundColor: const Color.fromARGB(255, 82, 114, 255)
                                         ),
                                         onPressed: () {
-                                          NavigationUtils.pushRemoveTransition(context, const UpdateItinerary());
+                                          NavigationUtils.pushRemoveTransition(context, UpdateItinerary(id: widget.id,));
                                         }, 
                                         child: const Icon(Icons.edit)
                                       ),
@@ -239,7 +249,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
                   onPressed: () {
-                    NavigationUtils.pushRemoveTransition(context, const InsertItinerary());
+                    NavigationUtils.pushRemoveTransition(context, InsertItinerary(id: widget.id,));
                   }, 
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 82, 114, 255),
