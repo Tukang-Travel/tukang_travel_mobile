@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/user/planner/insert_itinerary.dart';
 import 'package:tuktraapp/screens/user/planner/update_itinerary.dart';
+import 'package:tuktraapp/services/plan_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class DetailPlanner extends StatefulWidget {
@@ -12,21 +14,32 @@ class DetailPlanner extends StatefulWidget {
   State<DetailPlanner> createState() => _DetailPlannerState();
 }
 
+var ctr = 0;
 class _DetailPlannerState extends State<DetailPlanner> {
-  late Map<String, dynamic> plan;
+  Map<String, dynamic>? plan = null;
 
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
+    List<dynamic> results = await Future.wait([
+      getPlan(widget.id),
+    ]);
     
+    setState(() {
+      plan = results[0];
+    });
   } 
 
   @override
   Widget build(BuildContext context) {
-
+    List<Map<String, dynamic>>? days;
+    if(plan!.containsKey('days')) {
+      days = (plan?['days'] as List).cast<Map<String, dynamic>>();
+    }
     double h = MediaQuery.of(context).size.height;
     double w = MediaQuery.of(context).size.width;
+    var d;
 
     return SafeArea(
       child: Scaffold(
@@ -53,7 +66,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                           Padding(
                             padding: const EdgeInsets.only(top: 10.0),
                             child: Text(
-                              'Title',
+                              plan?['title'],
                               style: const TextStyle(
                                 fontWeight: FontWeight.w800,
                                 fontSize: 22.0,
@@ -63,28 +76,28 @@ class _DetailPlannerState extends State<DetailPlanner> {
                           ),
                           const SizedBox(height: 10.0),
                           Text(
-                            'start_date - end_date',
+                            '${DateFormat('d MMMM yyyy').format(DateTime.parse(plan?['startDate']))} - ${DateFormat('d MMMM yyyy').format(DateTime.parse(plan?['endDate']))}',
                             style: const TextStyle(
                               color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 8.0),
                           Text(
-                            'source - destination',
+                            '${plan?['source']} - ${plan?['destination']}',
                             style: const TextStyle(
                               color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 8.0),
                           Text(
-                            'Number of people',
+                            'Jumlah Orang: ${plan?['people']}',
                             style: const TextStyle(
                               color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 8.0),
                           Text(
-                            'Budget',
+                            'Anggaran: ${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', ).format(plan?['budget'])}',
                             style: const TextStyle(
                               color: Colors.white,
                             ),
@@ -97,7 +110,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                 ),
               ),
             ),
-
+            
             Padding(
               padding: const EdgeInsets.only(top: 5.0),
               child: Center(
@@ -118,120 +131,131 @@ class _DetailPlannerState extends State<DetailPlanner> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 10.0),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 110,
-                                        child: Text(
-                                          'Hari X',
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 20.0
+                                days == null?
+                                  const Center(
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          'Belum ada rencana keseharian',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18.0,
+                                            color: Colors.red,
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 20.0),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(100.0)
-                                          ),
-                                          backgroundColor: const Color.fromARGB(255, 82, 114, 255)
+                                        SizedBox(height: 50.0,),
+                                        Text(
+                                          'Tekan "Tambah Hari" untuk mulai merancang rencana keseharian anda.',
+                                          textAlign: TextAlign.center,
                                         ),
-                                        onPressed: () {
-                                          NavigationUtils.pushRemoveTransition(context, UpdateItinerary(id: widget.id,));
-                                        }, 
-                                        child: const Icon(Icons.edit)
-                                      ),
-                                      const SizedBox(width: 10.0),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(100.0)
-                                          ),
-                                          backgroundColor: const Color.fromARGB(255, 82, 114, 255)
-                                        ),
-                                        onPressed: () {}, 
-                                        child: Icon(Icons.delete)
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: 12.0,
-                                              height: 12.0,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: const Color.fromARGB(255, 82, 114, 255),
-                                              ),
-                                            ),
-                                            SizedBox(width: 10.0),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                      ],
+                                    ),
+                                    )
+                                  :
+                                  Container(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        for(d in days)
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 10.0),
+                                            child: Row(
                                               children: [
-                                                Text(
-                                                  'Title',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16.0,
+                                                Container(
+                                                  width: 200,
+                                                  child: Text(
+                                                    'Hari ${d['day']}',
+                                                    style: const TextStyle(
+                                                      fontWeight: FontWeight.w800,
+                                                      fontSize: 20.0
+                                                    ),
                                                   ),
                                                 ),
-                                                Text('source - destination'),
-                                                Text('start_time - end_time'),
-                                                Text('transportation'),
-                                                Text('transportation_cost'),
-                                              ],
-                                            ),
-                                            SizedBox(width: 10.0),
-                                          ],
-                                        ),
-                                      ),
-                                                          
-                                      Container(
-                                        padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
-                                        child: Row(
-                                          children: [
-                                            Container(
-                                              width: 12.0,
-                                              height: 12.0,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: const Color.fromARGB(255, 82, 114, 255),
-                                              ),
-                                            ),
-                                            SizedBox(width: 10.0),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  'Title',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16.0,
+                                                ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(100.0)
+                                                    ),
+                                                    backgroundColor: const Color.fromARGB(255, 82, 114, 255)
                                                   ),
+                                                  onPressed: () {}, 
+                                                  child: const Icon(Icons.add)
                                                 ),
-                                                Text('source - destination'),
-                                                Text('start_time - end_time'),
-                                                Text('transportation'),
-                                                Text('transportation_cost'),
                                               ],
                                             ),
-                                            SizedBox(width: 10.0),
-                                          ],
+                                          ),
+                                          
+                                          Container(
+                                            child: Column(
+                                              children: [
+                                                for(var i = 0; i < d['itineraries'].length; i++)
+                                                  Container(
+                                                    padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
+                                                    child: Row(
+                                                      children: [
+                                                        Container(
+                                                          width: 12.0,
+                                                          height: 12.0,
+                                                          decoration: BoxDecoration(
+                                                            shape: BoxShape.circle,
+                                                            color: const Color.fromARGB(255, 82, 114, 255),
+                                                          ),
+                                                        ),
+                                                        SizedBox(width: 10.0),
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              d['itineraries'][i]['title'] ?? '',
+                                                              style: TextStyle(
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 16.0,
+                                                              ),
+                                                            ),
+                                                            Text('${d['itineraries'][i]['source']} - ${d['itineraries'][i]['destination']}'),
+                                                            Text('${d['itineraries'][i]['startTime']} - ${d['itineraries'][i]['endTime']}'),
+                                                            Text(d['itineraries'][i]['transportation'] ?? ''),
+                                                            Text('Biaya: ${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', ).format(d['itineraries'][i]['transportation_cost'])}'),
+                                                            const SizedBox(width: 20.0),
+                                                            Row(
+                                                              children: [
+                                                                ElevatedButton(
+                                                                  style: ElevatedButton.styleFrom(
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(100.0)
+                                                                    ),
+                                                                    backgroundColor: const Color.fromARGB(255, 82, 114, 255)
+                                                                  ),
+                                                                  onPressed: () {
+                                                                    NavigationUtils.pushRemoveTransition(context, UpdateItinerary(dayId: (int.parse(d['day']) - 1), id: i, planId: widget.id,));
+                                                                  }, 
+                                                                  child: Text('Ubah')
+                                                                ),
+                                                                const SizedBox(width: 10.0),
+                                                                ElevatedButton(
+                                                                  style: ElevatedButton.styleFrom(
+                                                                    shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(100.0)
+                                                                    ),
+                                                                    backgroundColor: Colors.red
+                                                                  ),
+                                                                  onPressed: () {}, 
+                                                                  child: Text('Hapus')
+                                                                ),
+                                                              ],
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                              ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
                               ],
                             ),
                           ),

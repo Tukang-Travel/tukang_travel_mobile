@@ -4,8 +4,9 @@ import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class UpdateItinerary extends StatefulWidget {
-  final String id;
-  const UpdateItinerary({super.key, required this.id});
+  final int dayId, id;
+  final String planId;
+  const UpdateItinerary({super.key, required this.dayId, required this.id, required this.planId});
 
   @override
   State<UpdateItinerary> createState() => _UpdateItineraryState();
@@ -29,6 +30,13 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
 
   bool isLoading = false;
   int budget = 0;
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print(widget.dayId);
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -496,7 +504,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             onPressed: () {
-              NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: widget.id,));
+              NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: widget.planId,));
             },
             child: const Padding(
               padding: EdgeInsets.only(left: 6.0),

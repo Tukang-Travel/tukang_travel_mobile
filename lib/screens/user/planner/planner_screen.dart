@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
 import 'package:tuktraapp/screens/user/planner/insert_planner.dart';
 import 'package:tuktraapp/screens/user/planner/update_planner.dart';
+import 'package:tuktraapp/services/plan_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:intl/intl.dart';
 
@@ -136,7 +137,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                       ),
                                       const SizedBox(height: 8.0),
                                       Text(
-                                        'Perkiraan Budget: ${planner['budget']}',
+                                        'Anggaran: ${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', ).format(planner['budget'])}',
                                       ),
                                       const SizedBox(height: 30.0),
                                       Center(
@@ -152,7 +153,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                             onPressed: () {
                                               NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: plannerId,));
                                             }, 
-                                            child: Text('Rencana Keseharian')
+                                            child: const Text('Rencana Keseharian')
                                           ),
                                         ),
                                       ),
@@ -167,7 +168,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                               )
                                             ),
                                             onPressed: () {
-                                              NavigationUtils.pushRemoveTransition(context, const UpdatePlanner());
+                                              NavigationUtils.pushRemoveTransition(context, UpdatePlanner(id: plannerId,));
                                             }, 
                                             child: const Text('Ubah Rencana')
                                           ),
@@ -183,8 +184,31 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                 borderRadius: BorderRadius.circular(10.0),
                                               )
                                             ),
-                                            onPressed: () {}, 
-                                            child: Text('Hapus Rencana')
+                                            onPressed: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: const Text('Hapus Rencana'),
+                                                    content: Text('Apakah anda yakin untuk menghapus rencana "${planner['title']}"?'),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        onPressed: () => Navigator.pop(context, 'Cancel'),
+                                                        child: const Text('Batal'),
+                                                      ),
+                                                      TextButton(
+                                                        onPressed: () {
+                                                          deletePlanner(plannerId);
+                                                          Navigator.pop(context, 'Delete');
+                                                        },
+                                                        child: const Text('Hapus'),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            }, 
+                                            child: const Text('Hapus Rencana')
                                           ),
                                         ),
                                       ),
