@@ -17,6 +17,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   List<Map<String, dynamic>>? days;
   List<Map<String, dynamic>>? itinerary;
+  Map<String, dynamic> subItinerary = {};
 
   TextEditingController titleTxt = TextEditingController();
   TextEditingController sourceTxt = TextEditingController();
@@ -33,7 +34,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
 
   bool isLoading = false;
   int budget = 0;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -535,6 +536,9 @@ class _InsertItineraryState extends State<InsertItinerary> {
                       if(selectStartTime == 0 || selectEndTime == 0) {
                         Alert.alertValidation('Waktu harus dipilih!', context);
                       }
+                      else if(selectEndTime < selectStartTime) {
+                        Alert.alertValidation('Waktu awal tidak bisa lebih besar tadi waktu akhir!', context);
+                      }
                       else if(selectTransportation == 0) {
                         Alert.alertValidation('Transportasi harus dipilih!', context);
                       }
@@ -550,19 +554,29 @@ class _InsertItineraryState extends State<InsertItinerary> {
                               'transportation': _tranportations[int.parse(transportationController.text)].keys.first,
                               'transportation_cost': budget,
                             },];
+                            
                             days = [{
                               'day': widget.day,
                               'itineraries': itinerary,
                             },];
                             isLoading = true;
                             insertItinerary(widget.id, days);
-
-                            NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: widget.id));
                           });
                         }
-                        else {
-
+                        else if (widget.type == "sub") {
+                          subItinerary = {
+                            'title': titleTxt.text,
+                            'source': sourceTxt.text,
+                            'destination': destinationTxt.text,
+                            'startTime': _times[int.parse(startTimeController.text)].keys.first,
+                            'endTime': _times[int.parse(endTimeController.text)].keys.first,
+                            'transportation': _tranportations[int.parse(transportationController.text)].keys.first,
+                            'transportation_cost': budget,
+                          };
+                          insertSubItinerary(widget.id, widget.day, subItinerary);
                         }
+
+                        // NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: widget.id));
                       }
                     },
                     style: ElevatedButton.styleFrom(

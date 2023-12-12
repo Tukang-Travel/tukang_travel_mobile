@@ -296,7 +296,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                             () {
                                                                           NavigationUtils.pushRemoveTransition(
                                                                               context,
-                                                                              UpdateItinerary(dayId: (int.parse(day['day']) - 1), id: i, planId: widget.id));
+                                                                              UpdateItinerary(dayId: (int.parse(day['day']) - 1), id: i, planId: widget.id, planTitle: plan['title'], title: day['itineraries'][i]['title'], source: day['itineraries'][i]['source'], destination: day['itineraries'][i]['destination'], startTime: day['itineraries'][i]['startTime'], endTime: day['itineraries'][i]['endTime'], transportation: day['itineraries'][i]['transportation'], transportationCost: day['itineraries'][i]['transportation_cost'],));
                                                                         },
                                                                         child: Text(
                                                                             'Ubah')),

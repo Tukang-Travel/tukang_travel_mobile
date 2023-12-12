@@ -76,6 +76,7 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
 
     if(!isSet) {
       setState(() {
+        isSet = true;
         titleTxt.text = plan?['title'];
         sourceTxt.text = plan?['source'];
         destinationTxt.text = plan?['destination'];

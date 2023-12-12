@@ -71,3 +71,59 @@ Future<void> insertItinerary(String id, List<Map<String, dynamic>>? days) async 
     print('Error inserting itinerary: $e');
   }
 }
+
+Future<void> insertSubItinerary(String id, String dayNum, Map<String, dynamic> itinerary) async {
+  CollectionReference plans = FirebaseFirestore.instance.collection('planners');
+
+  // Get the document reference
+  DocumentReference docRef = plans.doc(id);
+
+  // Get the current data of the document
+  DocumentSnapshot docSnapshot = await docRef.get();
+  Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+
+  // Find the day with the specified dayNumber
+  var day = data['days']?.firstWhere((day) => day['day'] == dayNum, orElse: () => {});
+
+  // If the day is found, append the new itinerary
+  if (day.isNotEmpty) {
+    day['itineraries'] = [...day['itineraries'], itinerary];
+  }
+
+  // Update the document in Firebase
+  await docRef.update({'days': data['days']});
+}
+
+Future<void> updateSubItinerary(String id, int dayIdx, int itineraryIdx, Map<String, dynamic> itinerary) async {
+  try {
+    FirebaseFirestore.instance.collection('planners').doc(id)
+    .update({
+      'days.$dayIdx.itineraries.$itineraryIdx': itinerary,
+    })
+    .then((_) {
+      print('Itinerary updated successfully!');
+    })
+    .catchError((error) {
+      print('Error updating itinerary: $error');
+    });
+  } catch (e) {
+    print('Error updating itinerary: $e');
+  }
+}
+
+Future<void> deleteSubItinerary(String id, int dayIdx, int itineraryIdx) async {
+  try {
+    FirebaseFirestore.instance.collection('planners').doc(id)
+    .update({
+      'days.$dayIdx.itineraries.$itineraryIdx': FieldValue.delete(),
+    })
+    .then((_) {
+      print('Itinerary deleted successfully!');
+    })
+    .catchError((error) {
+      print('Error deleting itinerary: $error');
+    });
+  } catch (e) {
+    print('Error deleting itinerary: $e');
+  }
+}
