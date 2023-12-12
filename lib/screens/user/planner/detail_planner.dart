@@ -7,16 +7,16 @@ import 'package:tuktraapp/services/plan_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class DetailPlanner extends StatefulWidget {
-  final String id; 
-  const DetailPlanner({super.key, required this.id});
+  final String id;
+
+  const DetailPlanner({Key? key, required this.id}) : super(key: key);
 
   @override
   State<DetailPlanner> createState() => _DetailPlannerState();
 }
 
-var ctr = 0;
 class _DetailPlannerState extends State<DetailPlanner> {
-  Map<String, dynamic>? plan = null;
+  Map<String, dynamic> plan = {};
 
   @override
   void didChangeDependencies() async {
@@ -25,21 +25,21 @@ class _DetailPlannerState extends State<DetailPlanner> {
     List<dynamic> results = await Future.wait([
       getPlan(widget.id),
     ]);
-    
+
     setState(() {
       plan = results[0];
     });
-  } 
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>>? days;
-    if(plan!.containsKey('days')) {
+    List<Map<String, dynamic>> days = [];
+    if (plan!.containsKey('days')) {
       days = (plan?['days'] as List).cast<Map<String, dynamic>>();
+      print(days);
     }
     double h = MediaQuery.of(context).size.height;
     double w = MediaQuery.of(context).size.width;
-    var d;
 
     return SafeArea(
       child: Scaffold(
@@ -53,13 +53,17 @@ class _DetailPlannerState extends State<DetailPlanner> {
                   color: Color.fromARGB(217, 82, 114, 255),
                   elevation: 10,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      topLeft: Radius.circular(20),
+                    ),
                   ),
                   child: SizedBox(
                     width: w * 0.8,
                     height: h * 0.25,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20.0, horizontal: 20.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -110,14 +114,16 @@ class _DetailPlannerState extends State<DetailPlanner> {
                 ),
               ),
             ),
-            
             Padding(
               padding: const EdgeInsets.only(top: 5.0),
               child: Center(
                 child: Card(
                   elevation: 10,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(bottomRight: Radius.circular(20), bottomLeft: Radius.circular(20)),
+                    borderRadius: BorderRadius.only(
+                      bottomRight: Radius.circular(20),
+                      bottomLeft: Radius.circular(20),
+                    ),
                   ),
                   child: SizedBox(
                     width: w * 0.8,
@@ -127,135 +133,199 @@ class _DetailPlannerState extends State<DetailPlanner> {
                       child: Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 20.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                days == null?
-                                  const Center(
-                                    child: Column(
-                                      children: [
-                                        Text(
-                                          'Belum ada rencana keseharian',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 18.0,
-                                            color: Colors.red,
-                                          ),
-                                        ),
-                                        SizedBox(height: 50.0,),
-                                        Text(
-                                          'Tekan "Tambah Hari" untuk mulai merancang rencana keseharian anda.',
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
-                                    )
-                                  :
-                                  Container(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        for(d in days)
-                                          Padding(
-                                            padding: const EdgeInsets.only(top: 10.0),
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                  width: 200,
-                                                  child: Text(
-                                                    'Hari ${d['day']}',
-                                                    style: const TextStyle(
-                                                      fontWeight: FontWeight.w800,
-                                                      fontSize: 20.0
-                                                    ),
-                                                  ),
-                                                ),
-                                                ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(100.0)
-                                                    ),
-                                                    backgroundColor: const Color.fromARGB(255, 82, 114, 255)
-                                                  ),
-                                                  onPressed: () {}, 
-                                                  child: const Icon(Icons.add)
-                                                ),
-                                              ],
+                                days == null
+                                    ? const Center(
+                                        child: Column(
+                                          children: [
+                                            Text(
+                                              'Belum ada rencana keseharian',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 18.0,
+                                                color: Colors.red,
+                                              ),
                                             ),
-                                          ),
-                                          
-                                          Container(
-                                            child: Column(
-                                              children: [
-                                                for(var i = 0; i < d['itineraries'].length; i++)
-                                                  Container(
-                                                    padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
-                                                    child: Row(
-                                                      children: [
-                                                        Container(
-                                                          width: 12.0,
-                                                          height: 12.0,
-                                                          decoration: BoxDecoration(
-                                                            shape: BoxShape.circle,
-                                                            color: const Color.fromARGB(255, 82, 114, 255),
-                                                          ),
+                                            SizedBox(
+                                              height: 50.0,
+                                            ),
+                                            Text(
+                                              'Tekan "Tambah Hari" untuk mulai merancang rencana keseharian anda.',
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : ListView.builder(
+                                        itemCount: days.length,
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        itemBuilder: (context, index) {
+                                          var day = days[index];
+                                          return Column(
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    top: 10.0),
+                                                child: Row(
+                                                  children: [
+                                                    Container(
+                                                      width: 200,
+                                                      child: Text(
+                                                        'Hari ${day['day']}',
+                                                        style:
+                                                            const TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w800,
+                                                          fontSize: 20.0,
                                                         ),
-                                                        SizedBox(width: 10.0),
-                                                        Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                      ),
+                                                    ),
+                                                    ElevatedButton(
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            100.0)),
+                                                                backgroundColor:
+                                                                    const Color
+                                                                        .fromARGB(
+                                                                            255,
+                                                                            82,
+                                                                            114,
+                                                                            255)),
+                                                        onPressed: () {
+                                                          NavigationUtils
+                                                              .pushRemoveTransition(
+                                                                  context,
+                                                                  InsertItinerary(
+                                                                      id: widget.id,
+                                                                      planTitle: plan?[
+                                                                          'title'],
+                                                                      day: day[
+                                                                          'day'],
+                                                                      type:
+                                                                          'sub'));
+                                                        },
+                                                        child: const Icon(Icons
+                                                            .add)),
+                                                  ],
+                                                ),
+                                              ),
+                                              Container(
+                                                child: Column(
+                                                  children: [
+                                                    for (var i = 0;
+                                                        i <
+                                                            day['itineraries']
+                                                                .length;
+                                                        i++)
+                                                      Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                                vertical: 20.0,
+                                                                horizontal:
+                                                                    5.0),
+                                                        child: Row(
                                                           children: [
-                                                            Text(
-                                                              d['itineraries'][i]['title'] ?? '',
-                                                              style: TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: 16.0,
+                                                            Container(
+                                                              width: 12.0,
+                                                              height: 12.0,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                shape: BoxShape
+                                                                    .circle,
+                                                                color: const Color
+                                                                        .fromARGB(
+                                                                    255,
+                                                                    82,
+                                                                    114,
+                                                                    255),
                                                               ),
                                                             ),
-                                                            Text('${d['itineraries'][i]['source']} - ${d['itineraries'][i]['destination']}'),
-                                                            Text('${d['itineraries'][i]['startTime']} - ${d['itineraries'][i]['endTime']}'),
-                                                            Text(d['itineraries'][i]['transportation'] ?? ''),
-                                                            Text('Biaya: ${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', ).format(d['itineraries'][i]['transportation_cost'])}'),
-                                                            const SizedBox(width: 20.0),
-                                                            Row(
+                                                            SizedBox(
+                                                                width: 10.0),
+                                                            Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
                                                               children: [
-                                                                ElevatedButton(
-                                                                  style: ElevatedButton.styleFrom(
-                                                                    shape: RoundedRectangleBorder(
-                                                                      borderRadius: BorderRadius.circular(100.0)
-                                                                    ),
-                                                                    backgroundColor: const Color.fromARGB(255, 82, 114, 255)
-                                                                  ),
-                                                                  onPressed: () {
-                                                                    NavigationUtils.pushRemoveTransition(context, UpdateItinerary(dayId: (int.parse(d['day']) - 1), id: i, planId: widget.id,));
-                                                                  }, 
-                                                                  child: Text('Ubah')
+                                                                Text(
+                                                                  day['itineraries']
+                                                                          [i][
+                                                                      'title'] ??
+                                                                      '',
+                                                                  style: const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      fontSize:
+                                                                          16.0),
                                                                 ),
-                                                                const SizedBox(width: 10.0),
-                                                                ElevatedButton(
-                                                                  style: ElevatedButton.styleFrom(
-                                                                    shape: RoundedRectangleBorder(
-                                                                      borderRadius: BorderRadius.circular(100.0)
-                                                                    ),
-                                                                    backgroundColor: Colors.red
-                                                                  ),
-                                                                  onPressed: () {}, 
-                                                                  child: Text('Hapus')
-                                                                ),
+                                                                Text(
+                                                                    '${day['itineraries'][i]['source']} - ${day['itineraries'][i]['destination']}'),
+                                                                Text(
+                                                                    '${day['itineraries'][i]['startTime']} - ${day['itineraries'][i]['endTime']}'),
+                                                                Text(day['itineraries'][i]
+                                                                        [
+                                                                        'transportation'] ??
+                                                                    ''),
+                                                                Text(
+                                                                    'Biaya: ${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', ).format(day['itineraries'][i]['transportation_cost'])}'),
+                                                                const SizedBox(
+                                                                    width:
+                                                                        20.0),
+                                                                Row(
+                                                                  children: [
+                                                                    ElevatedButton(
+                                                                        style: ElevatedButton.styleFrom(
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(100.0)),
+                                                                            backgroundColor: const Color.fromARGB(
+                                                                                255,
+                                                                                82,
+                                                                                114,
+                                                                                255)),
+                                                                        onPressed:
+                                                                            () {
+                                                                          NavigationUtils.pushRemoveTransition(
+                                                                              context,
+                                                                              UpdateItinerary(dayId: (int.parse(day['day']) - 1), id: i, planId: widget.id));
+                                                                        },
+                                                                        child: Text(
+                                                                            'Ubah')),
+                                                                    const SizedBox(
+                                                                        width:
+                                                                            10.0),
+                                                                    ElevatedButton(
+                                                                        style: ElevatedButton.styleFrom(
+                                                                            shape: RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.circular(100.0)),
+                                                                            backgroundColor: Colors.red),
+                                                                        onPressed:
+                                                                            () {},
+                                                                        child:
+                                                                            Text('Hapus')),
+                                                                  ],
+                                                                )
                                                               ],
-                                                            )
+                                                            ),
                                                           ],
                                                         ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                              ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                                      ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
                               ],
                             ),
                           ),
@@ -266,26 +336,33 @@ class _DetailPlannerState extends State<DetailPlanner> {
                 ),
               ),
             ),
-
             Padding(
               padding: const EdgeInsets.only(top: 20.0, right: 35.0),
               child: Align(
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
-                  onPressed: () {
-                    NavigationUtils.pushRemoveTransition(context, InsertItinerary(id: widget.id,));
-                  }, 
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 82, 114, 255),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
-                    )
-                  ),
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 8.0),
-                    child: Text('Tambah Hari'),
-                  )
-                ),
+                    onPressed: () {
+                      NavigationUtils.pushRemoveTransition(
+                          context,
+                          InsertItinerary(
+                              id: widget.id,
+                              planTitle: plan?['title'],
+                              day: days == null
+                                  ? "1"
+                                  : (days.length + 1).toString(),
+                              type: 'full'));
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            const Color.fromARGB(255, 82, 114, 255),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        )),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 8.0),
+                      child: Text('Tambah Hari'),
+                    )),
               ),
             )
           ],
@@ -298,7 +375,8 @@ class _DetailPlannerState extends State<DetailPlanner> {
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
               onPressed: () {
-                NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 2));
+                NavigationUtils.pushRemoveTransition(
+                    context, const MainScreen(page: 2));
               },
               child: const Padding(
                 padding: EdgeInsets.only(left: 6.0),

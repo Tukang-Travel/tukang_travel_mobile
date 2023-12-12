@@ -58,3 +58,16 @@ Future<void> updatePlanner(String id, String title, String source, String destin
     print('Error updating plan: $e');
   }
 }
+
+Future<void> insertItinerary(String id, List<Map<String, dynamic>>? days) async {
+  try {
+    if (days != null) {
+      List<dynamic> convertedDays = days.cast<dynamic>();
+      await FirebaseFirestore.instance.collection('planners').doc(id).update({
+        'days': FieldValue.arrayUnion(convertedDays),
+      });
+    }
+  } catch (e) {
+    print('Error inserting itinerary: $e');
+  }
+}
