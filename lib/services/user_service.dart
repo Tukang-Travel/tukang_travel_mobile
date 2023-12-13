@@ -39,7 +39,7 @@ Future<String> register(String name, String username, String email,
         .then((response) {
       refreshUser();
       currUser?.updateDisplayName(name);
-      users.add(UserModel(response.user?.uid, name, username, email, userType)
+      users.doc(currUser?.uid).set(UserModel(response.user?.uid, name, username, email, userType)
           .toMap());
     });
     return 'Success';
