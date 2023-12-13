@@ -2,7 +2,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
+import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/screens/user/feed/feed_detail_screen.dart';
+import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -13,37 +15,50 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
-  List<dynamic>? data;
+  List<dynamic> data = [];
   var posts = <Widget>[];
-  CollectionReference collections =
-      FirebaseFirestore.instance.collection("destinations");
 
   Future<dynamic> getData() async {
+    posts.clear();
     // Get docs from collection reference
 
-    QuerySnapshot querySnapshot = await collections.get();
+    QuerySnapshot querySnapshot =
+        await FirebaseFirestore.instance.collection("feeds").get();
 
     // Get data from docs and convert map to List
 
-    // List<FeedModel> response = [
-    //   FeedModel(
-    //       1,
-    //       [
-    //         'https://c4.wallpaperflare.com/wallpaper/560/855/635/spy-x-family-anya-forger-hd-wallpaper-preview.jpg'
-    //       ],
-    //       'stevenwj12',
-    //       true)
-    // ]; //sementara belum hit api
+    // data = querySnapshot.docs.map((e) => e.data()).toList();
 
-    data = querySnapshot.docs.map((e) => e.data()).toList();
+    for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+      Map<String, dynamic> feedData = (doc.data() as Map<String, dynamic>);
 
-    posts.add(buildTitle(context));
+      // Get the username for the corresponding userId
+      String userId = feedData['userId'];
+      UserModel? _user = await getUser(userId);
+      String username = _user!.username as String;
+
+      // Replace userId with username in the data
+      feedData['username'] = username;
+      feedData.remove('userId');
+
+      data.add(feedData);
+    }
+
+    print(data);
+
+    if (context.mounted) {
+      posts.add(buildTitle(context));
+    }
 
     for (var i = 0; i < data!.length; i++) {
-      posts.add(
-        buildPostCard(context, data?[i]),
-      );
+      if (context.mounted) {
+        print("masuk");
+        posts.add(
+          buildPostCard(context, data[i]),
+        );
+      }
     }
+    print(posts);
   }
 
   Future<void> _pullRefresh() async {
@@ -51,64 +66,23 @@ class _FeedScreenState extends State<FeedScreen> {
     setState(() {});
   }
 
+  Future<UserModel?> getUser(String userId) async {
+    QuerySnapshot users =
+        await FirebaseFirestore.instance.collection("users").get();
+    for (var user in users.docs) {
+      if (user.get("uid").toString() == userId) {
+        return UserModel(user.get("uid"), user.get("name"),
+            user.get("username"), user.get("email"), user.get("type"));
+      }
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: /* Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [ 
-            Padding(
-              padding: const EdgeInsets.only(left: 20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const AutoSizeText(
-                    'Pengalaman Wisata',
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                      fontFamily: 'PoppinsBold',
-                      fontSize: 20,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      height: 1.2,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // Add your button click logic here
-                      print('Button Clicked!');
-                    },
-                    style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: const Size(50, 30),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        alignment: Alignment.centerLeft),
-                    child: const Row(
-                      
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.add,
-                          color: Colors.black, // Icon color
-                        ),
-                        SizedBox(
-                            width: 8.0), // Adjust spacing between icon and text
-                        Text(
-                          'Tambahkan pengalaman wisatamu disini',
-                          style: TextStyle(
-                            color: Colors.black, // Text color
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Expanded(
-              child:  */
-            RefreshIndicator(
+        child: RefreshIndicator(
           onRefresh: _pullRefresh,
           child: FutureBuilder(
             future: getData(),
@@ -145,7 +119,7 @@ Widget buildTitle(BuildContext context) {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AutoSizeText(
-          'Feed',
+          'Feeds',
           textAlign: TextAlign.left,
           style: TextStyle(
             fontFamily: 'Poppins',
@@ -160,11 +134,11 @@ Widget buildTitle(BuildContext context) {
   );
 }
 
-List<String> generateUrl(List<dynamic> file) {
+List<String> generateUrl(List<dynamic> files) {
   List<String> url = [];
-  for (var i = 0; i < file.length; i++) {
-    if (file[i].runtimeType.toString() == "String") {
-      url.add(file[i].toString());
+  for (var file in files) {
+    if (file.type.toString() == "image") {
+      url.add(file.src.toString());
     }
   }
   return url;
@@ -208,29 +182,13 @@ Widget buildPostCard(BuildContext context, dynamic data) {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AutoSizeText(
-                            data["name"],
+                            '@${data["username"]}',
                             maxLines: 1,
                             style: const TextStyle(
                               fontFamily: 'Poppins',
                               fontSize: 20,
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
-                              overflow: TextOverflow.ellipsis,
-                              height: 1.2,
-                            ),
-                          ),
-                          const Divider(
-                            height: 5,
-                            color: Colors.transparent,
-                          ),
-                          AutoSizeText(
-                            data["location"],
-                            maxLines: 1,
-                            style: const TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 12,
-                              color: Colors.black,
-                              fontWeight: FontWeight.normal,
                               overflow: TextOverflow.ellipsis,
                               height: 1.2,
                             ),
@@ -243,7 +201,7 @@ Widget buildPostCard(BuildContext context, dynamic data) {
                     child: Container(
                         color: Colors.black,
                         constraints: const BoxConstraints.expand(),
-                        child: checkImageVideo(data["image"]))),
+                        child: checkImageVideo(data["content"]))),
                 Expanded(
                     flex: 2,
                     child: Padding(
@@ -277,7 +235,7 @@ Widget buildPostCard(BuildContext context, dynamic data) {
                             ),
                           ),*/
                           AutoSizeText(
-                            data["description"],
+                            data["title"],
                             style: const TextStyle(
                                 fontFamily: 'Poppins',
                                 fontSize: 12,
@@ -297,12 +255,12 @@ Widget buildPostCard(BuildContext context, dynamic data) {
                                 NavigationUtils.pushTransition(
                                     context,
                                     FeedDetailScreen(
-                                        name: data["name"],
-                                        location: data["location"],
-                                        description: data["description"],
-                                        file: generateUrl(data["image"]),
-                                        rating: data["rating"],
-                                        estimasi: data["estimasi"]));
+                                        name: data["title"],
+                                        location: 'tes',
+                                        description: 'desctes',
+                                        file: ['https://firebasestorage.googleapis.com/v0/b/tukang-travel.appspot.com/o/destinations%2FFurusato%20Izakaya%2F1646878263479?alt=media&token=822506cd-4c14-4a47-8244-a278e643e44a'],
+                                        rating: 4.5,
+                                        estimasi: 'tes'));
                               },
                               child: const Text(
                                 'Lihat selengkapnya',

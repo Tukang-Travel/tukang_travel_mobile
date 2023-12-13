@@ -36,13 +36,8 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
           floating: false,
           pinned: true,
           flexibleSpace: FlexibleSpaceBar(
-              centerTitle: false,
-              title: Text(widget.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.0,
-                  )),
+              centerTitle: true,
+              title: null,
               background: Swiper(
                 itemCount: widget.file.length,
                 itemBuilder: (BuildContext context, int index) => Image.network(

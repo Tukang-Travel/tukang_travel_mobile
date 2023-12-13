@@ -42,18 +42,18 @@ class _MainScreenState extends State<MainScreen> {
           currScreen = const ProfileScreen();
           break;
         default:
-          currScreen = const HomeScreen();
+          currScreen = const FeedScreen();
           break;
       }
     });
   }
   
-  Map<String, dynamic>? user = null;
+  Map<String, dynamic>? user;
 
   final List<Widget> screens = [
     const FeedScreen(),
     const PediaScreen(),
-    //const HomeScreen(),
+    const HomeScreen(),
     const PlannerScreen(),
     const ProfileScreen(),
   ];
@@ -66,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<IconData> icons = [
     Icons.home_filled,
     Icons.article_rounded,
-    //Icons.add_circle,
+    Icons.add_circle,
     Icons.list_rounded,
     Icons.person,
   ];
@@ -76,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
     Icons.person,
   ];
 
-  final List<String> menus = ['Home', 'Pedia', 'Diary', 'Profile'];
+  final List<String> menus = ['Home', 'Pedia', '', 'Diary', 'Profile'];
   final List<String> ownerMenus = ['Home', 'Profile'];
 
   final PageStorageBucket bucket = PageStorageBucket();
@@ -93,7 +93,7 @@ class _MainScreenState extends State<MainScreen> {
       user = results[0];
     });
 
-    print(user);
+    print('${user} tes');
   }
   @override
   Widget build(BuildContext context) {
