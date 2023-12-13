@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<Map<String, dynamic>?> getPlan(String id) async {
   try {
-    CollectionReference users = FirebaseFirestore.instance.collection('planners');
-    DocumentSnapshot planDocument = await users.doc(id).get();
+    CollectionReference plans = FirebaseFirestore.instance.collection('planners');
+    DocumentSnapshot planDocument = await plans.doc(id).get();
 
     if (planDocument.exists) {
       return planDocument.data() as Map<String, dynamic>;
@@ -12,7 +12,7 @@ Future<Map<String, dynamic>?> getPlan(String id) async {
       return null;
     }
   } catch (e) {
-    print('Error retrieving user data: $e');
+    print('Error retrieving plan data: $e');
     return null;
   }
 }
