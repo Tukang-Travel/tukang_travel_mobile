@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
+import 'package:tuktraapp/services/plan_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class UpdateItinerary extends StatefulWidget {
@@ -61,14 +62,13 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
       titleTxt.text = widget.title;
       sourceTxt.text = widget.source;
       destinationTxt.text = widget.destination;
-      startTimeController.text = widget.startTime;
-      endTimeController.text = widget.endTime;
-      transportationController.text = widget.transportation;
+      startTimeController.text = searchValue(_times, widget.startTime).toString();
+      endTimeController.text = searchValue(_times, widget.endTime).toString();
+      transportationController.text = searchValue(_tranportations, widget.transportation).toString();
       budget = widget.transportationCost;
-
-      startTimeIdx = searchValue(_times, startTimeController.text);
-      endTimeIdx = searchValue(_times, endTimeController.text);
-      transportIdx = searchValue(_tranportations, transportationController.text);
+      startTimeIdx = int.parse(startTimeController.text);
+      endTimeIdx = int.parse(endTimeController.text);
+      transportIdx = int.parse(transportationController.text);
     }
   }
   
@@ -107,6 +107,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                 Form(
                   key: formKey,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 5.0),
@@ -573,9 +574,26 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                   child: ElevatedButton(
                     onPressed: () {
                       if(formKey.currentState!.validate()) {
-                        setState(() {
-                          // isLoading = true;
-                          // _insertUser();
+                        setState(() async {
+                          Map<String, dynamic> itinerary = {
+                            'title': titleTxt.text,
+                            'source': sourceTxt.text,
+                            'destination': destinationTxt.text,
+                            'startTime': _times[int.parse(startTimeController.text)].keys.first,
+                            'endTime': _times[int.parse(endTimeController.text)].keys.first,
+                            'transportation': _tranportations[int.parse(transportationController.text)].keys.first,
+                            'transportation_cost': budget,
+                          };
+
+                          isLoading = true;
+
+                          await updateSubItinerary(widget.planId, widget.dayId, widget.id, itinerary);
+                          NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: widget.planId));
+
+                          // print('startTimeController.text: ${startTimeController.text}');
+                          // print('endTimeController.text: ${endTimeController.text}');
+                          // print('transportationController.text: ${transportationController.text}');
+
                         });
                       }
                     },

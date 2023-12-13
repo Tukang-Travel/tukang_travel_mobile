@@ -29,14 +29,15 @@ class _DetailPlannerState extends State<DetailPlanner> {
     setState(() {
       plan = results[0];
     });
+
+    print(plan);
   }
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>> days = [];
-    if (plan!.containsKey('days')) {
-      days = (plan?['days'] as List).cast<Map<String, dynamic>>();
-      print(days);
+    List<Map<String, dynamic>>? days;
+    if (plan.containsKey('days')) {
+      days = (plan['days'] as List).cast<Map<String, dynamic>>();
     }
     double h = MediaQuery.of(context).size.height;
     double w = MediaQuery.of(context).size.width;
@@ -50,9 +51,9 @@ class _DetailPlannerState extends State<DetailPlanner> {
               padding: const EdgeInsets.only(top: 75.0),
               child: Center(
                 child: Card(
-                  color: Color.fromARGB(217, 82, 114, 255),
+                  color: const Color.fromARGB(217, 82, 114, 255),
                   elevation: 10,
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(20),
                       topLeft: Radius.circular(20),
@@ -70,7 +71,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                           Padding(
                             padding: const EdgeInsets.only(top: 10.0),
                             child: Text(
-                              plan?['title'],
+                              plan['title'],
                               style: const TextStyle(
                                 fontWeight: FontWeight.w800,
                                 fontSize: 22.0,
@@ -80,28 +81,31 @@ class _DetailPlannerState extends State<DetailPlanner> {
                           ),
                           const SizedBox(height: 10.0),
                           Text(
-                            '${DateFormat('d MMMM yyyy').format(DateTime.parse(plan?['startDate']))} - ${DateFormat('d MMMM yyyy').format(DateTime.parse(plan?['endDate']))}',
+                            '${DateFormat('d MMMM yyyy').format(DateTime.parse(plan['startDate']))} - ${DateFormat('d MMMM yyyy').format(DateTime.parse(plan['endDate']))}',
                             style: const TextStyle(
                               color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 8.0),
                           Text(
-                            '${plan?['source']} - ${plan?['destination']}',
+                            '${plan['source']} - ${plan['destination']}',
                             style: const TextStyle(
                               color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 8.0),
                           Text(
-                            'Jumlah Orang: ${plan?['people']}',
+                            'Jumlah Orang: ${plan['people']}',
                             style: const TextStyle(
                               color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 8.0),
                           Text(
-                            'Anggaran: ${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', ).format(plan?['budget'])}',
+                            'Anggaran: ${NumberFormat.currency(
+                              locale: 'id_ID',
+                              symbol: 'Rp',
+                            ).format(plan['budget'])}',
                             style: const TextStyle(
                               color: Colors.white,
                             ),
@@ -166,7 +170,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                         shrinkWrap: true,
                                         physics: NeverScrollableScrollPhysics(),
                                         itemBuilder: (context, index) {
-                                          var day = days[index];
+                                          var day = days?[index];
                                           return Column(
                                             children: [
                                               Padding(
@@ -177,9 +181,8 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                     Container(
                                                       width: 200,
                                                       child: Text(
-                                                        'Hari ${day['day']}',
-                                                        style:
-                                                            const TextStyle(
+                                                        'Hari ${day?['day']}',
+                                                        style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.w800,
                                                           fontSize: 20.0,
@@ -187,34 +190,30 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                       ),
                                                     ),
                                                     ElevatedButton(
-                                                        style: ElevatedButton
-                                                            .styleFrom(
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
+                                                        style: ElevatedButton.styleFrom(
+                                                            shape: RoundedRectangleBorder(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
                                                                             100.0)),
-                                                                backgroundColor:
-                                                                    const Color
-                                                                        .fromARGB(
-                                                                            255,
-                                                                            82,
-                                                                            114,
-                                                                            255)),
+                                                            backgroundColor:
+                                                                const Color
+                                                                    .fromARGB(
+                                                                    255,
+                                                                    82,
+                                                                    114,
+                                                                    255)),
                                                         onPressed: () {
-                                                          NavigationUtils
-                                                              .pushRemoveTransition(
-                                                                  context,
-                                                                  InsertItinerary(
-                                                                      id: widget.id,
-                                                                      planTitle: plan?[
-                                                                          'title'],
-                                                                      day: day[
-                                                                          'day'],
-                                                                      type:
-                                                                          'sub'));
+                                                          NavigationUtils.pushRemoveTransition(context,
+                                                          InsertItinerary(
+                                                            id: widget.id,
+                                                            planTitle: plan['title'],
+                                                            day: day?['day'],
+                                                            type: 'sub')
+                                                          );
                                                         },
-                                                        child: const Icon(Icons
-                                                            .add)),
+                                                        child: const Icon(
+                                                            Icons.add)),
                                                   ],
                                                 ),
                                               ),
@@ -223,95 +222,100 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                   children: [
                                                     for (var i = 0;
                                                         i <
-                                                            day['itineraries']
+                                                            day?['itineraries']
                                                                 .length;
                                                         i++)
                                                       Container(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                                vertical: 20.0,
-                                                                horizontal:
-                                                                    5.0),
+                                                        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 5.0),
                                                         child: Row(
                                                           children: [
                                                             Container(
                                                               width: 12.0,
                                                               height: 12.0,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                shape: BoxShape
-                                                                    .circle,
-                                                                color: const Color
-                                                                        .fromARGB(
-                                                                    255,
-                                                                    82,
-                                                                    114,
-                                                                    255),
+                                                              decoration: const BoxDecoration(shape: BoxShape.circle,
+                                                                color: Color.fromARGB(255, 82, 114, 255),
                                                               ),
                                                             ),
-                                                            SizedBox(
-                                                                width: 10.0),
+                                                            const SizedBox(width: 10.0),
                                                             Column(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
                                                                       .start,
                                                               children: [
                                                                 Text(
-                                                                  day['itineraries']
-                                                                          [i][
-                                                                      'title'] ??
-                                                                      '',
+                                                                  day?['itineraries'][i]['title'] ??'',
                                                                   style: const TextStyle(
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
-                                                                      fontSize:
-                                                                          16.0),
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize:16.0),
                                                                 ),
                                                                 Text(
-                                                                    '${day['itineraries'][i]['source']} - ${day['itineraries'][i]['destination']}'),
+                                                                    '${day?['itineraries'][i]['source']} - ${day?['itineraries'][i]['destination']}'),
                                                                 Text(
-                                                                    '${day['itineraries'][i]['startTime']} - ${day['itineraries'][i]['endTime']}'),
-                                                                Text(day['itineraries'][i]
-                                                                        [
-                                                                        'transportation'] ??
-                                                                    ''),
-                                                                Text(
-                                                                    'Biaya: ${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', ).format(day['itineraries'][i]['transportation_cost'])}'),
-                                                                const SizedBox(
-                                                                    width:
-                                                                        20.0),
+                                                                    '${day?['itineraries'][i]['startTime']} - ${day?['itineraries'][i]['endTime']}'),
+                                                                Text(day?['itineraries'][i]['transportation'] ?? ''),
+                                                                Text('Biaya: ${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp',).format(day?['itineraries'][i]['transportation_cost'])}'),
+                                                                const SizedBox(width: 20.0),
                                                                 Row(
                                                                   children: [
                                                                     ElevatedButton(
-                                                                        style: ElevatedButton.styleFrom(
-                                                                            shape: RoundedRectangleBorder(
-                                                                                borderRadius: BorderRadius.circular(100.0)),
-                                                                            backgroundColor: const Color.fromARGB(
-                                                                                255,
-                                                                                82,
-                                                                                114,
-                                                                                255)),
-                                                                        onPressed:
-                                                                            () {
-                                                                          NavigationUtils.pushRemoveTransition(
-                                                                              context,
-                                                                              UpdateItinerary(dayId: (int.parse(day['day']) - 1), id: i, planId: widget.id, planTitle: plan['title'], title: day['itineraries'][i]['title'], source: day['itineraries'][i]['source'], destination: day['itineraries'][i]['destination'], startTime: day['itineraries'][i]['startTime'], endTime: day['itineraries'][i]['endTime'], transportation: day['itineraries'][i]['transportation'], transportationCost: day['itineraries'][i]['transportation_cost'],));
-                                                                        },
-                                                                        child: Text(
-                                                                            'Ubah')),
-                                                                    const SizedBox(
-                                                                        width:
-                                                                            10.0),
+                                                                      style: ElevatedButton.styleFrom(
+                                                                        shape: RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.circular(100.0)
+                                                                        ),
+                                                                        backgroundColor: const Color.fromARGB(255, 82,114,255)
+                                                                      ),
+                                                                      onPressed: () {
+                                                                        NavigationUtils.pushRemoveTransition(context, UpdateItinerary(
+                                                                          dayId: (int.parse(day?['day']) - 1),
+                                                                          id: i,
+                                                                          planId: widget.id,
+                                                                          planTitle: plan['title'],
+                                                                          title: day?['itineraries'][i]['title'],
+                                                                          source: day?['itineraries'][i]['source'],
+                                                                          destination: day?['itineraries'][i]['destination'],
+                                                                          startTime: day?['itineraries'][i]['startTime'],
+                                                                          endTime: day?['itineraries'][i]['endTime'],
+                                                                          transportation: day?['itineraries'][i]['transportation'],
+                                                                          transportationCost: day?['itineraries'][i]['transportation_cost'],
+                                                                        ));
+                                                                      },
+                                                                      child: const Text('Ubah')
+                                                                    ),
+                                                                    const SizedBox(width: 10.0),
                                                                     ElevatedButton(
-                                                                        style: ElevatedButton.styleFrom(
-                                                                            shape: RoundedRectangleBorder(
-                                                                                borderRadius: BorderRadius.circular(100.0)),
-                                                                            backgroundColor: Colors.red),
-                                                                        onPressed:
-                                                                            () {},
-                                                                        child:
-                                                                            Text('Hapus')),
+                                                                      style: ElevatedButton.styleFrom(
+                                                                        shape: RoundedRectangleBorder(
+                                                                          borderRadius: BorderRadius.circular(100.0)
+                                                                        ),
+                                                                        backgroundColor: Colors.red),
+                                                                      onPressed: () {
+                                                                        showDialog(context: context, builder: (BuildContext context) {
+                                                                            return AlertDialog(
+                                                                              title: const Text('Hapus Rencana Keseharian'),
+                                                                              content: Text('Apakah anda yakin untuk menghapus rencana "${day?['itineraries'][i]['title']}"?'),
+                                                                              actions: <Widget>[
+                                                                                TextButton(
+                                                                                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                                                                                  child: const Text('Batal'),
+                                                                                ),
+                                                                                TextButton(
+                                                                                  onPressed: () async {
+                                                                                    // print('${widget.id}, ${(int.parse(day['day']) - 1)}, $i');
+                                                                                    await deleteSubItinerary(widget.id, (int.parse(day?['day']) - 1), i);
+
+                                                                                    Navigator.pop(context, 'Delete');
+
+                                                                                    NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: widget.id));
+                                                                                  },
+                                                                                  child: const Text('Hapus'),
+                                                                                ),
+                                                                              ],
+                                                                            );
+                                                                          },
+                                                                        );
+                                                                      },
+                                                                      child: const Text('Hapus')
+                                                                    ),
                                                                   ],
                                                                 )
                                                               ],
@@ -359,8 +363,8 @@ class _DetailPlannerState extends State<DetailPlanner> {
                           borderRadius: BorderRadius.circular(15.0),
                         )),
                     child: const Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 8.0),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 15.0, horizontal: 8.0),
                       child: Text('Tambah Hari'),
                     )),
               ),

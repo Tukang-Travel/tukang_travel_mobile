@@ -532,7 +532,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if(selectStartTime == 0 || selectEndTime == 0) {
                         Alert.alertValidation('Waktu harus dipilih!', context);
                       }
@@ -573,10 +573,10 @@ class _InsertItineraryState extends State<InsertItinerary> {
                             'transportation': _tranportations[int.parse(transportationController.text)].keys.first,
                             'transportation_cost': budget,
                           };
-                          insertSubItinerary(widget.id, widget.day, subItinerary);
+                          await insertSubItinerary(widget.id, widget.day, subItinerary);
                         }
 
-                        // NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: widget.id));
+                        NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: widget.id));
                       }
                     },
                     style: ElevatedButton.styleFrom(

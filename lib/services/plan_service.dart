@@ -96,16 +96,27 @@ Future<void> insertSubItinerary(String id, String dayNum, Map<String, dynamic> i
 
 Future<void> updateSubItinerary(String id, int dayIdx, int itineraryIdx, Map<String, dynamic> itinerary) async {
   try {
-    FirebaseFirestore.instance.collection('planners').doc(id)
-    .update({
-      'days.$dayIdx.itineraries.$itineraryIdx': itinerary,
-    })
-    .then((_) {
-      print('Itinerary updated successfully!');
-    })
-    .catchError((error) {
-      print('Error updating itinerary: $error');
+    print('Updating...');
+
+    // Get the current document data
+    var documentSnapshot = await FirebaseFirestore.instance.collection('planners').doc(id).get();
+    var data = documentSnapshot.data();
+
+    // Get the current itineraries
+    List<Map<String, dynamic>> currentItineraries = List.from(data?['days'][dayIdx]['itineraries']);
+
+    // Update the specific itinerary at the given index
+    currentItineraries[itineraryIdx] = itinerary;
+
+    // Update the 'itineraries' field in the 'days' map
+    data?['days'][dayIdx]['itineraries'] = currentItineraries;
+
+    // Update the entire 'days' field in Firestore
+    await FirebaseFirestore.instance.collection('planners').doc(id).update({
+      'days': data?['days'],
     });
+
+    print('Itinerary updated successfully!');
   } catch (e) {
     print('Error updating itinerary: $e');
   }
@@ -113,16 +124,30 @@ Future<void> updateSubItinerary(String id, int dayIdx, int itineraryIdx, Map<Str
 
 Future<void> deleteSubItinerary(String id, int dayIdx, int itineraryIdx) async {
   try {
-    FirebaseFirestore.instance.collection('planners').doc(id)
-    .update({
-      'days.$dayIdx.itineraries.$itineraryIdx': FieldValue.delete(),
-    })
-    .then((_) {
+    // Get the current document data
+    var documentSnapshot = await FirebaseFirestore.instance.collection('planners').doc(id).get();
+    var data = documentSnapshot.data();
+
+    // Get the current itineraries
+    List<Map<String, dynamic>> currentItineraries = List.from(data?['days'][dayIdx]['itineraries']);
+
+    // Ensure the itineraryIdx is within bounds
+    if (itineraryIdx >= 0 && itineraryIdx < currentItineraries.length) {
+      // Remove the itinerary at the specified index
+      currentItineraries.removeAt(itineraryIdx);
+
+      // Update the 'itineraries' field in the 'days' map
+      data?['days'][dayIdx]['itineraries'] = currentItineraries;
+
+      // Update the entire 'days' field in Firestore
+      await FirebaseFirestore.instance.collection('planners').doc(id).update({
+        'days': data?['days'],
+      });
+
       print('Itinerary deleted successfully!');
-    })
-    .catchError((error) {
-      print('Error deleting itinerary: $error');
-    });
+    } else {
+      print('Invalid itinerary index');
+    }
   } catch (e) {
     print('Error deleting itinerary: $e');
   }
