@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
@@ -13,17 +14,25 @@ class PediaDetail extends StatefulWidget {
   State<PediaDetail> createState() => _PediaDetailState();
 }
 
-Map<String, dynamic> pedia = {};
-List<dynamic> medias = [];
-List<dynamic> tags = [];
-List<Map<String, dynamic>>? rates, comments;
-int avgRate = 0;
-
 class _PediaDetailState extends State<PediaDetail> {
-  
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
+  int rating = 0;
+  Map<String, dynamic> pedia = {};
+  List<dynamic> medias = [];
+  List<dynamic> tags = [];
+  List<Map<String, dynamic>>? rates, comments;
+  int avgRate = 0;
+
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  TextEditingController commentTxt = TextEditingController();
+
+  Future<void> fetch() async {
+    rating = 0;
+    pedia = {};
+    medias = [];
+    tags = [];
+    rates = null;
+    comments = null;
+    avgRate = 0;
 
     List<dynamic> results = await Future.wait([
       getPedia(widget.id)
@@ -45,14 +54,28 @@ class _PediaDetailState extends State<PediaDetail> {
         avgRate = (avgRate / rates!.length).round();
 
         print('After division: $avgRate');
+
+        for(int i = 0; i < rates!.length; i++) {
+          if(rates?[i]['userid'] == currUser!.uid) {
+            setState(() {
+              rating = rates?[i]['rate'];
+            });
+            break;
+          }
+        }
       }
 
       if(pedia.containsKey('comments')) {
         comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
       }
-
-      print(pedia);
     });
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    fetch();
   }
 
   @override
@@ -107,6 +130,29 @@ class _PediaDetailState extends State<PediaDetail> {
                 padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
                 child: Row(
                   children: [
+                    for(var i = 1; i <= 5; i++)
+                    GestureDetector(
+                      onTap: () async {
+                        setState(() {
+                          rating = i;
+                        });
+
+                        await insertPediaRate(widget.id, rating, currUser!.uid);
+                        await fetch();
+                      },
+                      child: Icon(
+                        Icons.star,
+                        size: 25.0,
+                        color: i <= rating ? const Color.fromARGB(255, 255, 215, 0) : Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 25.0),
+                child: Row(
+                  children: [
                     Container(
                       width: 300.0,
                       child: Text(
@@ -133,7 +179,7 @@ class _PediaDetailState extends State<PediaDetail> {
                               child: Icon(
                                 Icons.star,
                                 size: 20.0,
-                                color: Colors.grey,
+                                color:  Color.fromARGB(255, 255, 215, 0),
                               ),
                             ),
                           ),
@@ -207,6 +253,9 @@ class _PediaDetailState extends State<PediaDetail> {
                                     final user = snapshot.data!;
                         
                                     return Card(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20.0),
+                                      ),
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
                                         child: Row(
@@ -251,6 +300,82 @@ class _PediaDetailState extends State<PediaDetail> {
                             ),
                           ),
                         ),
+                      
+                      SizedBox(height: 10.0,),
+
+                      Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded( // Wrap with Expanded
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(20),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          blurRadius: 10,
+                                          spreadRadius: 2,
+                                          offset: Offset(1, 1),
+                                          color: Color.fromARGB(128, 170, 188, 192),
+                                        )
+                                      ],
+                                    ),
+                                    child: TextFormField(
+                                      controller: commentTxt,
+                                      maxLines: null,
+                                      keyboardType: TextInputType.multiline,
+                                      validator: ((value) => value!.isEmpty ? 'Komentar harus diisi' : null),
+                                      decoration: InputDecoration(
+                                        hintText: 'Ketik komentar mu disini...',
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Color.fromARGB(128, 170, 188, 192),
+                                            width: 1.0,
+                                          ),
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: const BorderSide(
+                                            color: Color.fromARGB(128, 170, 188, 192),
+                                          ),
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 8.0),
+                                InkWell(
+                                  onTap: () {
+                                    insertPediaComment(widget.id, commentTxt.text, currUser!.uid);
+                                    commentTxt.text = "";
+                                  },
+                                  child: Container(
+                                    width: 50.0,
+                                    height: 50.0,
+                                    decoration: const BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: const Color.fromARGB(217, 82, 114, 255), // Customize the color
+                                    ),
+                                    child: const Icon(
+                                      Icons.send,
+                                      color: Colors.white, // Customize the icon color
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                          ],
+                        )
+                      ),
+                      SizedBox(height: 20.0,)
                     ],
                   ),
                 ),

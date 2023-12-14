@@ -16,3 +16,33 @@ Future<Map<String, dynamic>?> getPedia(String id) async {
     return null;
   }
 }
+
+Future<void> insertPediaComment(String id, String comment, String userId) async {
+  try {
+    await FirebaseFirestore.instance.collection('pedias').doc(id).update({
+      'comments': FieldValue.arrayUnion([
+        {'comment': comment, 'userid': userId}
+      ]),
+    });
+    print('Comment added successfully!');
+  } catch (e) {
+    print('Error adding comment: $e');
+  }
+}
+
+Future<void> insertPediaRate(String id, int rate, String userId) async {
+  try {
+    List<dynamic> results = await Future.wait([
+      getPedia(id)
+    ]);
+
+    await FirebaseFirestore.instance.collection('pedias').doc(id).update({
+      'rates': FieldValue.arrayUnion([
+        {'rate': rate, 'userid': userId}
+      ]),
+    });
+    print('Rate added successfully!');
+  } catch (e) {
+    print('Error adding rate: $e');
+  }
+}

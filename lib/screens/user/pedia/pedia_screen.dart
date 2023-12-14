@@ -10,8 +10,6 @@ class PediaScreen extends StatefulWidget {
   State<PediaScreen> createState() => _PediaScreenState();
 }
 
-List<String> names = ['name 1', 'name 2'];
-
 class _PediaScreenState extends State<PediaScreen> {
   
   @override
@@ -31,7 +29,7 @@ class _PediaScreenState extends State<PediaScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
                   child: const Text(
-                    'Rencana Perjalanan',
+                    'Pedia Perjalanan',
                     style: TextStyle(
                       fontSize: 25.0,
                       fontWeight: FontWeight.w900,
