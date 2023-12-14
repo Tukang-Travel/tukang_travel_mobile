@@ -1,11 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chewie/chewie.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/screens/user/feed/feed_detail_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
+import 'package:video_player/video_player.dart';
 
 class FeedScreen extends StatefulWidget {
   const FeedScreen({super.key});
@@ -44,15 +48,13 @@ class _FeedScreenState extends State<FeedScreen> {
       data.add(feedData);
     }
 
-    print(data);
-
     if (context.mounted) {
       posts.add(buildTitle(context));
     }
 
-    for (var i = 0; i < data!.length; i++) {
+    for (var i = 0; i < data.length; i++) {
+      print(data[i]);
       if (context.mounted) {
-        print("masuk");
         posts.add(
           buildPostCard(context, data[i]),
         );
@@ -137,6 +139,8 @@ Widget buildTitle(BuildContext context) {
 List<String> generateUrl(List<dynamic> files) {
   List<String> url = [];
   for (var file in files) {
+    print(file.type);
+    print(file.src);
     if (file.type.toString() == "image") {
       url.add(file.src.toString());
     }
@@ -144,14 +148,53 @@ List<String> generateUrl(List<dynamic> files) {
   return url;
 }
 
+Future<ChewieController> _initializeChewieController(String fileData) async {
+  VideoPlayerController videoPlayerController =
+      VideoPlayerController.networkUrl(Uri.dataFromString(fileData));
+
+  await videoPlayerController.initialize();
+
+  return ChewieController(
+    videoPlayerController: videoPlayerController,
+    aspectRatio: 3 / 2,
+    autoPlay: true,
+    looping: true,
+  );
+}
+
 Widget checkImageVideo(List<dynamic> file) {
-  List<String> url = generateUrl(file);
+  print('tes -> ${Map<String, String>.from(file[0])["src"]}');
   return Swiper(
-    itemCount: url.length,
-    itemBuilder: (BuildContext context, int index) => Image.network(
-      url[index],
-      fit: BoxFit.cover,
-    ),
+    itemCount: file.length,
+    itemBuilder: (BuildContext context, int index) {
+      if (Map<String, String>.from(file[index])["type"] == "image") {
+        return CachedNetworkImage(
+          placeholder: (context, url) =>
+              const Center(child: CircularProgressIndicator()),
+          imageUrl: Map<String, String>.from(file[index])["src"]!,
+          fit: BoxFit.fitHeight,
+        );
+      } else {
+        return FutureBuilder<ChewieController>(
+          future: _initializeChewieController(file[index]["src"]! as String),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            if (snapshot.connectionState == ConnectionState.done) {
+              return Chewie(controller: snapshot.data!);
+            } else {
+              // Return a loading indicator or placeholder while waiting
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        );
+      }
+    },
     autoplay: false,
     loop: false,
     pagination: const SwiperPagination(),
@@ -213,27 +256,30 @@ Widget buildPostCard(BuildContext context, dynamic data) {
                             height: 20,
                             color: Colors.transparent,
                           ),
-                          // IconButton(
-                          //     padding: const EdgeInsets.symmetric(
-                          //         horizontal: 0, vertical: 10),
-                          //     constraints: const BoxConstraints(),
-                          //     onPressed: () => {},
-                          //     icon: SvgPicture.asset(
-                          //       'assets/images/homescreen/love.svg',
-                          //       color: Colors.black,
-                          //       fit: BoxFit.contain,
-                          //     )),
-                          /* postpone (akan di update nanti)
-                          AutoSizeText(
-                            "13 likes",
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 12,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w900,
-                              height: 1.2,
-                            ),
-                          ),*/
+                          Row(
+                            children: [
+                              IconButton(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 0, vertical: 10),
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () => {},
+                                  icon: SvgPicture.asset(
+                                    'asset/images/love.svg',
+                                    color: Colors.black,
+                                    fit: BoxFit.contain,
+                                  )),
+                              const AutoSizeText(
+                                "13 likes",
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 12,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w900,
+                                  height: 1.2,
+                                ),
+                              ),
+                            ],
+                          ),
                           AutoSizeText(
                             data["title"],
                             style: const TextStyle(
@@ -252,7 +298,7 @@ Widget buildPostCard(BuildContext context, dynamic data) {
                                   textStyle: const TextStyle(fontSize: 12),
                                   padding: EdgeInsets.zero),
                               onPressed: () {
-                                NavigationUtils.pushTransition(
+                                /*  NavigationUtils.pushTransition(
                                     context,
                                     FeedDetailScreen(
                                         name: data["title"],
@@ -260,10 +306,10 @@ Widget buildPostCard(BuildContext context, dynamic data) {
                                         description: 'desctes',
                                         file: ['https://firebasestorage.googleapis.com/v0/b/tukang-travel.appspot.com/o/destinations%2FFurusato%20Izakaya%2F1646878263479?alt=media&token=822506cd-4c14-4a47-8244-a278e643e44a'],
                                         rating: 4.5,
-                                        estimasi: 'tes'));
+                                        estimasi: 'tes')); */
                               },
                               child: const Text(
-                                'Lihat selengkapnya',
+                                'More',
                               ),
                             ),
                           )

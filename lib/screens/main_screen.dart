@@ -93,7 +93,6 @@ class _MainScreenState extends State<MainScreen> {
       user = results[0];
     });
 
-    print('${user} tes');
   }
   @override
   Widget build(BuildContext context) {

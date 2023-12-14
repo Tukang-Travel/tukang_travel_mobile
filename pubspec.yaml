@@ -51,6 +51,9 @@ dependencies:
   webview_flutter: ^4.4.2
   another_flushbar: ^1.12.30
   carousel_slider: ^4.2.1
+  cached_network_image: ^3.3.0
+  chewie: ^1.7.4
+  video_player: ^2.8.1
 
 dev_dependencies:
   flutter_test:
