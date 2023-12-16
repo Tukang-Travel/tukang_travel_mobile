@@ -26,6 +26,16 @@ Future<Map<String, dynamic>?> getUser(String uid) async {
   }
 }
 
+ // get user details
+  Future<UserModel> getUserDetails() async {
+    User currentUser = FirebaseAuth.instance.currentUser!;
+
+    DocumentSnapshot documentSnapshot =
+        await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).get();
+
+    return UserModel.fromSnap(documentSnapshot);
+  }
+
 //register
 Future<String> register(String name, String username, String email,
     String password, String userType) async {
@@ -39,7 +49,12 @@ Future<String> register(String name, String username, String email,
         .then((response) {
       refreshUser();
       currUser?.updateDisplayName(name);
-      users.doc(currUser?.uid).set(UserModel(response.user?.uid, name, username, email, userType)
+      users.doc(currUser?.uid).set(UserModel(
+        uid: response.user?.uid as String, 
+        name: name, 
+        username: username, 
+        email: email, 
+        userType: userType)
           .toMap());
     });
     return 'Success';
