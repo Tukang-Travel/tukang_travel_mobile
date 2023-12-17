@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tuktraapp/screens/user/pedia/pedia_detail.dart';
-import 'package:tuktraapp/utils/navigation_utils.dart';
+import 'package:tuktraapp/utils/navigation_util.dart';
 
 class PediaScreen extends StatefulWidget {
   const PediaScreen({super.key});

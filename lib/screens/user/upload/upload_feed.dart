@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:tuktraapp/services/user_service.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class UploadFeed extends StatefulWidget {
+  const UploadFeed({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<UploadFeed> createState() => _UploadFeedState();
 }
 
 Future<String> _printToken() async {
@@ -14,12 +14,12 @@ Future<String> _printToken() async {
   return token;
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _UploadFeedState extends State<UploadFeed> {
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Home View')),
+      appBar: AppBar(title: const Text('Upload Feed')),
       body: Column(
         children: [
           const Center(

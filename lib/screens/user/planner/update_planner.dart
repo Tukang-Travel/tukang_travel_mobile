@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/user/planner/planner_screen.dart';
 import 'package:tuktraapp/services/plan_service.dart';
-import 'package:tuktraapp/utils/navigation_utils.dart';
+import 'package:tuktraapp/utils/navigation_util.dart';
 
 class UpdatePlanner extends StatefulWidget {
   final String id;

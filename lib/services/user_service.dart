@@ -54,7 +54,7 @@ Future<String> register(String name, String username, String email,
         name: name, 
         username: username, 
         email: email, 
-        userType: userType)
+        type: userType)
           .toMap());
     });
     return 'Success';

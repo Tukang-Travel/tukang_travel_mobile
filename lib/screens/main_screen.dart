@@ -4,9 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tuktraapp/screens/owner/pedia/owner_pedia_screen.dart';
 import 'package:tuktraapp/screens/owner/profile/owner_profile.dart';
-import 'package:tuktraapp/screens/user/planner/planner_screen.dart';
 import 'package:tuktraapp/screens/user/feed/feed_screen.dart';
-import 'package:tuktraapp/screens/user/home/home_screen.dart';
+import 'package:tuktraapp/screens/user/planner/planner_screen.dart';
+import 'package:tuktraapp/screens/user/upload/upload_feed.dart';
 import 'package:tuktraapp/screens/user/pedia/pedia_screen.dart';
 import 'package:tuktraapp/screens/user/profile/profile_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
@@ -21,7 +21,7 @@ class MainScreen extends StatefulWidget {
 }
 
 int? currScreenCount = 0;
-Widget currScreen = const HomeScreen();
+Widget currScreen = const UploadFeed();
 
 class _MainScreenState extends State<MainScreen> {
   @override
@@ -53,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> screens = [
     const FeedScreen(),
     const PediaScreen(),
-    const HomeScreen(),
+    const UploadFeed(),
     const PlannerScreen(),
     const ProfileScreen(),
   ];

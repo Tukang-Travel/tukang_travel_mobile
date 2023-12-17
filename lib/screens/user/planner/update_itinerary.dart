@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
 import 'package:tuktraapp/services/plan_service.dart';
-import 'package:tuktraapp/utils/navigation_utils.dart';
+import 'package:tuktraapp/utils/navigation_util.dart';
 
 class UpdateItinerary extends StatefulWidget {
   final int dayId, id;

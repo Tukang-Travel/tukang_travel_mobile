@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
-import 'package:tuktraapp/utils/navigation_utils.dart';
+import 'package:tuktraapp/utils/navigation_util.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 class PediaDetail extends StatefulWidget {

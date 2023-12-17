@@ -8,7 +8,7 @@ import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/user/edit_preferences_screen.dart';
 import 'package:tuktraapp/screens/user/user_feed_screen.dart';
-import 'package:tuktraapp/utils/navigation_utils.dart';
+import 'package:tuktraapp/utils/navigation_util.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
