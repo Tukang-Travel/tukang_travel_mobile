@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
+import 'package:tuktraapp/screens/user/feed/edit_feed_screen.dart';
 import 'package:tuktraapp/services/feed_service.dart';
 import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/comment_card.dart';
@@ -45,6 +46,31 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
         );
       }
     }
+  }
+
+  deleteFeed(String feedId) async {
+    try {
+      await FeedService().deleteFeed(feedId);
+      if (context.mounted) {
+        showSnackBar(
+          context,
+          'Feed Deleted',
+        );
+      }
+    } catch (err) {
+      if (context.mounted) {
+        showSnackBar(
+          context,
+          err.toString(),
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    commentEditingController.dispose();
   }
 
   @override
@@ -131,8 +157,19 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                   color: const Color(
                                                                       0xffE9E9E9)),
                                                               child: IconButton(
-                                                                onPressed:
-                                                                    () {},
+                                                                onPressed: () {
+                                                                  Navigator
+                                                                      .push(
+                                                                    context,
+                                                                    MaterialPageRoute(
+                                                                        builder: (context) =>
+                                                                            EditFeedScreen(
+                                                                              feedId: widget.feedId,
+                                                                              initialTitle: snapshot.data!["title"],
+                                                                              initialTags: (snapshot.data!["tags"] as List<dynamic>).cast<String>(),
+                                                                            )),
+                                                                  );
+                                                                },
                                                                 icon: const Icon(
                                                                     Icons.edit,
                                                                     color: Colors
@@ -157,8 +194,53 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                   color: const Color(
                                                                       0xffE9E9E9)),
                                                               child: IconButton(
-                                                                onPressed:
-                                                                    () {},
+                                                                onPressed: () {
+                                                                  showDialog(
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (BuildContext
+                                                                              context) {
+                                                                        return AlertDialog(
+                                                                          title:
+                                                                              const Text(
+                                                                            'Are you sure you want to delete this feed?',
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontFamily: 'PoppinsBold',
+                                                                              fontSize: 15,
+                                                                              color: Colors.black,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              height: 1.2,
+                                                                            ),
+                                                                          ),
+                                                                          actions: <Widget>[
+                                                                            TextButton(
+                                                                              style: TextButton.styleFrom(
+                                                                                textStyle: Theme.of(context).textTheme.labelLarge,
+                                                                              ),
+                                                                              child: const Text('Cancel'),
+                                                                              onPressed: () {
+                                                                                Navigator.of(context).pop();
+                                                                              },
+                                                                            ),
+                                                                            TextButton(
+                                                                              style: TextButton.styleFrom(
+                                                                                textStyle: Theme.of(context).textTheme.labelLarge,
+                                                                              ),
+                                                                              child: const Text('Delete'),
+                                                                              onPressed: () {
+                                                                                deleteFeed(
+                                                                                  widget.feedId,
+                                                                                );
+                                                                                Navigator.of(context).pop();
+                                                                                Navigator.of(context).pop();
+                                                                              },
+                                                                            ),
+                                                                          ],
+                                                                        );
+                                                                      });
+                                                                },
                                                                 icon: const Icon(
                                                                     Icons
                                                                         .delete,
@@ -335,16 +417,19 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                         )
                       ];
                     },
-                    body: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.1,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: snapshot.data!['comments'].length,
-                        itemBuilder: (ctx, index) => CommentCard(
-                          snap: snapshot.data!['comments'][index],
-                        ),
-                      ),
-                    ),
+                    body: snapshot.data?['comments'].length == 0
+                        ? const Center(
+                            child: Text('No Comment Yet'),
+                          )
+                        : SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data!['comments'].length,
+                              itemBuilder: (ctx, index) => CommentCard(
+                                snap: snapshot.data!['comments'][index],
+                              ),
+                            )),
                   );
                 })));
   }
