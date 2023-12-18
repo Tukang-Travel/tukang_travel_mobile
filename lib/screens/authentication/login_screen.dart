@@ -158,7 +158,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          NavigationUtils.pushRemoveTransition(context, RegisterScreen());
+                          NavigationUtils.pushRemoveTransition(context, const RegisterScreen());
                         }
                       ),
                       const TextSpan(

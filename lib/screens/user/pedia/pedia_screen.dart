@@ -26,9 +26,9 @@ class _PediaScreenState extends State<PediaScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
-                  child: const Text(
+                  child: Text(
                     'Pedia Perjalanan',
                     style: TextStyle(
                       fontSize: 25.0,

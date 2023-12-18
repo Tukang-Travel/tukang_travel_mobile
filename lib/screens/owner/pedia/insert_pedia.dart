@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/utils/constant.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class InsertPedia extends StatefulWidget {
   const InsertPedia({super.key});
@@ -329,23 +331,7 @@ class _InsertPediaState extends State<InsertPedia> {
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             onPressed: () {
-              // Navigator.of(context).pushAndRemoveUntil(
-              //   PageRouteBuilder(
-              //     pageBuilder: (context, animation, secondaryAnimation) => const MainView(),
-              //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              //       const begin = 0.0;
-              //       const end = 1.0;
-              //       const curve = Curves.easeInOut;
-
-              //       var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-              //       var fadeAnimation = animation.drive(tween);
-
-              //       return FadeTransition(opacity: fadeAnimation, child: child);
-              //     },
-              //     transitionDuration: const Duration(milliseconds: 1000),
-              //   ),
-              //   (route) => false,
-              // );
+              NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0));
             },
             child: const Padding(
               padding: EdgeInsets.only(left: 6.0),

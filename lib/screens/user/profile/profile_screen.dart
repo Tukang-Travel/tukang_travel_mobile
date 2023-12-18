@@ -112,11 +112,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
               )
             ),
             child: const Text(
-              'Edit Profile', 
+              'Ubah Profil', 
               style: TextStyle(
                 color: Colors.white
               ),
             )
+          ),
+          const SizedBox(height: 15.0,),
+          ElevatedButton(
+            onPressed: () async {
+              await logout();
+
+              NavigationUtils.pushRemoveTransition(context, const LoginScreen());
+            }, 
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 55.0, vertical: 15.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)
+              )
+            ),
+            child: RichText(
+              text: const TextSpan(
+                text: 'Keluar ',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15.0,
+                ),
+                children: [
+                  WidgetSpan(
+                    child: Icon(Icons.logout_rounded)
+                  )
+                ]
+              )
+            ),
           ),
           const SizedBox(height: 30.0,),
         ],
