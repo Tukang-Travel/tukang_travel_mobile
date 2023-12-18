@@ -87,10 +87,27 @@ class FeedService {
   }
 
   // Delete Post
-  Future<String> deletePost(String postId) async {
+  Future<String> deleteFeed(String feedId) async {
     String res = "Some error occurred";
     try {
-      await _firestore.collection('posts').doc(postId).delete();
+      await _firestore.collection('feeds').doc(feedId).delete();
+      res = 'success';
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
+
+  // Update Post
+  Future<String> updateFeed(
+      String feedId, String newTitle, List<String> newTags) async {
+    String res = "Some error occurred";
+    try {
+      // if the likes list contains the user uid, we need to remove it
+      _firestore
+          .collection('feeds')
+          .doc(feedId)
+          .update({'title': newTitle, 'tags': newTags});
       res = 'success';
     } catch (err) {
       res = err.toString();
