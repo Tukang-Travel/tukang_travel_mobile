@@ -14,14 +14,14 @@ import 'package:tuktraapp/services/user_service.dart';
 class MainScreen extends StatefulWidget {
   final int? page;
 
-  const MainScreen({Key? key, required this.page}) : super(key: key);
+  const MainScreen({super.key, required this.page});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 int? currScreenCount = 0;
-Widget currScreen = const UploadFeed();
+Widget currScreen = const FeedScreen();
 
 class _MainScreenState extends State<MainScreen> {
   @override
@@ -36,9 +36,12 @@ class _MainScreenState extends State<MainScreen> {
           currScreen = const PediaScreen();
           break;
         case 2:
-          currScreen = const PlannerScreen();
+          currScreen = const FeedScreen();
           break;
         case 3:
+          currScreen = const PlannerScreen();
+          break;
+        case 4:
           currScreen = const ProfileScreen();
           break;
         default:
@@ -119,7 +122,7 @@ class _MainScreenState extends State<MainScreen> {
             tabBackgroundColor: const Color.fromARGB(255, 82, 114, 255),
             tabs: [
               if (user?['type'] == 'user')
-                for (int i = 0; i < screens.length; i++)
+                for (int i = 0; i < screens.length; i++) 
                   GButton(
                     icon: icons[i],
                     text: menus[i],
