@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:tuktraapp/services/feed_service.dart';
 import 'package:tuktraapp/utils/utils.dart';
@@ -36,7 +37,17 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Feed'),
+        title: const AutoSizeText(
+          'Edit Feed',
+          maxLines: 10,
+          style: TextStyle(
+            fontFamily: 'PoppinsBold',
+            fontSize: 25,
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+            height: 1.2,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

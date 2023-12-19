@@ -6,7 +6,7 @@ import 'package:tuktraapp/screens/owner/pedia/owner_pedia_screen.dart';
 import 'package:tuktraapp/screens/owner/profile/owner_profile.dart';
 import 'package:tuktraapp/screens/user/feed/feed_screen.dart';
 import 'package:tuktraapp/screens/user/planner/planner_screen.dart';
-import 'package:tuktraapp/screens/user/upload/upload_feed.dart';
+import 'package:tuktraapp/screens/user/upload/upload_feed_screen.dart';
 import 'package:tuktraapp/screens/user/pedia/pedia_screen.dart';
 import 'package:tuktraapp/screens/user/profile/profile_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
@@ -36,7 +36,7 @@ class _MainScreenState extends State<MainScreen> {
           currScreen = const PediaScreen();
           break;
         case 2:
-          currScreen = const FeedScreen();
+          currScreen = const UploadFeedScreen();
           break;
         case 3:
           currScreen = const PlannerScreen();
@@ -56,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> screens = [
     const FeedScreen(),
     const PediaScreen(),
-    const UploadFeed(),
+    const UploadFeedScreen(),
     const PlannerScreen(),
     const ProfileScreen(),
   ];

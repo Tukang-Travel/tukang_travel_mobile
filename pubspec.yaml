@@ -52,9 +52,9 @@ dependencies:
   another_flushbar: ^1.12.30
   carousel_slider: ^4.2.1
   cached_network_image: ^3.3.0
-  chewie: ^1.7.4
-  video_player: ^2.8.1
   uuid: ^4.2.2
+  better_player: ^0.0.83
+  file_picker: ^4.0.0
 
 dev_dependencies:
   flutter_test:
