@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/owner/pedia/update_pedia.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
@@ -157,7 +156,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                             showDialog(context: context, builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: const Text('Hapus Rencana Keseharian'),
-                                  content: Text('Apakah anda yakin untuk menghapus pedia ""?'),
+                                  content: Text('Apakah anda yakin untuk menghapus pedia "${pedia['title']}"?'),
                                   actions: <Widget>[
                                     TextButton(
                                       onPressed: () => Navigator.pop(context, 'Cancel'),

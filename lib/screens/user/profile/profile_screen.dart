@@ -1,13 +1,8 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuktraapp/models/login_api_model.dart';
 import 'package:tuktraapp/services/user_service.dart';
-import 'package:provider/provider.dart';
-import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
-import 'package:tuktraapp/screens/user/edit_preferences_screen.dart';
-import 'package:tuktraapp/screens/user/user_feed_screen.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class ProfileScreen extends StatefulWidget {

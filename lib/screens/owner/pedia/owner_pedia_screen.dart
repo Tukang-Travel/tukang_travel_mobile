@@ -110,7 +110,11 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
                                     children: [
                                       ClipRRect(
                                         borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
-                                        child: Image.network(itemData['medias'][0])
+                                        child: Image.network(
+                                          itemData['medias'][0],
+                                          height: 100,
+                                          width: 300,
+                                        )
                                       ),
                                       const SizedBox(height: 8.0,),
                                       Padding(
