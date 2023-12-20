@@ -22,9 +22,14 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
   TextEditingController tagsController = TextEditingController();
   List<String> tags = [];
   List<File> files = [];
+  String username = '';
 
   @override
   Widget build(BuildContext context) {
+    final UserModel user = Provider
+        .of<UserProvider>(context)
+        .user;
+    username = user.username;
     return Scaffold(
       appBar: AppBar(
         title: const AutoSizeText(
@@ -70,7 +75,6 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
       ),
     );
   }
-
 
   Widget _buildTagsInput() {
     return Column(
@@ -122,9 +126,7 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('File: ${file.path
-                        .split('/')
-                        .last}'),
+                    Text('File: ${file.path.split('/').last}'),
                   ],
                 ),
               );
@@ -197,23 +199,24 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
       showSnackBar(context, "Tags cannot be empty");
       return;
     }
+    
+    try {
+      // Upload files to Firebase Storage
+      List<Map<String, dynamic>> content =
+      await FeedService().uploadFiles(title, files);
 
-    // Upload files to Firebase Storage
-    List<Map<String, dynamic>> content =
-    await FeedService().uploadFiles(title, files);
 
-    if (context.mounted) {
-      final UserModel user = Provider
-          .of<UserProvider>(context)
-          .user;
 
-      // Add feed details to Firestore
-      await FeedService().uploadFeed(
-          user.uid, user.username, title, content, updatedTags);
+        // Add feed details to Firestore
+        await FeedService()
+            .uploadFeed(currUser!.uid, username, title, content, updatedTags);
 
-      // FeedService().updateFeed(widget.feedId, updatedTitle, updatedTags);
 
-      showSnackBar(context, 'Feed Uploaded!');
+        super.initState();
+    } catch (e) {
+      if(context.mounted) {
+        showSnackBar(context, e.toString());
+      }
     }
   }
 

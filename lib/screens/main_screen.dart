@@ -149,19 +149,6 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ]),
       ),
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.only(top: 50.0, left: 30.0),
-      //   child: Align(
-      //     alignment: Alignment.bottomCenter,
-      //     child: FloatingActionButton(
-      //       backgroundColor: const Color.fromARGB(255, 82, 114, 255),
-      //       foregroundColor: Colors.white,
-      //       onPressed: () {
-      //       },
-      //       child: const Icon(Icons.add)
-      //     ),
-      //   ),
-      // ),
     );
   }
 }
