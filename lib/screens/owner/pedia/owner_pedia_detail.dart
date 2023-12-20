@@ -1,20 +1,20 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
-import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
+import 'package:tuktraapp/screens/owner/pedia/update_pedia.dart';
+import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
-class PediaDetail extends StatefulWidget {
+class OwnerPediaDetail extends StatefulWidget {
   final String id;
-  const PediaDetail({super.key, required this.id});
+  const OwnerPediaDetail({super.key, required this.id});
 
   @override
-  State<PediaDetail> createState() => _PediaDetailState();
+  State<OwnerPediaDetail> createState() => _OwnerPediaDetailState();
 }
 
-class _PediaDetailState extends State<PediaDetail> {
+class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
   int rating = 0;
   Map<String, dynamic> pedia = {};
   List<dynamic> medias = [];
@@ -54,7 +54,6 @@ class _PediaDetailState extends State<PediaDetail> {
         avgRate = (avgRate / rates!.length).round();
 
         print('After division: $avgRate');
-
         for(int i = 0; i < rates!.length; i++) {
           if(rates?[i]['userid'] == currUser!.uid) {
             setState(() {
@@ -63,6 +62,8 @@ class _PediaDetailState extends State<PediaDetail> {
             break;
           }
         }
+
+        print('rating: $rating');
       }
 
       if(pedia.containsKey('comments')) {
@@ -75,7 +76,7 @@ class _PediaDetailState extends State<PediaDetail> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    fetch();
+    await fetch();
   }
 
   @override
@@ -118,12 +119,65 @@ class _PediaDetailState extends State<PediaDetail> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 15.0, left: 25.0),
-                child: Text(
-                  pedia['title'],
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 22.0
-                  ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 200,
+                      child: Text(
+                        pedia['title'],
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 22.0
+                        ),
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100.0)
+                            ),
+                            backgroundColor: const Color.fromARGB(255, 82,114,255)
+                          ),
+                          onPressed: () {
+                            NavigationUtils.pushRemoveTransition(context, UpdatePedia(id: widget.id));
+                          },
+                          child: const Icon(Icons.edit),
+                        ),
+                        const SizedBox(width: 10.0),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100.0)
+                            ),
+                            backgroundColor: Colors.red),
+                          onPressed: () {
+                            showDialog(context: context, builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Hapus Rencana Keseharian'),
+                                  content: Text('Apakah anda yakin untuk menghapus pedia "${pedia['title']}"?'),
+                                  actions: <Widget>[
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context, 'Cancel'),
+                                      child: const Text('Batal'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () async {
+                                        
+                                      },
+                                      child: const Text('Hapus'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: const Icon(Icons.delete),
+                        ),
+                      ],
+                    )
+                  ],
                 ),
               ),
               Padding(
@@ -375,7 +429,7 @@ class _PediaDetailState extends State<PediaDetail> {
                           ],
                         )
                       ),
-                      SizedBox(height: 20.0,)
+                      const SizedBox(height: 20.0,)
                     ],
                   ),
                 ),
@@ -391,7 +445,7 @@ class _PediaDetailState extends State<PediaDetail> {
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
               onPressed: () {
-                NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 1));
+                NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0));
               },
               child: const Padding(
                 padding: EdgeInsets.only(left: 6.0),

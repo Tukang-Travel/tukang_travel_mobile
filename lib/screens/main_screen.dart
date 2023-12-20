@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tuktraapp/screens/owner/pedia/owner_pedia_screen.dart';
 import 'package:tuktraapp/screens/owner/profile/owner_profile.dart';
 import 'package:tuktraapp/screens/user/feed/feed_screen.dart';
@@ -122,7 +120,7 @@ class _MainScreenState extends State<MainScreen> {
             tabBackgroundColor: const Color.fromARGB(255, 82, 114, 255),
             tabs: [
               if (user?['type'] == 'user')
-                for (int i = 0; i < screens.length; i++) 
+                for (int i = 0; i < screens.length; i++)
                   GButton(
                     icon: icons[i],
                     text: menus[i],

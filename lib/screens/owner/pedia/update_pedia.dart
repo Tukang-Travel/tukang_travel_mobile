@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tuktraapp/screens/owner/pedia/owner_pedia_detail.dart';
 import 'package:tuktraapp/utils/constant.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class UpdatePedia extends StatefulWidget {
-  const UpdatePedia({super.key});
+  final String id;
+  const UpdatePedia({super.key, required this.id});
 
   @override
   State<UpdatePedia> createState() => _UpdatePediaState();
@@ -329,7 +332,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             onPressed: () {
-              
+              NavigationUtils.pushRemoveTransition(context, OwnerPediaDetail(id: widget.id));
             },
             child: const Padding(
               padding: EdgeInsets.only(left: 6.0),

@@ -10,8 +10,6 @@ class PediaScreen extends StatefulWidget {
   State<PediaScreen> createState() => _PediaScreenState();
 }
 
-List<String> names = ['name 1', 'name 2'];
-
 class _PediaScreenState extends State<PediaScreen> {
   
   @override
@@ -28,10 +26,10 @@ class _PediaScreenState extends State<PediaScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
+                const Padding(
                   padding: EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
-                  child: const Text(
-                    'Rencana Perjalanan',
+                  child: Text(
+                    'Pedia Perjalanan',
                     style: TextStyle(
                       fontSize: 25.0,
                       fontWeight: FontWeight.w900,
@@ -96,7 +94,11 @@ class _PediaScreenState extends State<PediaScreen> {
                                     children: [
                                       ClipRRect(
                                         borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
-                                        child: Image.network(itemData['medias'][0])
+                                        child: Image.network(
+                                          itemData['medias'][0],
+                                          height: 100,
+                                          width: 300,
+                                        )
                                       ),
                                       const SizedBox(height: 8.0,),
                                       Padding(

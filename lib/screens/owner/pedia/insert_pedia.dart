@@ -2,7 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:tuktraapp/screens/main_screen.dart';
+import 'package:tuktraapp/screens/owner/pedia/owner_pedia_screen.dart';
+import 'package:tuktraapp/services/pedia_service.dart';
+import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/constant.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class InsertPedia extends StatefulWidget {
   const InsertPedia({super.key});
@@ -12,40 +17,48 @@ class InsertPedia extends StatefulWidget {
 }
 
 class _InsertPediaState extends State<InsertPedia> {
-  File? _pickedImage;
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  List<File> _pickedImages = [];
 
   List<String> _types = ['Sejarah', 'Cagar Alam', 'Pantai', 'Kuliner', 'Belanja', 'Religi', 'Petualangan', 'Seni & Budaya', 'Kesehatan & Kebugaran', 'Edukasi', 'Keluarga'];
   List<String> _selectedTypes = [];
 
   Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
+    final pickedFiles = await ImagePicker().pickMultiImage(
       imageQuality: 50,
     );
 
-    if (pickedFile != null) {
+    if (pickedFiles != null && pickedFiles.isNotEmpty) {
       try {
-        // Check if the picked file is an image (not a video)
-        String imagePath = pickedFile.path;
-        if (await isImageFile(imagePath)) {
-          setState(() {
-            _pickedImage = File(imagePath);
-          });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Profile harus berupa gambar!'),
-              duration: Duration(seconds: 3),
-            ),
-          );
+        // Check if the picked files are images
+        List<File> imageFiles = [];
+        for (var pickedFile in pickedFiles) {
+          String imagePath = pickedFile.path;
+          if (await isImageFile(imagePath)) {
+            imageFiles.add(File(imagePath));
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('All files must be images!'),
+                duration: Duration(seconds: 3),
+              ),
+            );
+            return;
+          }
         }
+
+        setState(() {
+          _pickedImages = imageFiles;
+        });
+        print(_pickedImages);
       } catch (e) {
-        print('Error picking image: $e');
+        print('Error picking images: $e');
       }
     } else {
-      print('No image selected.');
+      print('No images selected.');
     }
   }
+
 
   Future<bool> isImageFile(String filePath) async {
     final imageExtensions = ['jpg', 'jpeg', 'png']; // Add more extensions if needed
@@ -91,231 +104,310 @@ class _InsertPediaState extends State<InsertPedia> {
                   ),
                 ),
                 const SizedBox(height: 10.0,),
-                Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
-                  child: RichText(
-                    text: const TextSpan(
-                      text: 'Judul ',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15.0,
-                      ),
-                      children: <TextSpan> [
-                        TextSpan(
-                          text: '*',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15.0,
+                Form(
+                  key: formKey,
+                  child:  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: RichText(
+                          text: const TextSpan(
+                            text: 'Judul ',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15.0,
+                            ),
+                            children: <TextSpan> [
+                              TextSpan(
+                                text: '*',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15.0,
+                                ),
+                              )
+                            ]
                           ),
-                        )
-                      ]
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10.0,),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: const [
-                      BoxShadow(
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                        offset: Offset(1, 1),
-                        color: Color.fromARGB(128, 170, 188, 192),
-                      )
-                    ]
-                  ),
-                  child: TextFormField(
-                    controller: titleTxt,
-                    validator: ((value) => value!.isEmpty ? 'Judul harus diisi' : null),
-                    decoration: InputDecoration(
-                      hintText: 'Judul',
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Color.fromARGB(128, 170, 188, 192),
-                          width: 1.0
                         ),
-                        borderRadius: BorderRadius.circular(20)
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Color.fromARGB(128, 170, 188, 192),
+                      const SizedBox(height: 10.0,),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                              offset: Offset(1, 1),
+                              color: Color.fromARGB(128, 170, 188, 192),
+                            )
+                          ]
                         ),
-                        borderRadius: BorderRadius.circular(20)
+                        child: TextFormField(
+                          controller: titleTxt,
+                          validator: ((value) => value!.isEmpty ? 'Judul harus diisi' : null),
+                          decoration: InputDecoration(
+                            hintText: 'Judul',
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(128, 170, 188, 192),
+                                width: 1.0
+                              ),
+                              borderRadius: BorderRadius.circular(20)
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(128, 170, 188, 192),
+                              ),
+                              borderRadius: BorderRadius.circular(20)
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20)
+                            )
+                          ),
+                        ),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20)
-                      )
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10.0,),
+                      const SizedBox(height: 10.0,),
 
-                Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
-                  child: RichText(
-                    text: const TextSpan(
-                      text: 'Deskripsi ',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15.0,
-                      ),
-                      children: <TextSpan> [
-                        TextSpan(
-                          text: '*',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15.0,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: RichText(
+                          text: const TextSpan(
+                            text: 'Deskripsi ',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15.0,
+                            ),
+                            children: <TextSpan> [
+                              TextSpan(
+                                text: '*',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15.0,
+                                ),
+                              )
+                            ]
                           ),
-                        )
-                      ]
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10.0,),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: const [
-                      BoxShadow(
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                        offset: Offset(1, 1),
-                        color: Color.fromARGB(128, 170, 188, 192),
-                      )
-                    ]
-                  ),
-                  child: TextFormField(
-                    maxLines: null,
-                    controller: descTxt,
-                    validator: ((value) => value!.isEmpty ? 'Judul harus diisi' : null),
-                    decoration: InputDecoration(
-                      hintText: 'Deskripsikan tempat wisatamu...',
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Color.fromARGB(128, 170, 188, 192),
-                          width: 1.0
                         ),
-                        borderRadius: BorderRadius.circular(20)
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(
-                          color: Color.fromARGB(128, 170, 188, 192),
+                      const SizedBox(height: 10.0,),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 10,
+                              spreadRadius: 2,
+                              offset: Offset(1, 1),
+                              color: Color.fromARGB(128, 170, 188, 192),
+                            )
+                          ]
                         ),
-                        borderRadius: BorderRadius.circular(20)
+                        child: TextFormField(
+                          maxLines: null,
+                          controller: descTxt,
+                          validator: ((value) => value!.isEmpty ? 'Judul harus diisi' : null),
+                          decoration: InputDecoration(
+                            hintText: 'Deskripsikan tempat wisatamu...',
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(128, 170, 188, 192),
+                                width: 1.0
+                              ),
+                              borderRadius: BorderRadius.circular(20)
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(128, 170, 188, 192),
+                              ),
+                              borderRadius: BorderRadius.circular(20)
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20)
+                            )
+                          ),
+                        ),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20)
-                      )
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10.0,),
+                      const SizedBox(height: 10.0,),
 
-                Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
-                  child: RichText(
-                    text: const TextSpan(
-                      text: 'Foto Tempat Wisata ',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15.0,
-                      ),
-                      children: <TextSpan> [
-                        TextSpan(
-                          text: '*',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15.0,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: RichText(
+                          text: const TextSpan(
+                            text: 'Foto Tempat Wisata ',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15.0,
+                            ),
+                            children: <TextSpan> [
+                              TextSpan(
+                                text: '*',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15.0,
+                                ),
+                              )
+                            ]
                           ),
-                        )
-                      ]
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10.0,),
-                GestureDetector(
-                  onTap: () {
-                    _pickImage();
-                  },
-                  child: Container(
-                    width: 350.0,
-                    height: 175.0,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 188, 188, 188),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Pilih Foto',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18.0,
-                          color: Colors.white
                         ),
-                      )
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10.0,),
-
-                Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
-                  child: RichText(
-                    text: const TextSpan(
-                      text: 'Tag (Min. 1 Tag dipilih)',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15.0,
                       ),
-                      children: <TextSpan> [
-                        TextSpan(
-                          text: '*',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15.0,
+                      const SizedBox(height: 10.0,),
+                      // GestureDetector(
+                      //   onTap: () {
+                      //     _pickImage();
+                      //   },
+                      //   child: Container(
+                      //     width: 350.0,
+                      //     height: 175.0,
+                      //     decoration: BoxDecoration(
+                      //       color: const Color.fromARGB(255, 188, 188, 188),
+                      //       borderRadius: BorderRadius.circular(20.0),
+                      //     ),
+                      //     child: Center(
+                      //       child: Text(
+                      //         'Pilih Foto',
+                      //         style: TextStyle(
+                      //           fontWeight: FontWeight.w500,
+                      //           fontSize: 18.0,
+                      //           color: Colors.white
+                      //         ),
+                      //       )
+                      //     ),
+                      //   ),
+                      // ),
+
+                      Column(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _pickImage();
+                            },
+                            child: Container(
+                              width: 350.0,
+                              height: 50.0,
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 188, 188, 188),
+                                borderRadius: BorderRadius.circular(20.0),
+                              ),
+                              child: const  Center(
+                                child: Text(
+                                  'Pilih Foto',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18.0,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
-                        )
-                      ]
-                    ),
-                  ),
+                          const SizedBox(height: 10.0,),
+                          GridView.builder(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 8.0,
+                              mainAxisSpacing: 8.0,
+                              childAspectRatio: 1.0,
+                            ),
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemCount: _pickedImages.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Image.file(_pickedImages[index], height: 100, width: 100);
+                            },
+                          ),
+                        ],
+                      ),
+
+
+                      const SizedBox(height: 10.0,),
+
+                      Padding(
+                        padding: const EdgeInsets.only(left: 5.0),
+                        child: RichText(
+                          text: const TextSpan(
+                            text: 'Tag (Min. 1 Tag dipilih)',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 15.0,
+                            ),
+                            children: <TextSpan> [
+                              TextSpan(
+                                text: '*',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 15.0,
+                                ),
+                              )
+                            ]
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10.0,),
+                      Container(
+                        height: 200.0,
+                        child: GridView.builder(
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            crossAxisSpacing: 8.0,
+                            mainAxisSpacing: 8.0,
+                            childAspectRatio: 2.5
+                          ),
+                          itemCount: _types.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return TagCheckbox(
+                              text: _types[index],
+                              onChanged: (bool? value) {
+                                setState(() {
+                                  if(value == true) _selectedTypes.add(_types[index]);
+                                  else _selectedTypes.remove(_types[index]);
+                                });
+                                print(_selectedTypes);
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  )
                 ),
                 const SizedBox(height: 10.0,),
-                Container(
-                  height: 200.0,
-                  child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                      childAspectRatio: 2.5
-                    ),
-                    itemCount: _types.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return TagCheckbox(
-                        text: _types[index],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if(value == true) _selectedTypes.add(_types[index]);
-                            else _selectedTypes.remove(_types[index]);
-                          });
-                          print(_selectedTypes);
-                        },
-                      );
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      if(formKey.currentState!.validate()) {
+                        await insertPedia(currUser!.uid, descTxt.text, _pickedImages, _selectedTypes, titleTxt.text);
+                        NavigationUtils.pushRemoveTransition(context, const OwnerPediaScreen());
+                      }
                     },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      backgroundColor: const Color.fromARGB(255, 82, 114, 255)
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                      child: Text(
+                        'Buat',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 10.0,),
               ],
             ),
           ),
@@ -329,23 +421,7 @@ class _InsertPediaState extends State<InsertPedia> {
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             onPressed: () {
-              // Navigator.of(context).pushAndRemoveUntil(
-              //   PageRouteBuilder(
-              //     pageBuilder: (context, animation, secondaryAnimation) => const MainView(),
-              //     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              //       const begin = 0.0;
-              //       const end = 1.0;
-              //       const curve = Curves.easeInOut;
-
-              //       var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-              //       var fadeAnimation = animation.drive(tween);
-
-              //       return FadeTransition(opacity: fadeAnimation, child: child);
-              //     },
-              //     transitionDuration: const Duration(milliseconds: 1000),
-              //   ),
-              //   (route) => false,
-              // );
+              NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0));
             },
             child: const Padding(
               padding: EdgeInsets.only(left: 6.0),

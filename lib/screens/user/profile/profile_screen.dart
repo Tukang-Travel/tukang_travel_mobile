@@ -1,14 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuktraapp/models/login_api_model.dart';
 import 'package:tuktraapp/services/user_service.dart';
-import 'package:provider/provider.dart';
-import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
-import 'package:tuktraapp/screens/user/edit_preferences_screen.dart';
-import 'package:tuktraapp/screens/user/user_feed_screen.dart';
-import 'package:tuktraapp/utils/navigation_util.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -112,11 +107,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
               )
             ),
             child: const Text(
-              'Edit Profile', 
+              'Ubah Profil', 
               style: TextStyle(
                 color: Colors.white
               ),
             )
+          ),
+          const SizedBox(height: 15.0,),
+          ElevatedButton(
+            onPressed: () async {
+              await logout();
+
+              NavigationUtils.pushRemoveTransition(context, const LoginScreen());
+            }, 
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 55.0, vertical: 15.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0)
+              )
+            ),
+            child: RichText(
+              text: const TextSpan(
+                text: 'Keluar ',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15.0,
+                ),
+                children: [
+                  WidgetSpan(
+                    child: Icon(Icons.logout_rounded)
+                  )
+                ]
+              )
+            ),
           ),
           const SizedBox(height: 30.0,),
         ],
