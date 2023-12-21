@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
+import 'package:tuktraapp/screens/owner/pedia/owner_pedia_screen.dart';
 import 'package:tuktraapp/screens/owner/pedia/update_pedia.dart';
+import 'package:tuktraapp/screens/user/pedia/pedia_detail.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
@@ -19,8 +23,9 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
   Map<String, dynamic> pedia = {};
   List<dynamic> medias = [];
   List<dynamic> tags = [];
-  List<Map<String, dynamic>>? rates, comments;
-  int avgRate = 0;
+  List<Map<String, dynamic>> rates = [], comments = [];
+  double avgRate = 0;
+  bool done = false;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController commentTxt = TextEditingController();
@@ -30,8 +35,8 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
     pedia = {};
     medias = [];
     tags = [];
-    rates = null;
-    comments = null;
+    rates = [];
+    comments = [];
     avgRate = 0;
 
     List<dynamic> results = await Future.wait([
@@ -46,14 +51,27 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
       if(pedia.containsKey('rates')) {
         rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
 
-        for(int i = 0; i < rates!.length; i++) {
-          avgRate += int.parse(rates![i]['rate'].toString());
+        for (int i = 0; i < rates.length; i++) {
+          try {
+            final rateMap = rates[i];
+            if (rateMap is Map<String, dynamic> && rateMap.containsKey('rate')) {
+              avgRate += rateMap['rate'];
+            } else {
+              print('Invalid rate structure at index $i: $rateMap');
+            }
+          } catch (e) {
+            print('Error in rates[$i]: $e');
+          }
         }
+
         print('Before division: $avgRate');
 
-        avgRate = (avgRate / rates!.length).round();
+        if (rates.isNotEmpty) {
+          avgRate = (avgRate / rates.length);
+        }
 
         print('After division: $avgRate');
+
         for(int i = 0; i < rates!.length; i++) {
           if(rates?[i]['userid'] == currUser!.uid) {
             setState(() {
@@ -66,9 +84,14 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
         print('rating: $rating');
       }
 
-      if(pedia.containsKey('comments')) {
-        comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
+      if (pedia.containsKey('comments')) {
+        print('Before casting: ${pedia['comments']}');
+        if (pedia['comments'] != null) {
+          comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
+        }
+        print('After casting: $comments');
       }
+
     });
   }
 
@@ -77,6 +100,9 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
     super.didChangeDependencies();
 
     await fetch();
+    setState(() {
+      done = true;
+    });
   }
 
   @override
@@ -84,11 +110,16 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
     double h = MediaQuery.of(context).size.height;
     double w = MediaQuery.of(context).size.width;
 
+    if(!done) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+    
     return SafeArea(
-      child: rates == null || comments == null ?
-        const Center(child: CircularProgressIndicator()) 
-        :
-        Scaffold(
+      child: Scaffold(
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
@@ -167,7 +198,8 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                     ),
                                     TextButton(
                                       onPressed: () async {
-                                        
+                                        await deletePedia(widget.id);
+                                        NavigationUtils.pushRemoveTransition(context, const OwnerPediaScreen());
                                       },
                                       child: const Text('Hapus'),
                                     ),
@@ -211,7 +243,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                 child: Row(
                   children: [
                     Container(
-                      width: 300.0,
+                      width: 290.0,
                       child: Text(
                         'Label: ${tags.join(', ')}',
                         style: const TextStyle(
@@ -241,7 +273,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                             ),
                           ),
                           TextSpan(
-                            text: '$avgRate',
+                            text: avgRate.toStringAsFixed(1),
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 15.0,
@@ -275,88 +307,100 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                       ),
 
                       // comment list
-                      comments == null ?
-                        const Padding(
-                          padding: EdgeInsets.only(top: 8.0),
-                          child: Text(
-                            'Belum terdapat komentar',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 107, 107, 107)
-                            ),
-                          ),
-                        )
-                        :
-                        SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Container(
-                            height: 200.0,
-                            width: w,
-                            child: ListView.builder(
-                              itemCount: comments?.length,
-                              itemBuilder: (context, index) {
-                                final comment = comments?[index];
-                        
-                                return FutureBuilder(
-                                  future: getUser(comment?['userid']),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return const Center(child: CircularProgressIndicator()); // Loading indicator while fetching data
-                                    }
-                        
-                                    if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
-                                    }
-                        
-                                    final user = snapshot.data!;
-                        
-                                    return Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20.0),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
-                                        child: Row(
-                                          children: [
-                                            user.containsKey('profile') ?
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.circular(100.0),
-                                              child: Image.network(
-                                                user['profile'],
-                                                width: 50,
-                                                height: 50,
-                                              ),
-                                            )
-                                            :
-                                            Image.asset(
-                                              'asset/images/default_profile.png',
+                      SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Container(
+                          height: 200.0,
+                          width: w,
+                          child: ListView.builder(
+                            itemCount: comments.length,
+                            itemBuilder: (context, index) {
+                              if (comments.isEmpty) {
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    'Belum terdapat komentar',
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 107, 107, 107)
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              if (index >= comments.length) {
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    'Belum terdapat komentar',
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 107, 107, 107)
+                                    ),
+                                  ),
+                                );
+                              }
+                              final comment = comments[index];
+                      
+                              return FutureBuilder(
+                                future: getUser(comment['userid']),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Center(child: CircularProgressIndicator()); // Loading indicator while fetching data
+                                  }
+                      
+                                  if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  }
+                      
+                                  final user = snapshot.data!;
+                      
+                                  return Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                                      child: Row(
+                                        children: [
+                                          user.containsKey('profile') ?
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(100.0),
+                                            child: Image.network(
+                                              user['profile'],
                                               width: 50,
                                               height: 50,
                                             ),
-                                            const SizedBox(width: 10.0,),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '${user['username']}',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 16.0,
-                                                  ),
+                                          )
+                                          :
+                                          Image.asset(
+                                            'asset/images/default_profile.png',
+                                            width: 50,
+                                            height: 50,
+                                          ),
+                                          const SizedBox(width: 10.0,),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${user['username']}',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16.0,
                                                 ),
-                                                const SizedBox(height: 5.0,),
-                                                Text(comment?['comment']),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    );
-                                  },
-                                );
-                              },
-                            ),
+                                              ),
+                                              const SizedBox(height: 5.0,),
+                                              Text(comment['comment']),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  );
+                                },
+                              );
+                            },
                           ),
                         ),
+                      ),
                       
                       SizedBox(height: 10.0,),
 
@@ -410,8 +454,13 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                 const SizedBox(width: 8.0),
                                 InkWell(
                                   onTap: () {
-                                    insertPediaComment(widget.id, commentTxt.text, currUser!.uid);
-                                    commentTxt.text = "";
+                                    if (formKey.currentState!.validate()) {
+                                      final comment = commentTxt.text ?? "";
+                                      insertPediaComment(widget.id, comment, currUser!.uid);
+                                      commentTxt.text = "";
+
+                                      NavigationUtils.pushRemoveTransition(context, PediaDetail(id: widget.id));
+                                    }
                                   },
                                   child: Container(
                                     width: 50.0,
@@ -428,11 +477,10 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                 ),
                               ],
                             ),
-
                           ],
                         )
                       ),
-                      const SizedBox(height: 20.0,)
+                      SizedBox(height: 20.0,)
                     ],
                   ),
                 ),

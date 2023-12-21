@@ -108,6 +108,7 @@ class _PediaScreenState extends State<PediaScreen> {
                                           children: [
                                             Text(
                                               itemData['title'],
+                                              overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 17.0
@@ -117,7 +118,7 @@ class _PediaScreenState extends State<PediaScreen> {
                                             Text(
                                               itemData['description'],
                                               overflow: TextOverflow.ellipsis,
-                                              maxLines: 3,
+                                              maxLines: 2,
                                             ),
                                           ],
                                         ),

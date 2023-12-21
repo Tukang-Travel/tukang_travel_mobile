@@ -112,7 +112,7 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
                                         borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
                                         child: Image.network(
                                           itemData['medias'][0],
-                                          height: 100,
+                                          height: 90,
                                           width: 300,
                                         )
                                       ),
@@ -124,6 +124,7 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
                                           children: [
                                             Text(
                                               itemData['title'],
+                                              overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 17.0

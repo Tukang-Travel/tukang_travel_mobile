@@ -21,7 +21,8 @@ class _PediaDetailState extends State<PediaDetail> {
   List<dynamic> tags = [];
   List<Map<String, dynamic>>? rates, comments;
   int avgRate = 0;
-
+  bool done = false;
+  
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController commentTxt = TextEditingController();
 
@@ -75,13 +76,25 @@ class _PediaDetailState extends State<PediaDetail> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    fetch();
+    await fetch();
+
+    setState(() {
+      done = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
     double w = MediaQuery.of(context).size.width;
+
+    if(!done) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -218,88 +231,100 @@ class _PediaDetailState extends State<PediaDetail> {
                       ),
 
                       // comment list
-                      comments == null ?
-                        const Padding(
-                          padding: EdgeInsets.only(top: 8.0),
-                          child: Text(
-                            'Belum terdapat komentar',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 107, 107, 107)
-                            ),
-                          ),
-                        )
-                        :
-                        SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Container(
-                            height: 200.0,
-                            width: w,
-                            child: ListView.builder(
-                              itemCount: comments?.length,
-                              itemBuilder: (context, index) {
-                                final comment = comments?[index];
-                        
-                                return FutureBuilder(
-                                  future: getUser(comment?['userid']),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState == ConnectionState.waiting) {
-                                      return const Center(child: CircularProgressIndicator()); // Loading indicator while fetching data
-                                    }
-                        
-                                    if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
-                                    }
-                        
-                                    final user = snapshot.data!;
-                        
-                                    return Card(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20.0),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
-                                        child: Row(
-                                          children: [
-                                            user.containsKey('profile') ?
-                                            ClipRRect(
-                                              borderRadius: BorderRadius.circular(100.0),
-                                              child: Image.network(
-                                                user['profile'],
-                                                width: 50,
-                                                height: 50,
-                                              ),
-                                            )
-                                            :
-                                            Image.asset(
-                                              'asset/images/default_profile.png',
+                      SingleChildScrollView(
+                        scrollDirection: Axis.vertical,
+                        child: Container(
+                          height: 200.0,
+                          width: w,
+                          child: ListView.builder(
+                            itemCount: comments?.length,
+                            itemBuilder: (context, index) {
+                              if (comments == null) {
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    'Belum terdapat komentar',
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 107, 107, 107)
+                                    ),
+                                  ),
+                                );
+                              }
+
+                              if (index >= comments!.length) {
+                                return const Padding(
+                                  padding: EdgeInsets.only(top: 8.0),
+                                  child: Text(
+                                    'Belum terdapat komentar',
+                                    style: TextStyle(
+                                      color: Color.fromARGB(255, 107, 107, 107)
+                                    ),
+                                  ),
+                                );
+                              }
+                              final comment = comments?[index];
+                      
+                              return FutureBuilder(
+                                future: getUser(comment?['userid']),
+                                builder: (context, snapshot) {
+                                  if (snapshot.connectionState == ConnectionState.waiting) {
+                                    return const Center(child: CircularProgressIndicator()); // Loading indicator while fetching data
+                                  }
+                      
+                                  if (snapshot.hasError) {
+                                    return Text('Error: ${snapshot.error}');
+                                  }
+                      
+                                  final user = snapshot.data!;
+                      
+                                  return Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10.0),
+                                      child: Row(
+                                        children: [
+                                          user.containsKey('profile') ?
+                                          ClipRRect(
+                                            borderRadius: BorderRadius.circular(100.0),
+                                            child: Image.network(
+                                              user['profile'],
                                               width: 50,
                                               height: 50,
                                             ),
-                                            const SizedBox(width: 10.0,),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  '${user['username']}',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 16.0,
-                                                  ),
+                                          )
+                                          :
+                                          Image.asset(
+                                            'asset/images/default_profile.png',
+                                            width: 50,
+                                            height: 50,
+                                          ),
+                                          const SizedBox(width: 10.0,),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                '${user['username']}',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 16.0,
                                                 ),
-                                                const SizedBox(height: 5.0,),
-                                                Text(comment?['comment']),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    );
-                                  },
-                                );
-                              },
-                            ),
+                                              ),
+                                              const SizedBox(height: 5.0,),
+                                              Text(comment?['comment']),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  );
+                                },
+                              );
+                            },
                           ),
                         ),
+                      ),
                       
                       SizedBox(height: 10.0,),
 
@@ -352,8 +377,8 @@ class _PediaDetailState extends State<PediaDetail> {
                                 ),
                                 const SizedBox(width: 8.0),
                                 InkWell(
-                                  onTap: () {
-                                    insertPediaComment(widget.id, commentTxt.text, currUser!.uid);
+                                  onTap: () async {
+                                    await insertPediaComment(widget.id, commentTxt.text, currUser!.uid);
                                     commentTxt.text = "";
                                   },
                                   child: Container(
@@ -371,7 +396,6 @@ class _PediaDetailState extends State<PediaDetail> {
                                 ),
                               ],
                             ),
-
                           ],
                         )
                       ),

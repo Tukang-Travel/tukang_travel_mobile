@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:tuktraapp/services/user_service.dart';
 
 Future<Map<String, dynamic>?> getPedia(String id) async {
   try {
@@ -96,7 +97,7 @@ String getFileName(File file) {
 
 Future<String> uploadImageToFirebase(String userid, File imageFile, String imageName) async {
   try {
-    firebase_storage.Reference storageReference = firebase_storage.FirebaseStorage.instance.ref().child("pedias/$userid/$imageName");
+    Reference storageReference = FirebaseStorage.instance.ref().child("pedias/$userid/$imageName");
 
     await storageReference.putFile(imageFile);
     String downloadURL = await storageReference.getDownloadURL();
@@ -109,7 +110,7 @@ Future<String> uploadImageToFirebase(String userid, File imageFile, String image
   return "";
 }
 
-Future<void> updatePedia(String id, String title, String description, List<String> tags) async {
+Future<void> updatePedia(String id, String title, String description, List<dynamic> tags) async {
   try {
     FirebaseFirestore.instance.collection('pedias').doc(id).update({
       'title': title,
@@ -124,5 +125,37 @@ Future<void> updatePedia(String id, String title, String description, List<Strin
 }
 
 Future<void> deletePedia(String id) async {
+  // Replace this with the name of the folder you want to delete
+  String folderName = currUser!.uid;
 
+  // Reference to the Firebase Storage
+  var storage = FirebaseStorage.instance;
+
+  // Reference to the parent folder
+  var parentFolderRef = storage.ref().child('pedias/$folderName');
+
+  // Reference to the folder with the specific name
+  var folderRef = parentFolderRef.child(folderName);
+
+  try {
+    // List all items in the folder
+    var result = await folderRef.listAll();
+
+    // Delete each file in the folder
+    await Future.wait(result.items.map((item) => item.delete()));
+
+    // Now, you can delete the empty folder
+    await folderRef.delete();
+
+    print('Folder deleted successfully.');
+  } catch (e) {
+    print('Error deleting folder: $e');
+  }
+
+  try {
+    FirebaseFirestore.instance.collection('pedias').doc(id).delete(); 
+    print('Pedia deleted successfully.');
+  } catch (e) {
+    print('Error deleting pedia: $e');
+  }
 }

@@ -18,7 +18,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
   Map<String, dynamic> pedia = {};
 
   List<String> _types = ['Sejarah', 'Cagar Alam', 'Pantai', 'Kuliner', 'Belanja', 'Religi', 'Petualangan', 'Seni & Budaya', 'Kesehatan & Kebugaran', 'Edukasi', 'Keluarga'];
-  List<String> _selectedTypes = [];
+  List<dynamic> _selectedTypes = [];
   List<String> tags = [];
   
   TextEditingController titleTxt = TextEditingController();
@@ -42,8 +42,11 @@ class _UpdatePediaState extends State<UpdatePedia> {
         isSet = true;
         titleTxt.text = pedia['title'];
         descTxt.text = pedia['description'];
+        _selectedTypes = pedia['tags'];
       });
     }
+
+    print(_selectedTypes);
   }
   @override
   Widget build(BuildContext context) {
@@ -241,7 +244,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
                     itemBuilder: (BuildContext context, int index) {
                       return TagCheckbox(
                         text: _types[index],
-                        checked: pedia['tags'].contains(_types[index]) ? true : false,
+                        checked: _selectedTypes.contains(_types[index]) ? true : false,
                         onChanged: (bool? value) {
                           setState(() {
                             if(value == true) _selectedTypes.add(_types[index]);
@@ -259,7 +262,8 @@ class _UpdatePediaState extends State<UpdatePedia> {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
                     onPressed: () async {
-                      
+                      updatePedia(widget.id, titleTxt.text, descTxt.text, _selectedTypes);
+                      NavigationUtils.pushRemoveTransition(context, OwnerPediaDetail(id: widget.id));
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -270,7 +274,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
                     child: const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                       child: Text(
-                        'Buat',
+                        'Ubah',
                         style: TextStyle(
                           fontSize: 18.0,
                         ),

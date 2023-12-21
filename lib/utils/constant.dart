@@ -17,42 +17,45 @@ class TagCheckbox extends StatefulWidget {
   final bool checked;
   final String text;
 
-  const TagCheckbox({Key? key, this.onChanged, required this.text, required this.checked}) : super(key: key);
+  const TagCheckbox({
+    Key? key,
+    this.onChanged,
+    required this.text,
+    required this.checked,
+  }) : super(key: key);
 
   @override
   _TagCheckboxState createState() => _TagCheckboxState();
 }
 
 class _TagCheckboxState extends State<TagCheckbox> {
-
   @override
   Widget build(BuildContext context) {
-    bool isChecked = widget.checked;
-    
     return InkWell(
       onTap: () {
-        setState(() {
-          isChecked = !isChecked;
-          widget.onChanged?.call(isChecked);
-        });
+        widget.onChanged?.call(!widget.checked);
       },
       child: Container(
         width: 120,
         height: 50,
         decoration: BoxDecoration(
           border: Border.all(
-            color: isChecked ? const Color.fromARGB(255, 82, 114, 255): Colors.grey,
+            color: widget.checked
+                ? const Color.fromARGB(255, 82, 114, 255)
+                : Colors.grey,
             width: 2.0, // Border width
           ),
           borderRadius: BorderRadius.circular(20.0), // Border radius
-          color: isChecked ? const Color.fromARGB(255, 82, 114, 255).withOpacity(0.2) : Colors.transparent, 
+          color: widget.checked
+              ? const Color.fromARGB(255, 82, 114, 255).withOpacity(0.2)
+              : Colors.transparent,
         ),
         child: Center(
           child: Text(
             widget.text,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: isChecked ? Colors.blue : Colors.black,
+              color: widget.checked ? Colors.blue : Colors.black,
             ),
           ),
         ),
