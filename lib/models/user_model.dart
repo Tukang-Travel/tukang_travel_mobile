@@ -1,37 +1,43 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 class UserModel {
   // atribut
-  String? uid, name, username, email, userType;
+  final String uid;
+  final String name;
+  final String username;
+  final String email;
+  final String type;
 
   /* constructor object yang 
   bertujuan untuk menginisialisasi atribut 
   agar tidak bernilai NULL */
-  UserModel(
-    this.uid, this.name, this.username, this.email, this.userType
-  );
+  const UserModel(
+      {required this.uid,
+      required this.name,
+      required this.username,
+      required this.email,
+      required this.type});
 
-  /*
-    salah satu contoh fungsi 
-    untuk mendapatkan data objek User
-  */
-  // factory UserModel.fromJson(Map<String, dynamic> data){
-  //   return UserModel(
-  //     username: data['user']['username'],
-  //     email: data['user']['email'],
-  //     password: data['user']['password'],
-  //     profile: data['user']['profile'],
-  //     userType: data['user']['user_type'],
-  //     token: data['token'],
-  //     loginType: data['user']['login_type'],
-  //   );
-  // }
-  
+  static UserModel fromSnap(DocumentSnapshot snap) {
+    var snapshot = snap.data() as Map<String, dynamic>;
+
+    return UserModel(
+      uid: snapshot["uid"],
+      name: snapshot["name"],
+      username: snapshot["username"],
+      email: snapshot["email"],
+      type: snapshot["type"],
+    );
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
       'name': name,
       'username': username,
       'email': email,
-      'type': userType
+      'type': type
     };
   }
 }

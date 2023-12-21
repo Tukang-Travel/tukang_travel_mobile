@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:tuktraapp/screens/owner/pedia/owner_pedia_screen.dart';
 import 'package:tuktraapp/screens/owner/profile/owner_profile.dart';
-import 'package:tuktraapp/screens/user/planner/planner_screen.dart';
 import 'package:tuktraapp/screens/user/feed/feed_screen.dart';
-import 'package:tuktraapp/screens/user/home/home_screen.dart';
+import 'package:tuktraapp/screens/user/planner/planner_screen.dart';
+import 'package:tuktraapp/screens/user/upload/upload_feed_screen.dart';
 import 'package:tuktraapp/screens/user/pedia/pedia_screen.dart';
 import 'package:tuktraapp/screens/user/profile/profile_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
@@ -12,14 +12,14 @@ import 'package:tuktraapp/services/user_service.dart';
 class MainScreen extends StatefulWidget {
   final int? page;
 
-  const MainScreen({Key? key, required this.page}) : super(key: key);
+  const MainScreen({super.key, required this.page});
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
 
 int? currScreenCount = 0;
-Widget currScreen = const HomeScreen();
+Widget currScreen = const FeedScreen();
 
 class _MainScreenState extends State<MainScreen> {
   @override
@@ -28,15 +28,33 @@ class _MainScreenState extends State<MainScreen> {
 
     setState(() {
       currScreenCount = widget.page; 
+
+      switch (currScreenCount) {
+        case 1:
+          currScreen = const PediaScreen();
+          break;
+        case 2:
+          currScreen = const UploadFeedScreen();
+          break;
+        case 3:
+          currScreen = const PlannerScreen();
+          break;
+        case 4:
+          currScreen = const ProfileScreen();
+          break;
+        default:
+          currScreen = const FeedScreen();
+          break;
+      }
     });
   }
   
-  Map<String, dynamic>? user = null;
+  Map<String, dynamic>? user;
 
   final List<Widget> screens = [
     const FeedScreen(),
     const PediaScreen(),
-    //const HomeScreen(),
+    const UploadFeedScreen(),
     const PlannerScreen(),
     const ProfileScreen(),
   ];
@@ -49,7 +67,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<IconData> icons = [
     Icons.home_filled,
     Icons.article_rounded,
-    //Icons.add_circle,
+    Icons.add_circle,
     Icons.list_rounded,
     Icons.person,
   ];
@@ -59,7 +77,7 @@ class _MainScreenState extends State<MainScreen> {
     Icons.person,
   ];
 
-  final List<String> menus = ['Home', 'Pedia', 'Diary', 'Profile'];
+  final List<String> menus = ['Home', 'Pedia', '', 'Diary', 'Profile'];
   final List<String> ownerMenus = ['Home', 'Profile'];
 
   final PageStorageBucket bucket = PageStorageBucket();
@@ -68,43 +86,14 @@ class _MainScreenState extends State<MainScreen> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    print('Curr User: $currUser');
     List<dynamic> results = await Future.wait([
       getUser(currUser!.uid),
     ]);
     
     setState(() {
       user = results[0];
-
-      if(user?['type'] == 'user') {
-        switch (currScreenCount) {
-          case 1:
-            currScreen = const PediaScreen();
-            break;
-          case 2:
-            currScreen = const PlannerScreen();
-            break;
-          case 3:
-            currScreen = const ProfileScreen();
-            break;
-          default:
-            currScreen = const HomeScreen();
-            break;
-        }
-      }
-      else {
-        switch (currScreenCount) {
-          case 1:
-            currScreen = const ProfileScreen();
-            break;
-          default:
-            currScreen = const OwnerPediaScreen();
-            break;
-        }
-      }
     });
 
-    print(user);
   }
   @override
   Widget build(BuildContext context) {
@@ -145,7 +134,6 @@ class _MainScreenState extends State<MainScreen> {
               if (user?['type'] == 'owner')
                 for (int i = 0; i < ownerScreens.length; i++)
                   GButton(
-                    margin: i % 2 == 0 ? const EdgeInsets.only(left: 50.0) : const EdgeInsets.only(right: 50.0),
                     icon: ownerIcons[i],
                     text: ownerMenus[i],
                     onPressed: () {
@@ -159,19 +147,6 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ]),
       ),
-      // floatingActionButton: Padding(
-      //   padding: const EdgeInsets.only(top: 50.0, left: 30.0),
-      //   child: Align(
-      //     alignment: Alignment.bottomCenter,
-      //     child: FloatingActionButton(
-      //       backgroundColor: const Color.fromARGB(255, 82, 114, 255),
-      //       foregroundColor: Colors.white,
-      //       onPressed: () {
-      //       },
-      //       child: const Icon(Icons.add)
-      //     ),
-      //   ),
-      // ),
     );
   }
 }

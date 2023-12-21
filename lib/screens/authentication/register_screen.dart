@@ -1,11 +1,12 @@
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/user/forgot_pass_screen.dart';
-import 'package:tuktraapp/utils/navigation_utils.dart';
+import 'package:tuktraapp/utils/navigation_util.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -25,8 +26,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool isLoading = false;
 
+  @override
+  void dispose() {
+    super.dispose();
+    nameTxt.dispose();
+    usernameTxt.dispose();
+    emailTxt.dispose();
+    passTxt.dispose();
+    conTxt.dispose();
+  }
+
   void _successfulLogin() async {
-    NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0,));
+    await Provider.of<UserProvider>(context, listen: false).refreshUser();
+    if (context.mounted) {
+      NavigationUtils.pushRemoveTransition(
+          context,
+          const MainScreen(
+            page: 0,
+          ));
+    }
   }
 
   void _regisAuth() async {
@@ -331,7 +349,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  NavigationUtils.pushRemoveTransition(context, const LoginScreen());
+                                  NavigationUtils.pushRemoveTransition(
+                                      context, const LoginScreen());
                                 }),
                           const TextSpan(
                               text: 'disini.',
@@ -353,7 +372,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              NavigationUtils.pushRemoveTransition(context, const ForgotPasswordScreen());
+                              NavigationUtils.pushRemoveTransition(
+                                  context, const ForgotPasswordScreen());
                             }),
                     ),
                     const SizedBox(

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
-import 'package:tuktraapp/utils/navigation_utils.dart';
+import 'package:tuktraapp/utils/navigation_util.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -22,7 +24,16 @@ class _WelcomeScreenState extends State<WelcomeScreen>
     if (currUser == null) {
       NavigationUtils.pushRemoveTransition(context, const LoginScreen());
     } else {
-      NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0,));
+      UserProvider userProvider =
+          Provider.of<UserProvider>(context, listen: false);
+      await userProvider.refreshUser();
+      if (context.mounted) {
+        NavigationUtils.pushRemoveTransition(
+            context,
+            const MainScreen(
+              page: 0,
+            ));
+      }
     }
   }
 
