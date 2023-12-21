@@ -136,8 +136,7 @@ class FeedService {
   }
 
   // Update Post
-  Future<String> updateFeed(
-      String feedId, String newTitle, List<String> newTags) async {
+  Future<String> updateFeed(String feedId, String newTitle, List<String> newTags) async {
     String res = "Some error occurred";
     try {
       // if the likes list contains the user uid, we need to remove it

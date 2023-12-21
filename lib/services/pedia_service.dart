@@ -4,6 +4,35 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tuktraapp/services/user_service.dart';
 
+class PediaService{
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // Post comment
+  Future<String> postComment(String pediaId, String text, String uid, String username) async {
+    String res = "Some error occurred";
+    try {
+      if (text.isNotEmpty) {
+        // if the likes list contains the user uid, we need to remove it
+        _firestore.collection('pedias').doc(pediaId).update({
+          'comments': FieldValue.arrayUnion([
+            {
+              'username': username,
+              'userId': uid,
+              'comment': text,
+              'datePublished': DateTime.now(),
+            }
+          ])
+        });
+        res = 'success';
+      } else {
+        res = "Please enter text";
+      }
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
+}
+
 Future<Map<String, dynamic>?> getPedia(String id) async {
   try {
     CollectionReference pedias = FirebaseFirestore.instance.collection('pedias');

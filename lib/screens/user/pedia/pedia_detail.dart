@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
+import 'package:provider/provider.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:tuktraapp/provider/user_provider.dart';
 
 class PediaDetail extends StatefulWidget {
   final String id;
@@ -15,6 +19,8 @@ class PediaDetail extends StatefulWidget {
 }
 
 class _PediaDetailState extends State<PediaDetail> {
+  final TextEditingController commentEditingController =
+      TextEditingController();
   int rating = 0;
   Map<String, dynamic> pedia = {};
   List<dynamic> medias = [];
@@ -25,6 +31,24 @@ class _PediaDetailState extends State<PediaDetail> {
   
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController commentTxt = TextEditingController();
+
+  void postComment(String uid, String username) async {
+    try {
+      String res = await PediaService().postComment(
+          widget.id, commentEditingController.text, uid, username);
+
+      if (res != 'success') {
+        if (context.mounted) Alert.alertValidation(res, context);
+      }
+      setState(() {
+        commentEditingController.text = "";
+      });
+    } catch (err) {
+      if (context.mounted) {
+        Alert.alertValidation(err.toString(), context);
+      }
+    }
+  }
 
   Future<void> fetch() async {
     rating = 0;
@@ -87,6 +111,7 @@ class _PediaDetailState extends State<PediaDetail> {
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
     double w = MediaQuery.of(context).size.width;
+    final UserModel user = Provider.of<UserProvider>(context).user;
 
     if(!done) {
       return const Scaffold(
@@ -326,79 +351,149 @@ class _PediaDetailState extends State<PediaDetail> {
                         ),
                       ),
                       
-                      SizedBox(height: 10.0,),
-
-                      Form(
-                        key: formKey,
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded( // Wrap with Expanded
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          blurRadius: 10,
-                                          spreadRadius: 2,
-                                          offset: Offset(1, 1),
-                                          color: Color.fromARGB(128, 170, 188, 192),
-                                        )
-                                      ],
-                                    ),
-                                    child: TextFormField(
-                                      controller: commentTxt,
-                                      maxLines: null,
-                                      keyboardType: TextInputType.multiline,
-                                      validator: ((value) => value!.isEmpty ? 'Komentar harus diisi' : null),
-                                      decoration: InputDecoration(
-                                        hintText: 'Ketik komentar mu disini...',
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Color.fromARGB(128, 170, 188, 192),
-                                            width: 1.0,
-                                          ),
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Color.fromARGB(128, 170, 188, 192),
-                                          ),
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(20),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 8.0),
-                                InkWell(
-                                  onTap: () async {
-                                    await insertPediaComment(widget.id, commentTxt.text, currUser!.uid);
-                                    commentTxt.text = "";
-                                  },
-                                  child: Container(
-                                    width: 50.0,
-                                    height: 50.0,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: const Color.fromARGB(217, 82, 114, 255), // Customize the color
-                                    ),
-                                    child: const Icon(
-                                      Icons.send,
-                                      color: Colors.white, // Customize the icon color
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        )
+                      const Divider(
+                        height: 50,
+                        color: Colors.transparent,
                       ),
+                      const Text(
+                        'Komentar',
+                        style: TextStyle(
+                          fontFamily: 'PoppinsBold',
+                          fontSize: 15,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          height: 1.2,
+                        ),
+                      ),
+                      const Divider(
+                        height: 20,
+                        color: Colors.transparent,
+                      ),
+                      Container(
+                        height: kToolbarHeight,
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(30.0),
+                            color: const Color(0xffE9E9E9)),
+                        margin: EdgeInsets.only(
+                            bottom: MediaQuery.of(context)
+                                .viewInsets
+                                .bottom),
+                        padding: const EdgeInsets.only(
+                            left: 16, right: 8),
+                        child: Row(
+                          children: [
+                            const CircleAvatar(
+                              backgroundImage: AssetImage(
+                                'asset/images/default_profile.png',
+                              ),
+                              radius: 18,
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    left: 16, right: 8),
+                                child: TextField(
+                                  controller:
+                                      commentEditingController,
+                                  decoration: InputDecoration(
+                                    hintText:
+                                        'Comment as ${user.username}',
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () => postComment(
+                                  user.uid, user.username),
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(
+                                        vertical: 8,
+                                        horizontal: 8),
+                                child: const Text(
+                                  'Post',
+                                  style: TextStyle(
+                                      color: Colors.blue),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+
+                      // Form(
+                      //   key: formKey,
+                      //   child: Column(
+                      //     children: [
+                      //       Row(
+                      //         children: [
+                      //           Expanded( // Wrap with Expanded
+                      //             child: Container(
+                      //               decoration: BoxDecoration(
+                      //                 color: Colors.white,
+                      //                 borderRadius: BorderRadius.circular(20),
+                      //                 boxShadow: const [
+                      //                   BoxShadow(
+                      //                     blurRadius: 10,
+                      //                     spreadRadius: 2,
+                      //                     offset: Offset(1, 1),
+                      //                     color: Color.fromARGB(128, 170, 188, 192),
+                      //                   )
+                      //                 ],
+                      //               ),
+                      //               child: TextFormField(
+                      //                 controller: commentTxt,
+                      //                 maxLines: null,
+                      //                 keyboardType: TextInputType.multiline,
+                      //                 validator: ((value) => value!.isEmpty ? 'Komentar harus diisi' : null),
+                      //                 decoration: InputDecoration(
+                      //                   hintText: 'Ketik komentar mu disini...',
+                      //                   focusedBorder: OutlineInputBorder(
+                      //                     borderSide: const BorderSide(
+                      //                       color: Color.fromARGB(128, 170, 188, 192),
+                      //                       width: 1.0,
+                      //                     ),
+                      //                     borderRadius: BorderRadius.circular(20),
+                      //                   ),
+                      //                   enabledBorder: OutlineInputBorder(
+                      //                     borderSide: const BorderSide(
+                      //                       color: Color.fromARGB(128, 170, 188, 192),
+                      //                     ),
+                      //                     borderRadius: BorderRadius.circular(20),
+                      //                   ),
+                      //                   border: OutlineInputBorder(
+                      //                     borderRadius: BorderRadius.circular(20),
+                      //                   ),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //           const SizedBox(width: 8.0),
+                      //           InkWell(
+                      //             onTap: () async {
+                      //               await insertPediaComment(widget.id, commentTxt.text, currUser!.uid);
+                      //               commentTxt.text = "";
+                      //             },
+                      //             child: Container(
+                      //               width: 50.0,
+                      //               height: 50.0,
+                      //               decoration: const BoxDecoration(
+                      //                 shape: BoxShape.circle,
+                      //                 color: const Color.fromARGB(217, 82, 114, 255), // Customize the color
+                      //               ),
+                      //               child: const Icon(
+                      //                 Icons.send,
+                      //                 color: Colors.white, // Customize the icon color
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ],
+                      //   )
+                      // ),
                       SizedBox(height: 20.0,)
                     ],
                   ),
