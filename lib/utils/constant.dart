@@ -14,19 +14,21 @@ const other = 'Something went wrong, try again!';
 
 class TagCheckbox extends StatefulWidget {
   final ValueChanged<bool?>? onChanged;
+  final bool checked;
   final String text;
 
-  const TagCheckbox({Key? key, this.onChanged, required this.text}) : super(key: key);
+  const TagCheckbox({Key? key, this.onChanged, required this.text, required this.checked}) : super(key: key);
 
   @override
   _TagCheckboxState createState() => _TagCheckboxState();
 }
 
 class _TagCheckboxState extends State<TagCheckbox> {
-  bool isChecked = false;
 
   @override
   Widget build(BuildContext context) {
+    bool isChecked = widget.checked;
+    
     return InkWell(
       onTap: () {
         setState(() {

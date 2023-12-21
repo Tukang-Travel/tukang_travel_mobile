@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:tuktraapp/screens/owner/pedia/owner_pedia_detail.dart';
+import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
@@ -15,53 +15,36 @@ class UpdatePedia extends StatefulWidget {
 }
 
 class _UpdatePediaState extends State<UpdatePedia> {
-  File? _pickedImage;
+  Map<String, dynamic> pedia = {};
 
   List<String> _types = ['Sejarah', 'Cagar Alam', 'Pantai', 'Kuliner', 'Belanja', 'Religi', 'Petualangan', 'Seni & Budaya', 'Kesehatan & Kebugaran', 'Edukasi', 'Keluarga'];
   List<String> _selectedTypes = [];
-
-  Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
-      imageQuality: 50,
-    );
-
-    if (pickedFile != null) {
-      try {
-        // Check if the picked file is an image (not a video)
-        String imagePath = pickedFile.path;
-        if (await isImageFile(imagePath)) {
-          setState(() {
-            _pickedImage = File(imagePath);
-          });
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Profile harus berupa gambar!'),
-              duration: Duration(seconds: 3),
-            ),
-          );
-        }
-      } catch (e) {
-        print('Error picking image: $e');
-      }
-    } else {
-      print('No image selected.');
-    }
-  }
-
-  Future<bool> isImageFile(String filePath) async {
-    final imageExtensions = ['jpg', 'jpeg', 'png']; // Add more extensions if needed
-
-    // Check the file extension
-    final extension = filePath.split('.').last.toLowerCase();
-    return imageExtensions.contains(extension);
-  }
+  List<String> tags = [];
   
   TextEditingController titleTxt = TextEditingController();
   TextEditingController descTxt = TextEditingController();
-  bool checked = false;
-  
+  bool checked = false, isSet = false;
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+
+    List<dynamic> results = await Future.wait([
+      getPedia(widget.id)
+    ]);
+
+    setState(() {
+      pedia = results[0];
+    });
+
+    if(!isSet) {
+      setState(() {
+        isSet = true;
+        titleTxt.text = pedia['title'];
+        descTxt.text = pedia['description'];
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -225,55 +208,6 @@ class _UpdatePediaState extends State<UpdatePedia> {
                   padding: const EdgeInsets.only(left: 5.0),
                   child: RichText(
                     text: const TextSpan(
-                      text: 'Foto Tempat Wisata ',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15.0,
-                      ),
-                      children: <TextSpan> [
-                        TextSpan(
-                          text: '*',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15.0,
-                          ),
-                        )
-                      ]
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10.0,),
-                GestureDetector(
-                  onTap: () {
-                    _pickImage();
-                  },
-                  child: Container(
-                    width: 350.0,
-                    height: 175.0,
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 188, 188, 188),
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Pilih Foto',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 18.0,
-                          color: Colors.white
-                        ),
-                      )
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10.0,),
-
-                Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
-                  child: RichText(
-                    text: const TextSpan(
                       text: 'Tag (Min. 1 Tag dipilih)',
                       style: TextStyle(
                         color: Colors.black,
@@ -307,6 +241,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
                     itemBuilder: (BuildContext context, int index) {
                       return TagCheckbox(
                         text: _types[index],
+                        checked: pedia['tags'].contains(_types[index]) ? true : false,
                         onChanged: (bool? value) {
                           setState(() {
                             if(value == true) _selectedTypes.add(_types[index]);
@@ -319,6 +254,30 @@ class _UpdatePediaState extends State<UpdatePedia> {
                   ),
                 ),
                 const SizedBox(height: 10.0,),
+
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      backgroundColor: const Color.fromARGB(255, 82, 114, 255)
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                      child: Text(
+                        'Buat',
+                        style: TextStyle(
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

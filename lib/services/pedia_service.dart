@@ -108,3 +108,21 @@ Future<String> uploadImageToFirebase(String userid, File imageFile, String image
   }
   return "";
 }
+
+Future<void> updatePedia(String id, String title, String description, List<String> tags) async {
+  try {
+    FirebaseFirestore.instance.collection('pedias').doc(id).update({
+      'title': title,
+      'description': description,
+      'tags': tags
+    });
+
+    print('Pedia updated successfully');
+  } catch (e) {
+    print('Error updating pedia: $e');
+  }
+}
+
+Future<void> deletePedia(String id) async {
+
+}

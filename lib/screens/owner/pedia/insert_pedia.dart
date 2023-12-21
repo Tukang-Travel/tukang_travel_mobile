@@ -367,6 +367,7 @@ class _InsertPediaState extends State<InsertPedia> {
                           itemBuilder: (BuildContext context, int index) {
                             return TagCheckbox(
                               text: _types[index],
+                              checked: false,
                               onChanged: (bool? value) {
                                 setState(() {
                                   if(value == true) _selectedTypes.add(_types[index]);
