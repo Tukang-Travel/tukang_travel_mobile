@@ -381,7 +381,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                       controller: commentTxt,
                                       maxLines: null,
                                       keyboardType: TextInputType.multiline,
-                                      validator: ((value) => value!.isEmpty ? 'Komentar harus diisi' : null),
+                                      validator: ((value) => value!.isEmpty ? 'Komentar harus diisi' : ''),
                                       decoration: InputDecoration(
                                         hintText: 'Ketik komentar mu disini...',
                                         focusedBorder: OutlineInputBorder(
