@@ -6,7 +6,7 @@ import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/user/forgot_pass_screen.dart';
-import 'package:tuktraapp/utils/navigation_util.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});

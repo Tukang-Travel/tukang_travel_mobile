@@ -19,34 +19,12 @@ class MainScreen extends StatefulWidget {
 }
 
 int? currScreenCount = 0;
-Widget currScreen = const FeedScreen();
+Widget? currScreen;
 
 class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-
-    setState(() {
-      currScreenCount = widget.page; 
-
-      switch (currScreenCount) {
-        case 1:
-          currScreen = const PediaScreen();
-          break;
-        case 2:
-          currScreen = const UploadFeedScreen();
-          break;
-        case 3:
-          currScreen = const PlannerScreen();
-          break;
-        case 4:
-          currScreen = const ProfileScreen();
-          break;
-        default:
-          currScreen = const FeedScreen();
-          break;
-      }
-    });
   }
   
   Map<String, dynamic>? user;
@@ -94,13 +72,52 @@ class _MainScreenState extends State<MainScreen> {
       user = results[0];
     });
 
+    setState(() {
+      if(user?['type'] == 'user') {
+        currScreen = const FeedScreen();
+        currScreenCount = widget.page; 
+
+        switch (currScreenCount) {
+          case 1:
+            currScreen = const PediaScreen();
+            break;
+          case 2:
+            currScreen = const UploadFeedScreen();
+            break;
+          case 3:
+            currScreen = const PlannerScreen();
+            break;
+          case 4:
+            currScreen = const ProfileScreen();
+            break;
+          default:
+            currScreen = const FeedScreen();
+            break;
+        }
+      }
+      else if(user?['type'] == 'owner') {
+        currScreen = const OwnerPediaScreen();
+        currScreenCount = widget.page; 
+
+        switch (currScreenCount) {
+          case 1:
+            currScreen = const ProfileScreen();
+            break;
+          default:
+            currScreen = const OwnerPediaScreen();
+            break;
+        }
+      }
+    });
+      
+
   }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageStorage(
         bucket: bucket,
-        child: currScreen,
+        child: currScreen!,
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
@@ -134,6 +151,7 @@ class _MainScreenState extends State<MainScreen> {
               if (user?['type'] == 'owner')
                 for (int i = 0; i < ownerScreens.length; i++)
                   GButton(
+                    margin: i % 2 == 0 ? const EdgeInsets.only(left: 50.0) : const EdgeInsets.only(right: 50.0) ,
                     icon: ownerIcons[i],
                     text: ownerMenus[i],
                     onPressed: () {

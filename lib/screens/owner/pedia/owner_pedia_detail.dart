@@ -85,7 +85,10 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
     double w = MediaQuery.of(context).size.width;
 
     return SafeArea(
-      child: Scaffold(
+      child: rates == null || comments == null ?
+        const Center(child: CircularProgressIndicator()) 
+        :
+        Scaffold(
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(

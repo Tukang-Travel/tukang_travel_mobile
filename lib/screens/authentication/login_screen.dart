@@ -12,7 +12,7 @@ import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/screens/authentication/register_screen.dart';
 import 'package:tuktraapp/screens/user/forgot_pass_screen.dart';
 import 'package:http/http.dart' as http;
-import 'package:tuktraapp/utils/navigation_util.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -192,220 +192,176 @@ class _LoginScreenState extends State<LoginScreen> {
                   )
                 ),
                 const SizedBox(height: 15.0,),
+
                 RichText(
                   text: TextSpan(
-                    text: 'Lupa kata sandi anda?',
-                    style: const TextStyle(
-                      color: Color.fromARGB(255, 82, 114, 255),
-                      fontWeight: FontWeight.w600,
-                      fontSize: 15.0,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      NavigationUtils.pushRemoveTransition(context, const ForgotPasswordScreen());
-                    }),
-                        const SizedBox(height: 20),
-                      ],
-                    ),
-                  ),
-                  RichText(
-                      text: TextSpan(
-                          text: 'Belum punya akun? ',
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 15.0,
-                          ),
-                          children: <TextSpan>[
-                        TextSpan(
-                            text: 'Buat akunmu ',
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 82, 114, 255),
-                              fontWeight: FontWeight.w600,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                NavigationUtils.pushRemoveTransition(
-                                    context, RegisterScreen());
-                              }),
-                        const TextSpan(
-                            text: 'disini.',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15.0,
-                            ))
-                      ])),
-                  const SizedBox(
-                    height: 15.0,
-                  ),
-                  RichText(
-                    text: TextSpan(
-                        text: 'Lupa kata sandi anda?',
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 82, 114, 255),
-                          fontWeight: FontWeight.w600,
-                          fontSize: 15.0,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            NavigationUtils.pushRemoveTransition(
-                                context, const ForgotPasswordScreen());
-                          }),
-                  ),
-                  const SizedBox(
-                    height: 200,
-                  ),
-                  // login button
-                  Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 15.0),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            ApiResponseModel apiResponse = ApiResponseModel();
-                            var googleUser = await LoginApiModel.login();
-                            if (googleUser != null) {
-                              try {
-                                final response = await http.get(
-                                  Uri.parse(
-                                      '$baseURL/exists/${googleUser.email}'),
-                                  headers: {'Accept': 'application/json'},
-                                );
+                      text: 'Lupa kata sandi anda?',
+                      style: const TextStyle(
+                        color: Color.fromARGB(255, 82, 114, 255),
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15.0,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          NavigationUtils.pushRemoveTransition(
+                              context, const ForgotPasswordScreen());
+                        }),
+                ),
+                const SizedBox(
+                  height: 200,
+                ),
+                // login button
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10.0, horizontal: 15.0),
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          ApiResponseModel apiResponse = ApiResponseModel();
+                          var googleUser = await LoginApiModel.login();
+                          if (googleUser != null) {
+                            try {
+                              final response = await http.get(
+                                Uri.parse(
+                                    '$baseURL/exists/${googleUser.email}'),
+                                headers: {'Accept': 'application/json'},
+                              );
 
-                                switch (response.statusCode) {
-                                  case 200:
-                                    apiResponse.data =
-                                        jsonDecode(response.body);
-                                    // apiResponse.err = 'case 200';
-                                    break;
+                              switch (response.statusCode) {
+                                case 200:
+                                  apiResponse.data =
+                                      jsonDecode(response.body);
+                                  // apiResponse.err = 'case 200';
+                                  break;
 
-                                  default:
-                                    apiResponse.err = other;
-                                    // apiResponse.err = 'case other';
-                                    break;
-                                }
-                              } catch (e) {
-                                apiResponse.err = serverError;
+                                default:
+                                  apiResponse.err = other;
+                                  // apiResponse.err = 'case other';
+                                  break;
                               }
+                            } catch (e) {
+                              apiResponse.err = serverError;
+                            }
 
-                              if (apiResponse.data != null &&
-                                  (apiResponse.data!
-                                          as Map<String, dynamic>)['exist'] !=
-                                      null) {
-                                bool exists = (apiResponse.data!
-                                    as Map<String, dynamic>)['exist'];
-                                String uname = googleUser.email.split('@')[0];
+                            if (apiResponse.data != null &&
+                                (apiResponse.data!
+                                        as Map<String, dynamic>)['exist'] !=
+                                    null) {
+                              bool exists = (apiResponse.data!
+                                  as Map<String, dynamic>)['exist'];
+                              String uname = googleUser.email.split('@')[0];
 
-                                if (exists) {
-                                  String apiResponse = await loginGoogle();
-                                  if (apiResponse == 'Success') {
-                                    // save user info and redirect to home
-                                    _successfulLogin();
-                                  } else {
-                                    setState(() {
-                                      isLoading = !isLoading;
-                                    });
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text(apiResponse)));
-                                  }
+                              if (exists) {
+                                String apiResponse = await loginGoogle();
+                                if (apiResponse == 'Success') {
+                                  // save user info and redirect to home
+                                  _successfulLogin();
                                 } else {
-                                  String apiResponse = await registerGoogle();
-                                  if (apiResponse == 'Success') {
-                                    _successfulLogin();
-                                  } else {
-                                    setState(() {
-                                      isLoading = !isLoading;
-                                    });
-                                    context.mounted
-                                        ? showSnackBar(context, apiResponse)
-                                        : null;
-                                  }
-                                }
-                                if (context.mounted) {
-                                  NavigationUtils.pushRemoveTransition(
-                                      context,
-                                      const MainScreen(
-                                        page: 0,
-                                      ));
+                                  setState(() {
+                                    isLoading = !isLoading;
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text(apiResponse)));
                                 }
                               } else {
-                                print('returns null');
+                                String apiResponse = await registerGoogle();
+                                if (apiResponse == 'Success') {
+                                  _successfulLogin();
+                                } else {
+                                  setState(() {
+                                    isLoading = !isLoading;
+                                  });
+                                  context.mounted
+                                      ? showSnackBar(context, apiResponse)
+                                      : null;
+                                }
                               }
+                              if (context.mounted) {
+                                NavigationUtils.pushRemoveTransition(
+                                    context,
+                                    const MainScreen(
+                                      page: 0,
+                                    ));
+                              }
+                            } else {
+                              print('returns null');
                             }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            elevation: 5,
-                            shadowColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 15.0, horizontal: 30.0),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                'asset/images/google_logo.webp',
-                                width: 24.0,
-                                height: 24.0,
-                              ),
-                              const SizedBox(width: 8.0),
-                              const Text(
-                                'Google',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20.0,
-                                ),
-                              ),
-                            ],
-                          ),
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          elevation: 5,
+                          shadowColor: Colors.black,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 15.0, horizontal: 30.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0)),
                         ),
-                      ),
-                      isLoading
-                          ? const Center(
-                              child: CircularProgressIndicator(),
-                            )
-                          : Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10.0, horizontal: 15.0),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    setState(() {
-                                      isLoading = true;
-                                      _loginAuth();
-                                    });
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 82, 114, 255),
-                                  elevation: 5,
-                                  shadowColor: Colors.black,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 15.0, horizontal: 55.0),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(20.0)),
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SizedBox(width: 8.0),
-                                    Center(
-                                      child: Text(
-                                        'LOGIN',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'asset/images/google_logo.webp',
+                              width: 24.0,
+                              height: 24.0,
+                            ),
+                            const SizedBox(width: 8.0),
+                            const Text(
+                              'Google',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.0,
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    isLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 15.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  setState(() {
+                                    isLoading = true;
+                                    _loginAuth();
+                                  });
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromARGB(255, 82, 114, 255),
+                                elevation: 5,
+                                shadowColor: Colors.black,
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 15.0, horizontal: 55.0),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(20.0)),
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  SizedBox(width: 8.0),
+                                  Center(
+                                    child: Text(
+                                      'LOGIN',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20.0,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                     ],
                   ),
                 ],

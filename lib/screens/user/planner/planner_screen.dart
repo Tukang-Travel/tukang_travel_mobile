@@ -4,7 +4,7 @@ import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
 import 'package:tuktraapp/screens/user/planner/insert_planner.dart';
 import 'package:tuktraapp/screens/user/planner/update_planner.dart';
 import 'package:tuktraapp/services/plan_service.dart';
-import 'package:tuktraapp/utils/navigation_util.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:intl/intl.dart';
 
 class PlannerScreen extends StatefulWidget {

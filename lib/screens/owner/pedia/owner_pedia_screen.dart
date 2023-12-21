@@ -133,7 +133,7 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
                                             Text(
                                               itemData['description'],
                                               overflow: TextOverflow.ellipsis,
-                                              maxLines: 3,
+                                              maxLines: 2,
                                             ),
                                           ],
                                         ),

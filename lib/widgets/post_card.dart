@@ -4,7 +4,7 @@ import 'package:tuktraapp/screens/user/feed/feed_detail_screen.dart';
 import 'package:tuktraapp/services/feed_service.dart';
 import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/utils/color.dart';
-import 'package:tuktraapp/utils/navigation_util.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/image_video_slider.dart';
 import 'package:tuktraapp/widgets/like_animation.dart';

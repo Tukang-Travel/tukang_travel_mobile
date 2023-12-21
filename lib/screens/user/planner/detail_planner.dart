@@ -4,7 +4,7 @@ import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/user/planner/insert_itinerary.dart';
 import 'package:tuktraapp/screens/user/planner/update_itinerary.dart';
 import 'package:tuktraapp/services/plan_service.dart';
-import 'package:tuktraapp/utils/navigation_util.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class DetailPlanner extends StatefulWidget {
   final String id;

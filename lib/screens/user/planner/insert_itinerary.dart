@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
 import 'package:tuktraapp/services/plan_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
-import 'package:tuktraapp/utils/navigation_util.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class InsertItinerary extends StatefulWidget {
   final String id, planTitle, day, type;
