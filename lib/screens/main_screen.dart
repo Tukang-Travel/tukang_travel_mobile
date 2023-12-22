@@ -22,6 +22,7 @@ int? currScreenCount = 0;
 Widget? currScreen;
 
 class _MainScreenState extends State<MainScreen> {
+  UserService userService = UserService();
   @override
   void initState() {
     super.initState();
@@ -65,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
     super.didChangeDependencies();
 
     List<dynamic> results = await Future.wait([
-      getUser(currUser!.uid),
+      userService.getUser(userService.currUser!.uid),
     ]);
     
     setState(() {

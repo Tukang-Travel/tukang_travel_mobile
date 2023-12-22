@@ -18,8 +18,9 @@ class PediaDetail extends StatefulWidget {
 }
 
 class _PediaDetailState extends State<PediaDetail> {
-  final TextEditingController commentEditingController =
-      TextEditingController();
+  UserService userService = UserService();
+  PediaService pediaService = PediaService();
+  final TextEditingController commentEditingController = TextEditingController();
   int rating = 0;
   Map<String, dynamic> pedia = {};
   List<dynamic> medias = [];
@@ -59,7 +60,7 @@ class _PediaDetailState extends State<PediaDetail> {
     avgRate = 0;
 
     List<dynamic> results = await Future.wait([
-      getPedia(widget.id)
+      pediaService.getPedia(widget.id)
     ]);
 
     setState(() {
@@ -80,7 +81,7 @@ class _PediaDetailState extends State<PediaDetail> {
         print('After division: $avgRate');
 
         for(int i = 0; i < rates!.length; i++) {
-          if(rates?[i]['userid'] == currUser!.uid) {
+          if(rates?[i]['userid'] == userService.currUser!.uid) {
             setState(() {
               rating = rates?[i]['rate'];
             });
@@ -113,7 +114,7 @@ class _PediaDetailState extends State<PediaDetail> {
     super.didChangeDependencies();
 
     List<dynamic> results = await Future.wait([
-      getPedia(widget.id)
+      pediaService.getPedia(widget.id)
     ]);
 
     setState(() {
@@ -134,7 +135,7 @@ class _PediaDetailState extends State<PediaDetail> {
         print('After division: $avgRate');
 
         for(int i = 0; i < rates!.length; i++) {
-          if(rates?[i]['userid'] == currUser!.uid) {
+          if(rates?[i]['userid'] == userService.currUser!.uid) {
             setState(() {
               rating = rates?[i]['rate'];
             });
@@ -221,7 +222,7 @@ class _PediaDetailState extends State<PediaDetail> {
                           rating = i;
                         });
 
-                        await insertPediaRate(widget.id, rating, currUser!.uid);
+                        await pediaService.insertPediaRate(widget.id, rating, userService.currUser!.uid);
                         await fetch();
                       },
                       child: Icon(
@@ -336,7 +337,7 @@ class _PediaDetailState extends State<PediaDetail> {
                               final comment = comments?[index];
                       
                               return FutureBuilder(
-                                future: getUser(comment?['userid']),
+                                future: userService.getUser(comment?['userid']),
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                     return const Center(child: CircularProgressIndicator()); // Loading indicator while fetching data
@@ -453,7 +454,7 @@ class _PediaDetailState extends State<PediaDetail> {
                                 InkWell(
                                   onTap: () async {
                                     final comment = commentTxt.text ?? "";
-                                    insertPediaComment(widget.id, comment, currUser!.uid);
+                                    pediaService.insertPediaComment(widget.id, comment, userService.currUser!.uid);
                                     commentTxt.text = "";
 
                                     NavigationUtils.pushRemoveTransition(context, PediaDetail(id: widget.id));

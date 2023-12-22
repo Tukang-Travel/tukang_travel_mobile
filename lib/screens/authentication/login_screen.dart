@@ -23,6 +23,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  UserService userService = UserService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController usernameTxt = TextEditingController();
@@ -38,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _loginAuth() async {
-    String apiResponse = await login(usernameTxt.text, passTxt.text);
+    String apiResponse = await userService.login(usernameTxt.text, passTxt.text);
     if (apiResponse == 'Success') {
       // save user info and redirect to home
       _successfulLogin();
@@ -253,7 +254,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               String uname = googleUser.email.split('@')[0];
 
                               if (exists) {
-                                String apiResponse = await loginGoogle();
+                                String apiResponse = await userService.loginGoogle();
                                 if (apiResponse == 'Success') {
                                   // save user info and redirect to home
                                   _successfulLogin();
@@ -265,7 +266,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       SnackBar(content: Text(apiResponse)));
                                 }
                               } else {
-                                String apiResponse = await registerGoogle();
+                                String apiResponse = await userService.registerGoogle();
                                 if (apiResponse == 'Success') {
                                   _successfulLogin();
                                 } else {

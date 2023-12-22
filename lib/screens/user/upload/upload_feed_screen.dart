@@ -18,6 +18,7 @@ class UploadFeedScreen extends StatefulWidget {
 }
 
 class _UploadFeedScreenState extends State<UploadFeedScreen> {
+  UserService userService = UserService();
   TextEditingController titleController = TextEditingController();
   TextEditingController tagsController = TextEditingController();
   List<String> tags = [];
@@ -209,7 +210,7 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
 
         // Add feed details to Firestore
         await FeedService()
-            .uploadFeed(currUser!.uid, username, title, content, updatedTags);
+            .uploadFeed(userService.currUser!.uid, username, title, content, updatedTags);
 
 
         super.initState();

@@ -16,6 +16,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  UserService userService = UserService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController nameTxt = TextEditingController();
@@ -48,7 +49,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   void _regisAuth() async {
-    String apiResponse = await register(
+    String apiResponse = await userService.register(
         nameTxt.text, usernameTxt.text, emailTxt.text, passTxt.text, 'user');
     if (apiResponse == 'Success') {
       _successfulLogin();

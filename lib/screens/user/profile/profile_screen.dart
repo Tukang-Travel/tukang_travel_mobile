@@ -25,11 +25,12 @@ class ProfileMenu {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  UserService userService = UserService();
   
   bool isLoading = false;
 
   void _logoutAuth(type) async {
-    Future<bool> out = logout();
+    Future<bool> out = userService.logout();
 
     if(type == 'google') {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -58,7 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.didChangeDependencies();
 
     List<dynamic> results = await Future.wait([
-      getUser(currUser!.uid),
+      userService.getUser(userService.currUser!.uid),
     ]);
     
     setState(() {
@@ -116,7 +117,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 15.0,),
           ElevatedButton(
             onPressed: () async {
-              await logout();
+              await userService.logout();
 
               NavigationUtils.pushRemoveTransition(context, const LoginScreen());
             }, 

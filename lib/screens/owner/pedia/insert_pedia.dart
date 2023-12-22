@@ -17,6 +17,8 @@ class InsertPedia extends StatefulWidget {
 }
 
 class _InsertPediaState extends State<InsertPedia> {
+  UserService userService = UserService();
+  PediaService pediaService = PediaService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   List<File> _pickedImages = [];
 
@@ -388,7 +390,7 @@ class _InsertPediaState extends State<InsertPedia> {
                   child: ElevatedButton(
                     onPressed: () async {
                       if(formKey.currentState!.validate()) {
-                        await insertPedia(currUser!.uid, descTxt.text, _pickedImages, _selectedTypes, titleTxt.text);
+                        await pediaService.insertPedia(userService.currUser!.uid, descTxt.text, _pickedImages, _selectedTypes, titleTxt.text);
                         NavigationUtils.pushRemoveTransition(context, const OwnerPediaScreen());
                       }
                     },

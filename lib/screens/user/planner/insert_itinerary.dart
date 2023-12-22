@@ -14,6 +14,7 @@ class InsertItinerary extends StatefulWidget {
 }
 
 class _InsertItineraryState extends State<InsertItinerary> {
+  PlanService planService = PlanService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   List<Map<String, dynamic>>? days;
   List<Map<String, dynamic>>? itinerary;
@@ -26,14 +27,33 @@ class _InsertItineraryState extends State<InsertItinerary> {
   TextEditingController endTimeController = TextEditingController();
   TextEditingController transportationController = TextEditingController();
 
-  final List<Map<String, dynamic>> _times = [{'Pilih Waktu': 0}, {'00:00': 1}, {'01:00': 2}, {'02:00': 3}, {'03:00': 4}, {'04:00': 5}, {'05:00': 6}, {'06:00': 7}, {'07:00': 8}, {'08:00': 9}, {'09:00': 10}, {'10:00': 11}, {'11:00': 12}, {'12:00': 13}, {'13:00': 14}, {'14:00': 15}, {'15:00': 16}, {'16:00': 17}, {'17:00': 18}, {'18:00': 19}, {'19:00': 20}, {'20:00': 21}, {'21:00': 22}, {'22:00': 23}, {'23:00': 24}];
-  final List<Map<String, dynamic>> _tranportations = [{'Pilih Transportasi': 0}, {'Mobil': 1}, {'Motor': 2}, {'Sepeda': 3}, {'Bis': 4}, {'Kereta': 5}, {'Kapal': 6}, {'Pesawat': 7},];
+  final List<Map<String, dynamic>> _tranportations = [];
   int selectStartTime = 0;
   int selectEndTime = 0;
   int selectTransportation = 0;
 
   bool isLoading = false;
   int budget = 0;
+
+  Future<void> _selectTime(
+      BuildContext context, TextEditingController controller) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (picked != null) {
+      controller.text = picked.format(context);
+      print(controller.text);
+    }
+  }
+
+  @override
+  void didChangeDependencies() async {
+    List<Map<String, dynamic>> results = await Future.wait([
+      
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -283,26 +303,51 @@ class _InsertItineraryState extends State<InsertItinerary> {
                       ),
 
                       const SizedBox(height: 10.0,),
-                      DropdownButtonFormField<int>(
-                        value: _times[0].values.first,
-                        onChanged: (int? selectedStartTime) {
-                          if (selectedStartTime != null) {
-                            setState(() {
-                              selectStartTime = selectedStartTime;
-                              startTimeController.text = (_times.firstWhere((time) => time.values.first == selectedStartTime).values.first).toString();
-                            });
-                          }
-                        },
-                        items: _times.map((Map<String, dynamic> startTime) {
-                          return DropdownMenuItem<int>(
-                            value: startTime.values.first,
-                            child: Text(startTime.keys.first), 
-                          );
-                        }).toList(),
+                      // DropdownButtonFormField<int>(
+                      //   value: _times[0].values.first,
+                      //   onChanged: (int? selectedStartTime) {
+                      //     if (selectedStartTime != null) {
+                      //       setState(() {
+                      //         selectStartTime = selectedStartTime;
+                      //         startTimeController.text = (_times.firstWhere((time) => time.values.first == selectedStartTime).values.first).toString();
+                      //       });
+                      //     }
+                      //   },
+                      //   items: _times.map((Map<String, dynamic> startTime) {
+                      //     return DropdownMenuItem<int>(
+                      //       value: startTime.values.first,
+                      //       child: Text(startTime.keys.first), 
+                      //     );
+                      //   }).toList(),
+                      //   decoration: InputDecoration(
+                      //     filled: true,
+                      //     fillColor: Colors.white,
+                      //     labelText: 'Pilih Waktu',
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderSide: const BorderSide(
+                      //         color: Color.fromARGB(128, 170, 188, 192),
+                      //         width: 1.0,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(20),
+                      //     ),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderSide: const BorderSide(
+                      //         color: Color.fromARGB(128, 170, 188, 192),
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(20),
+                      //     ),
+                      //     border: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(20),
+                      //     ),
+                      //   ),
+                      // ),
+
+                      TextFormField(
+                        controller: startTimeController,
+                        onTap: () => _selectTime(context, startTimeController),
                         decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelText: 'Pilih Waktu',
+                          labelText: 'Pilih Waktu Awal',
+                          hintText: 'Pilih Waktu Awal',
                           focusedBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                               color: Color.fromARGB(128, 170, 188, 192),
@@ -347,26 +392,52 @@ class _InsertItineraryState extends State<InsertItinerary> {
                         ),
                       ),
                       const SizedBox(height: 10.0,),
-                      DropdownButtonFormField<int>(
-                        value: _times[0].values.first,
-                        onChanged: (int? selectedEndTime) {
-                          if (selectedEndTime != null) {
-                            setState(() {
-                              selectEndTime = selectedEndTime;
-                              endTimeController.text = (_times.firstWhere((time) => time.values.first == selectedEndTime).values.first).toString();
-                            });
-                          }
-                        },
-                        items: _times.map((Map<String, dynamic> endTime) {
-                          return DropdownMenuItem<int>(
-                            value: endTime.values.first,
-                            child: Text(endTime.keys.first), 
-                          );
-                        }).toList(),
+
+                      // DropdownButtonFormField<int>(
+                      //   value: _times[0].values.first,
+                      //   onChanged: (int? selectedEndTime) {
+                      //     if (selectedEndTime != null) {
+                      //       setState(() {
+                      //         selectEndTime = selectedEndTime;
+                      //         endTimeController.text = (_times.firstWhere((time) => time.values.first == selectedEndTime).values.first).toString();
+                      //       });
+                      //     }
+                      //   },
+                      //   items: _times.map((Map<String, dynamic> endTime) {
+                      //     return DropdownMenuItem<int>(
+                      //       value: endTime.values.first,
+                      //       child: Text(endTime.keys.first), 
+                      //     );
+                      //   }).toList(),
+                      //   decoration: InputDecoration(
+                      //     filled: true,
+                      //     fillColor: Colors.white,
+                      //     labelText: 'Pilih Waktu',
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderSide: const BorderSide(
+                      //         color: Color.fromARGB(128, 170, 188, 192),
+                      //         width: 1.0,
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(20),
+                      //     ),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderSide: const BorderSide(
+                      //         color: Color.fromARGB(128, 170, 188, 192),
+                      //       ),
+                      //       borderRadius: BorderRadius.circular(20),
+                      //     ),
+                      //     border: OutlineInputBorder(
+                      //       borderRadius: BorderRadius.circular(20),
+                      //     ),
+                      //   ),
+                      // ),
+
+                      TextFormField(
+                        controller: endTimeController,
+                        onTap: () => _selectTime(context, endTimeController),
                         decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          labelText: 'Pilih Waktu',
+                          labelText: 'Pilih Waktu Akhir',
+                          hintText: 'Pilih Waktu Akhir',
                           focusedBorder: OutlineInputBorder(
                             borderSide: const BorderSide(
                               color: Color.fromARGB(128, 170, 188, 192),
@@ -533,7 +604,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
                     onPressed: () async {
-                      if(selectStartTime == 0 || selectEndTime == 0) {
+                      if(startTimeController.text.isEmpty || endTimeController.text.isEmpty) {
                         Alert.alertValidation('Waktu harus dipilih!', context);
                       }
                       else if(selectEndTime < selectStartTime) {
@@ -549,8 +620,8 @@ class _InsertItineraryState extends State<InsertItinerary> {
                               'title': titleTxt.text,
                               'source': sourceTxt.text,
                               'destination': destinationTxt.text,
-                              'startTime': _times[int.parse(startTimeController.text)].keys.first,
-                              'endTime': _times[int.parse(endTimeController.text)].keys.first,
+                              'startTime': startTimeController.text,
+                              'endTime': endTimeController.text,
                               'transportation': _tranportations[int.parse(transportationController.text)].keys.first,
                               'transportation_cost': budget,
                             },];
@@ -560,7 +631,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
                               'itineraries': itinerary,
                             },];
                             isLoading = true;
-                            insertItinerary(widget.id, days);
+                            planService.insertItinerary(widget.id, days);
                           });
                         }
                         else if (widget.type == "sub") {
@@ -568,12 +639,12 @@ class _InsertItineraryState extends State<InsertItinerary> {
                             'title': titleTxt.text,
                             'source': sourceTxt.text,
                             'destination': destinationTxt.text,
-                            'startTime': _times[int.parse(startTimeController.text)].keys.first,
-                            'endTime': _times[int.parse(endTimeController.text)].keys.first,
+                            'startTime': startTimeController.text,
+                            'endTime': endTimeController.text,
                             'transportation': _tranportations[int.parse(transportationController.text)].keys.first,
                             'transportation_cost': budget,
                           };
-                          await insertSubItinerary(widget.id, widget.day, subItinerary);
+                          await planService.insertSubItinerary(widget.id, widget.day, subItinerary);
                         }
 
                         NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: widget.id));

@@ -15,6 +15,8 @@ class PlannerScreen extends StatefulWidget {
 }
 
 class _PlannerScreenState extends State<PlannerScreen> {
+  PlanService planService = PlanService();
+
   @override
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
@@ -198,7 +200,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                       ),
                                                       TextButton(
                                                         onPressed: () {
-                                                          deletePlanner(plannerId);
+                                                          planService.deletePlanner(plannerId);
                                                           Navigator.pop(context, 'Delete');
                                                         },
                                                         child: const Text('Hapus'),

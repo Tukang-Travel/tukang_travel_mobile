@@ -28,6 +28,7 @@ int searchValue(List<Map<String, dynamic>> list, String key) {
 }
 
 class _UpdateItineraryState extends State<UpdateItinerary> {
+  PlanService planService = PlanService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController titleTxt = TextEditingController();
@@ -587,7 +588,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
 
                           isLoading = true;
 
-                          await updateSubItinerary(widget.planId, widget.dayId, widget.id, itinerary);
+                          await planService.updateSubItinerary(widget.planId, widget.dayId, widget.id, itinerary);
                           NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: widget.planId));
 
                           // print('startTimeController.text: ${startTimeController.text}');

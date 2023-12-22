@@ -13,10 +13,11 @@ class OwnerProfileScreen extends StatefulWidget {
 }
 
 class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
+  UserService userService = UserService();
   bool isLoading = false;
 
   void _logoutAuth(type) async {
-    Future<bool> out = logout();
+    Future<bool> out = userService.logout();
 
     if(type == 'google') {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -45,7 +46,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
     super.didChangeDependencies();
 
     List<dynamic> results = await Future.wait([
-      getUser(currUser!.uid),
+      userService.getUser(userService.currUser!.uid),
     ]);
     
     setState(() {
@@ -103,7 +104,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
           const SizedBox(height: 15.0,),
           ElevatedButton(
             onPressed: () async {
-              await logout();
+              await userService.logout();
 
               NavigationUtils.pushRemoveTransition(context, const LoginScreen());
             }, 

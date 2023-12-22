@@ -15,13 +15,14 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
+    UserService userService = UserService();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
   late Future<void> _animationFuture;
 
   Future<void> _loadUserInfo() async {
-    if (currUser == null) {
+    if (userService.currUser == null) {
       NavigationUtils.pushRemoveTransition(context, const LoginScreen());
     } else {
       UserProvider userProvider =

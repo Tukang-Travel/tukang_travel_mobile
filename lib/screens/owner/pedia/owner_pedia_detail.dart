@@ -19,6 +19,8 @@ class OwnerPediaDetail extends StatefulWidget {
 }
 
 class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
+  UserService userService = UserService();
+  PediaService pediaService = PediaService();
   int rating = 0;
   Map<String, dynamic> pedia = {};
   List<dynamic> medias = [];
@@ -40,7 +42,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
     avgRate = 0;
 
     List<dynamic> results = await Future.wait([
-      getPedia(widget.id)
+      pediaService.getPedia(widget.id)
     ]);
 
     setState(() {
@@ -72,10 +74,10 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
 
         print('After division: $avgRate');
 
-        for(int i = 0; i < rates!.length; i++) {
-          if(rates?[i]['userid'] == currUser!.uid) {
+        for(int i = 0; i < rates.length; i++) {
+          if(rates[i]['userid'] == userService.currUser!.uid) {
             setState(() {
-              rating = rates?[i]['rate'];
+              rating = rates[i]['rate'];
             });
             break;
           }
@@ -113,7 +115,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
     super.didChangeDependencies();
 
     List<dynamic> results = await Future.wait([
-      getPedia(widget.id)
+      pediaService.getPedia(widget.id)
     ]);
 
     setState(() {
@@ -146,9 +148,9 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
         print('After division: $avgRate');
 
         for(int i = 0; i < rates!.length; i++) {
-          if(rates?[i]['userid'] == currUser!.uid) {
+          if(rates[i]['userid'] == userService.currUser!.uid) {
             setState(() {
-              rating = rates?[i]['rate'];
+              rating = rates[i]['rate'];
             });
             break;
           }
@@ -265,7 +267,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                     ),
                                     TextButton(
                                       onPressed: () async {
-                                        await deletePedia(widget.id);
+                                        await pediaService.deletePedia(widget.id);
                                         NavigationUtils.pushRemoveTransition(context, const OwnerPediaScreen());
                                       },
                                       child: const Text('Hapus'),
@@ -293,7 +295,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                           rating = i;
                         });
 
-                        await insertPediaRate(widget.id, rating, currUser!.uid);
+                        await pediaService.insertPediaRate(widget.id, rating, userService.currUser!.uid);
                         await fetch();
                       },
                       child: Icon(
@@ -408,7 +410,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                               final comment = comments[index];
                       
                               return FutureBuilder(
-                                future: getUser(comment['userid']),
+                                future: userService.getUser(comment['userid']),
                                 builder: (context, snapshot) {
                                   if (snapshot.connectionState == ConnectionState.waiting) {
                                     return const Center(child: CircularProgressIndicator()); // Loading indicator while fetching data
@@ -523,7 +525,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                   onTap: () {
                                     if (formKey.currentState!.validate()) {
                                       final comment = commentTxt.text ?? "";
-                                      insertPediaComment(widget.id, comment, currUser!.uid);
+                                      pediaService.insertPediaComment(widget.id, comment, userService.currUser!.uid);
                                       commentTxt.text = "";
 
                                       NavigationUtils.pushRemoveTransition(context, PediaDetail(id: widget.id));

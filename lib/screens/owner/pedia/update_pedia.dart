@@ -15,6 +15,8 @@ class UpdatePedia extends StatefulWidget {
 }
 
 class _UpdatePediaState extends State<UpdatePedia> {
+  PediaService pediaService = PediaService();
+
   Map<String, dynamic> pedia = {};
 
   List<String> _types = ['Sejarah', 'Cagar Alam', 'Pantai', 'Kuliner', 'Belanja', 'Religi', 'Petualangan', 'Seni & Budaya', 'Kesehatan & Kebugaran', 'Edukasi', 'Keluarga'];
@@ -30,7 +32,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
     super.didChangeDependencies();
 
     List<dynamic> results = await Future.wait([
-      getPedia(widget.id)
+      pediaService.getPedia(widget.id)
     ]);
 
     setState(() {
@@ -262,7 +264,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
                     onPressed: () async {
-                      updatePedia(widget.id, titleTxt.text, descTxt.text, _selectedTypes);
+                      pediaService.updatePedia(widget.id, titleTxt.text, descTxt.text, _selectedTypes);
                       NavigationUtils.pushRemoveTransition(context, OwnerPediaDetail(id: widget.id));
                     },
                     style: ElevatedButton.styleFrom(

@@ -17,13 +17,14 @@ class DetailPlanner extends StatefulWidget {
 
 class _DetailPlannerState extends State<DetailPlanner> {
   Map<String, dynamic> plan = {};
+  PlanService planService = PlanService();
 
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
     List<dynamic> results = await Future.wait([
-      getPlan(widget.id),
+      planService.getPlan(widget.id),
     ]);
 
     setState(() {
@@ -61,7 +62,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                   ),
                   child: SizedBox(
                     width: w * 0.8,
-                    height: h * 0.25,
+                    height: h * 0.28,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 20.0, horizontal: 20.0),
@@ -301,7 +302,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                 TextButton(
                                                                                   onPressed: () async {
                                                                                     // print('${widget.id}, ${(int.parse(day['day']) - 1)}, $i');
-                                                                                    await deleteSubItinerary(widget.id, (int.parse(day?['day']) - 1), i);
+                                                                                    await planService.deleteSubItinerary(widget.id, (int.parse(day?['day']) - 1), i);
 
                                                                                     Navigator.pop(context, 'Delete');
 
@@ -380,7 +381,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
               foregroundColor: Colors.black,
               onPressed: () {
                 NavigationUtils.pushRemoveTransition(
-                    context, const MainScreen(page: 2));
+                    context, const MainScreen(page: 3));
               },
               child: const Padding(
                 padding: EdgeInsets.only(left: 6.0),
