@@ -94,12 +94,79 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
 
     });
   }
+  
+  @override
+  void initState() {
+    super.initState();
+
+    rating = 0;
+    pedia = {};
+    medias = [];
+    tags = [];
+    rates = [];
+    comments = [];
+    avgRate = 0;
+  }
 
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    await fetch();
+    List<dynamic> results = await Future.wait([
+      getPedia(widget.id)
+    ]);
+
+    setState(() {
+      pedia = results[0];
+      medias = pedia['medias'];
+      tags = pedia['tags'];
+
+      if(pedia.containsKey('rates')) {
+        rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
+
+        for (int i = 0; i < rates.length; i++) {
+          try {
+            final rateMap = rates[i];
+            if (rateMap is Map<String, dynamic> && rateMap.containsKey('rate')) {
+              avgRate += rateMap['rate'];
+            } else {
+              print('Invalid rate structure at index $i: $rateMap');
+            }
+          } catch (e) {
+            print('Error in rates[$i]: $e');
+          }
+        }
+
+        print('Before division: $avgRate');
+
+        if (rates.isNotEmpty) {
+          avgRate = (avgRate / rates.length);
+        }
+
+        print('After division: $avgRate');
+
+        for(int i = 0; i < rates!.length; i++) {
+          if(rates?[i]['userid'] == currUser!.uid) {
+            setState(() {
+              rating = rates?[i]['rate'];
+            });
+            break;
+          }
+        }
+
+        print('rating: $rating');
+      }
+
+      if (pedia.containsKey('comments')) {
+        print('Before casting: ${pedia['comments']}');
+        if (pedia['comments'] != null) {
+          comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
+        }
+        print('After casting: $comments');
+      }
+
+    });
+    
     setState(() {
       done = true;
     });

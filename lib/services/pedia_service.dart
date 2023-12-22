@@ -63,22 +63,31 @@ Future<void> insertPediaComment(String id, String comment, String userId) async 
   }
 }
 
-Future<void> insertPediaRate(String id, int rate, String userId) async {
-  // kurang 1 kalau user rate untuk ke 2 kalinya, bukan insert tapi rate yang sebelumnya di update
+Future<String> insertPediaRate(String id, int rate, String userId) async {
+  String res = "Some error occurred";
   try {
-    List<dynamic> results = await Future.wait([
-      getPedia(id)
-    ]);
+    DocumentReference pediaRef = FirebaseFirestore.instance.collection('pedias').doc(id);
 
-    await FirebaseFirestore.instance.collection('pedias').doc(id).update({
-      'rates': FieldValue.arrayUnion([
-        {'rate': rate, 'userid': userId}
-      ]),
-    });
-    print('Rate added successfully!');
-  } catch (e) {
-    print('Error adding rate: $e');
+    DocumentSnapshot pediaSnapshot = await pediaRef.get();
+    List<Map<String, dynamic>> rates = List.from((pediaSnapshot.data() as Map<String, dynamic>?)?['rates'] ?? []);
+
+    int userIndex = rates.indexWhere((rate) => rate['userid'] == userId);
+
+    if (userIndex != -1) {
+      // User has already rated, update the rate
+      rates[userIndex]['rate'] = rate;
+    } else {
+      // User hasn't rated, add a new rate
+      rates.add({'userid': userId, 'rate': rate});
+    }
+
+    await pediaRef.update({'rates': rates});
+
+    res = 'success';
+  } catch (err) {
+    res = err.toString();
   }
+  return res;
 }
 
 Future<void> insertPedia(String userid, String description, List<File> medias, List<String> tags, String title) async {
