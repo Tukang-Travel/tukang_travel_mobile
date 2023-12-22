@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
 import 'package:tuktraapp/services/plan_service.dart';
+import 'package:tuktraapp/services/transport_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
@@ -15,6 +16,7 @@ class InsertItinerary extends StatefulWidget {
 
 class _InsertItineraryState extends State<InsertItinerary> {
   PlanService planService = PlanService();
+  TransportService transService = TransportService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   List<Map<String, dynamic>>? days;
   List<Map<String, dynamic>>? itinerary;
@@ -27,7 +29,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
   TextEditingController endTimeController = TextEditingController();
   TextEditingController transportationController = TextEditingController();
 
-  final List<Map<String, dynamic>> _tranportations = [];
+  List<Map<int, String>> _transportations = [];
   int selectStartTime = 0;
   int selectEndTime = 0;
   int selectTransportation = 0;
@@ -35,6 +37,32 @@ class _InsertItineraryState extends State<InsertItinerary> {
   bool isLoading = false;
   int budget = 0;
 
+  String convertToWib(String time) {
+    List<String> parts = time.split(" ");
+    List<String> timeParts = parts[0].split(":");
+
+    int hour = int.parse(timeParts[0]);
+    int minute = int.parse(timeParts[1]);
+
+    if (parts[1] == "PM" && hour != 12) {
+      hour += 12;
+    } else if (parts[1] == "AM" && hour == 12) {
+      hour = 0;
+    }
+
+    return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+  }
+
+  List<Map<int, String>> transformList(List<Map<String, dynamic>> inputList) {
+    List<Map<int, String>> resultList = [];
+
+    for (int i = 0; i < inputList.length; i++) {
+      resultList.add({i: inputList[i]['name']!});
+    }
+
+    return resultList;
+  }
+  
   Future<void> _selectTime(
       BuildContext context, TextEditingController controller) async {
     final TimeOfDay? picked = await showTimePicker(
@@ -50,9 +78,13 @@ class _InsertItineraryState extends State<InsertItinerary> {
 
   @override
   void didChangeDependencies() async {
-    List<Map<String, dynamic>> results = await Future.wait([
-      
-    ]);
+    List<Map<String, dynamic>> results = await transService.getTransports();
+    
+    setState(() {
+      _transportations = transformList(results);
+    });
+
+    print(_transportations);
   }
 
   @override
@@ -483,20 +515,20 @@ class _InsertItineraryState extends State<InsertItinerary> {
                       ),
                       const SizedBox(height: 10.0,),
                       DropdownButtonFormField<int>(
-                        value: _tranportations[0].values.first,
+                        value: _transportations[0].keys.first,
                         onChanged: (int? selectedTransportation) {
                           if (selectedTransportation != null) {
                             setState(() {
                               selectTransportation = selectedTransportation;
-                              transportationController.text = (_tranportations.firstWhere((time) => time.values.first == selectedTransportation).values.first).toString();
+                              transportationController.text = (_transportations.firstWhere((time) => time.keys.first == selectedTransportation).values.first).toString();
                             });
                             print(transportationController.text);
                           }
                         },
-                        items: _tranportations.map((Map<String, dynamic> transport) {
+                        items: _transportations.map((Map<int, String> transport) {
                           return DropdownMenuItem<int>(
-                            value: transport.values.first,
-                            child: Text(transport.keys.first), 
+                            value: transport.keys.first,
+                            child: Text(transport.values.first), 
                           );
                         }).toList(),
                         decoration: InputDecoration(
@@ -620,9 +652,9 @@ class _InsertItineraryState extends State<InsertItinerary> {
                               'title': titleTxt.text,
                               'source': sourceTxt.text,
                               'destination': destinationTxt.text,
-                              'startTime': startTimeController.text,
-                              'endTime': endTimeController.text,
-                              'transportation': _tranportations[int.parse(transportationController.text)].keys.first,
+                              'startTime': convertToWib(startTimeController.text),
+                              'endTime': convertToWib(endTimeController.text),
+                              'transportation': transportationController.text,
                               'transportation_cost': budget,
                             },];
                             
@@ -639,9 +671,9 @@ class _InsertItineraryState extends State<InsertItinerary> {
                             'title': titleTxt.text,
                             'source': sourceTxt.text,
                             'destination': destinationTxt.text,
-                            'startTime': startTimeController.text,
-                            'endTime': endTimeController.text,
-                            'transportation': _tranportations[int.parse(transportationController.text)].keys.first,
+                            'startTime': convertToWib(startTimeController.text),
+                            'endTime': convertToWib(endTimeController.text),
+                            'transportation': transportationController.text,
                             'transportation_cost': budget,
                           };
                           await planService.insertSubItinerary(widget.id, widget.day, subItinerary);
