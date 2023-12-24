@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class FeedService {
@@ -89,11 +90,22 @@ class FeedService {
           ])
         });
       }
+      logAnalyticsEvent(postId);
       res = 'success';
     } catch (err) {
       res = err.toString();
     }
     return res;
+  }
+
+  //log user event
+  void logAnalyticsEvent(String id) {
+    FirebaseAnalytics.instance.logEvent(
+      name: 'select_item',
+      parameters: <String, dynamic>{
+        'item_id': id,
+      },
+    );
   }
 
   // Post comment
@@ -136,7 +148,8 @@ class FeedService {
   }
 
   // Update Post
-  Future<String> updateFeed(String feedId, String newTitle, List<String> newTags) async {
+  Future<String> updateFeed(
+      String feedId, String newTitle, List<String> newTags) async {
     String res = "Some error occurred";
     try {
       // if the likes list contains the user uid, we need to remove it
