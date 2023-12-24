@@ -15,8 +15,6 @@ import 'package:flutter/foundation.dart'
 /// );
 /// ```
 class DefaultFirebaseOptions {
-  DefaultFirebaseOptions(FirebaseOptions currentPlatform);
-
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
       throw UnsupportedError(
@@ -52,21 +50,19 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDmx3cSfi3zvJXtmeeH59LyXzE7FK1DqJI',
-    appId: '1:707520215944:android:4a92a55031233a461bd83d',
-    messagingSenderId: '707520215944',
-    projectId: 'tukang-travel',
-    storageBucket: 'tukang-travel.appspot.com',
+    apiKey: 'AIzaSyCcs-cIi4-JrNsim6EiAgCLEzhX1JI1wgA',
+    appId: '1:489232324737:android:6be4337bb563e4b0be5580',
+    messagingSenderId: '489232324737',
+    projectId: 'tukangtravel',
+    storageBucket: 'tukangtravel.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyA68yqSFHDc54BAvSIAZmBBQn30Dv_I21E',
-    appId: '1:707520215944:ios:c45b50bd69005c761bd83d',
-    messagingSenderId: '707520215944',
-    projectId: 'tukang-travel',
-    storageBucket: 'tukang-travel.appspot.com',
-    androidClientId: '707520215944-0jscob4fb5ri0h0sift9pbh8b5n2mjm3.apps.googleusercontent.com',
-    iosClientId: '707520215944-50ov8u58faj7n2dm3id4rvt59d8essa6.apps.googleusercontent.com',
+    apiKey: 'AIzaSyBplbixseyD7iYJC98C7C5lh6-g8H8TWoM',
+    appId: '1:489232324737:ios:7c92449e2149d40bbe5580',
+    messagingSenderId: '489232324737',
+    projectId: 'tukangtravel',
+    storageBucket: 'tukangtravel.appspot.com',
     iosBundleId: 'com.tuktra.mobile',
   );
 }
