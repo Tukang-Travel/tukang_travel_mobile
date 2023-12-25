@@ -165,7 +165,7 @@ class UserService {
         users.doc(userCredential.user!.uid).set(UserModel(
                 uid: userCredential.user!.uid,
                 name: userCredential.user!.displayName!,
-                username: userCredential.user!.displayName!.replaceAll(' ', '_'),
+                username: userCredential.user!.displayName!.toLowerCase().replaceAll(' ', '_'),
                 email: userCredential.user!.email!,
                 type: type)
             .toMap());
