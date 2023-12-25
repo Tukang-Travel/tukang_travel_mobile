@@ -32,13 +32,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void _logoutAuth(type) async {
     Future<bool> out = userService.logout();
 
-    if(type == 'google') {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.clear();
-      
-      LoginApiModel.signOut;
-    }
-
     if(await out) {
       setState(() {
         isLoading = false;
@@ -87,7 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
           Text(
-            '${user?['username']}',
+            '${user?['name']}',
             style: const TextStyle(
               fontWeight: FontWeight.w900,
               fontSize: 25.0
@@ -95,7 +88,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 10.0,),
           Text(
-            '@${user?['email']}',
+            '@${user?['username']}',
           ),
           const SizedBox(height: 15.0,),
           ElevatedButton(

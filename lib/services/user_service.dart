@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuktraapp/models/user_model.dart';
 
@@ -12,7 +13,8 @@ class UserService {
 
   Future<Map<String, dynamic>?> getUser(String uid) async {
     try {
-      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
       DocumentSnapshot userDocument = await users.doc(uid).get();
 
       if (userDocument.exists) {
@@ -28,14 +30,16 @@ class UserService {
   }
 
   // get user details
-    Future<UserModel> getUserDetails() async {
-      User currentUser = FirebaseAuth.instance.currentUser!;
+  Future<UserModel> getUserDetails() async {
+    User currentUser = FirebaseAuth.instance.currentUser!;
 
-      DocumentSnapshot documentSnapshot =
-          await FirebaseFirestore.instance.collection('users').doc(currentUser.uid).get();
+    DocumentSnapshot documentSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUser.uid)
+        .get();
 
-      return UserModel.fromSnap(documentSnapshot);
-    }
+    return UserModel.fromSnap(documentSnapshot);
+  }
 
   //register
   Future<String> register(String name, String username, String email,
@@ -51,11 +55,11 @@ class UserService {
         refreshUser();
         currUser?.updateDisplayName(name);
         users.doc(currUser?.uid).set(UserModel(
-          uid: response.user?.uid as String, 
-          name: name, 
-          username: username, 
-          email: email, 
-          type: userType)
+                uid: response.user?.uid as String,
+                name: name,
+                username: username,
+                email: email,
+                type: userType)
             .toMap());
       });
       return 'Success';
@@ -104,11 +108,13 @@ class UserService {
   Future<String> login(String username, String password) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     try {
-      CollectionReference users = FirebaseFirestore.instance.collection('users');
+      CollectionReference users =
+          FirebaseFirestore.instance.collection('users');
       QuerySnapshot querySnapshot = await users.get();
       for (var data in querySnapshot.docs) {
-        if(data.get('username').toString() == username) {
-          await auth.signInWithEmailAndPassword(email: data.get('email'), password: password);
+        if (data.get('username').toString() == username) {
+          await auth.signInWithEmailAndPassword(
+              email: data.get('email'), password: password);
           refreshUser();
           return 'Success';
         }
@@ -127,27 +133,54 @@ class UserService {
   }
 
   // login
-  Future<String> loginGoogle() async {
-    //  FirebaseAuth auth = FirebaseAuth.instance;
-    // try {
-    //   CollectionReference users = FirebaseFirestore.instance.collection('users');
-    //   QuerySnapshot querySnapshot = await users.get();
-    //   for (var data in querySnapshot.docs) {
-    //     if(data.get('username').toString() == username) {
-    //       await auth.signInWithEmailAndPassword(email: data.get('email'), password: password);
-    //       refreshUser();
-    //     }
-    //   }
-    //   return 'Account not found';
-    // } on FirebaseAuthException catch (e) {
-    //   if (e.code == 'user-not-found') {
-    //     return 'No user found for that email.';
-    //   } else if (e.code == 'wrong-password') {
-    //     return 'Wrong password provided.';
-    //   }
-    // } catch (e) {
-    //   return e.toString();
-    // }
+  Future<String> googleLoginRegister(String type) async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignInAccount? googleSignInAccount =
+        await googleSignIn.signIn();
+    if (googleSignInAccount != null) {
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      );
+
+      try {
+        final UserCredential userCredential =
+            await auth.signInWithCredential(credential);
+        CollectionReference users =
+            FirebaseFirestore.instance.collection('users');
+        QuerySnapshot querySnapshot = await users.get();
+        for (var data in querySnapshot.docs) {
+          if (data.get('email').toString() == userCredential.user!.email) {
+            refreshUser();
+            return 'Success';
+          }
+        }
+
+        //user first time login, masukin ke db dulu
+        refreshUser();
+        users.doc(userCredential.user!.uid).set(UserModel(
+                uid: userCredential.user!.uid,
+                name: userCredential.user!.displayName!,
+                username: userCredential.user!.displayName!.replaceAll(' ', '_'),
+                email: userCredential.user!.email!,
+                type: type)
+            .toMap());
+        return 'Success';
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'account-exists-with-different-credential') {
+          return 'The account already exists with a different credential.';
+        } else if (e.code == 'invalid-credential') {
+          return 'Error occurred while accessing credentials. Try again.';
+        }
+      } catch (e) {
+        return e.toString();
+      }
+    }
+
     return '';
   }
 
@@ -204,5 +237,4 @@ class UserService {
 
   //   return apiResponse;
   // }
-
 }

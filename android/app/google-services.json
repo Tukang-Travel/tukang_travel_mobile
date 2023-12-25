@@ -12,7 +12,20 @@
           "package_name": "com.tuktra.mobile"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "489232324737-190k3h2oubluar5crhqmar62ijbo1sbq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tuktra.mobile",
+            "certificate_hash": "dd020ad428ff898aee7de51a98095428e81f2578"
+          }
+        },
+        {
+          "client_id": "489232324737-shc553o2ik1uaffksdu7p4io3urp7tfl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCcs-cIi4-JrNsim6EiAgCLEzhX1JI1wgA"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "489232324737-shc553o2ik1uaffksdu7p4io3urp7tfl.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "489232324737-jkgn4jj7ulgvem5lq25v665k2hl514c4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tuktra.mobile"
+              }
+            }
+          ]
         }
       }
     }
