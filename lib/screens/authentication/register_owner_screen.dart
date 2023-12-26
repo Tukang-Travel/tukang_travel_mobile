@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
-import 'package:tuktraapp/screens/authentication/register_owner_screen.dart';
+import 'package:tuktraapp/screens/authentication/register_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
@@ -10,14 +10,14 @@ import 'package:tuktraapp/screens/user/forgot_pass_screen.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class RegisterOwnerScreen extends StatefulWidget {
+  const RegisterOwnerScreen({super.key});
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  State createState() => _RegisterOwnerScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
   UserService userService = UserService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -51,9 +51,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
   }
 
-  void _regisAuth() async {
+  void _regisAuth(String type) async {
     String apiResponse = await userService.register(
-        nameTxt.text, usernameTxt.text, emailTxt.text, passTxt.text, 'user');
+        nameTxt.text, usernameTxt.text, emailTxt.text, passTxt.text, type);
     if (apiResponse == 'Success') {
       _successfulLogin();
     } else {
@@ -389,7 +389,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     RichText(
                         text: TextSpan(
-                            text: 'Pemilik usaha? ',
+                            text: 'Bukan pemilik usaha? ',
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 15.0,
@@ -404,7 +404,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   NavigationUtils.pushRemoveTransition(
-                                      context, const RegisterOwnerScreen());
+                                      context, const RegisterScreen());
                                 }),
                           const TextSpan(
                               text: 'disini.',
@@ -448,7 +448,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   setState(() {
                                     isGoogle = true;
                                     isLoading = true;
-                                    _loginGoogleAuth('user');
+                                    _loginGoogleAuth('owner');
                                   });
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -500,7 +500,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   if (formKey.currentState!.validate()) {
                                     setState(() {
                                       isLoading = true;
-                                      _regisAuth();
+                                      _regisAuth('owner');
                                     });
                                   }
                                 },
