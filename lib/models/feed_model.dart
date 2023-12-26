@@ -5,9 +5,9 @@ class FeedModel {
   final String title;
   final String userId;
   final String username;
-  final content;
-  final likes;
-  final comments;
+  final dynamic content;
+  final dynamic likes;
+  final dynamic comments;
   final List<dynamic> tags;
   final DateTime datePublished;
 

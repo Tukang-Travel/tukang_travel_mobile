@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/models/user_model.dart';
@@ -115,185 +114,183 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     //JUDUL, JUMLAH LIKE, JUMLAH KOMENTAR, BUTTON EDIT, BUTTON DELETE
-                                    Container(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              AutoSizeText(
-                                                snapshot.data!["title"],
-                                                maxLines: 10,
-                                                style: const TextStyle(
-                                                  fontFamily: 'PoppinsBold',
-                                                  fontSize: 25,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                  height: 1.2,
-                                                ),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            AutoSizeText(
+                                              snapshot.data!["title"],
+                                              maxLines: 10,
+                                              style: const TextStyle(
+                                                fontFamily: 'PoppinsBold',
+                                                fontSize: 25,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600,
+                                                height: 1.2,
                                               ),
-                                              snapshot.data!["userId"] ==
-                                                      user.uid
-                                                  ? Row(
-                                                      children: [
-                                                        Card(
-                                                          elevation: 10.0,
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15.0),
-                                                          ),
-                                                          child: Container(
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              15.0),
-                                                                  color: const Color(
-                                                                      0xffE9E9E9)),
-                                                              child: IconButton(
-                                                                onPressed: () {
-                                                                  Navigator
-                                                                      .push(
-                                                                    context,
-                                                                    MaterialPageRoute(
-                                                                        builder: (context) =>
-                                                                            EditFeedScreen(
-                                                                              feedId: widget.feedId,
-                                                                              initialTitle: snapshot.data!["title"],
-                                                                              initialTags: (snapshot.data!["tags"] as List<dynamic>).cast<String>(),
-                                                                            )),
-                                                                  );
-                                                                },
-                                                                icon: const Icon(
-                                                                    Icons.edit,
-                                                                    color: Colors
-                                                                        .blue),
-                                                              )),
+                                            ),
+                                            snapshot.data!["userId"] ==
+                                                    user.uid
+                                                ? Row(
+                                                    children: [
+                                                      Card(
+                                                        elevation: 10.0,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      15.0),
                                                         ),
-                                                        Card(
-                                                          elevation: 10.0,
-                                                          shape:
-                                                              RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        15.0),
-                                                          ),
-                                                          child: Container(
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              15.0),
-                                                                  color: const Color(
-                                                                      0xffE9E9E9)),
-                                                              child: IconButton(
-                                                                onPressed: () {
-                                                                  showDialog(
-                                                                      context:
-                                                                          context,
-                                                                      builder:
-                                                                          (BuildContext
-                                                                              context) {
-                                                                        return AlertDialog(
-                                                                          title:
-                                                                              const Text(
-                                                                            'Are you sure you want to delete this feed?',
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontFamily: 'PoppinsBold',
-                                                                              fontSize: 15,
-                                                                              color: Colors.black,
-                                                                              fontWeight: FontWeight.w600,
-                                                                              height: 1.2,
-                                                                            ),
+                                                        child: Container(
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                                color: const Color(
+                                                                    0xffE9E9E9)),
+                                                            child: IconButton(
+                                                              onPressed: () {
+                                                                Navigator
+                                                                    .push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder: (context) =>
+                                                                          EditFeedScreen(
+                                                                            feedId: widget.feedId,
+                                                                            initialTitle: snapshot.data!["title"],
+                                                                            initialTags: (snapshot.data!["tags"] as List<dynamic>).cast<String>(),
+                                                                          )),
+                                                                );
+                                                              },
+                                                              icon: const Icon(
+                                                                  Icons.edit,
+                                                                  color: Colors
+                                                                      .blue),
+                                                            )),
+                                                      ),
+                                                      Card(
+                                                        elevation: 10.0,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      15.0),
+                                                        ),
+                                                        child: Container(
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                                color: const Color(
+                                                                    0xffE9E9E9)),
+                                                            child: IconButton(
+                                                              onPressed: () {
+                                                                showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (BuildContext
+                                                                            context) {
+                                                                      return AlertDialog(
+                                                                        title:
+                                                                            const Text(
+                                                                          'Are you sure you want to delete this feed?',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontFamily: 'PoppinsBold',
+                                                                            fontSize: 15,
+                                                                            color: Colors.black,
+                                                                            fontWeight: FontWeight.w600,
+                                                                            height: 1.2,
                                                                           ),
-                                                                          actions: <Widget>[
-                                                                            TextButton(
-                                                                              style: TextButton.styleFrom(
-                                                                                textStyle: Theme.of(context).textTheme.labelLarge,
-                                                                              ),
-                                                                              child: const Text('Cancel'),
-                                                                              onPressed: () {
-                                                                                Navigator.of(context).pop();
-                                                                              },
+                                                                        ),
+                                                                        actions: <Widget>[
+                                                                          TextButton(
+                                                                            style: TextButton.styleFrom(
+                                                                              textStyle: Theme.of(context).textTheme.labelLarge,
                                                                             ),
-                                                                            TextButton(
-                                                                              style: TextButton.styleFrom(
-                                                                                textStyle: Theme.of(context).textTheme.labelLarge,
-                                                                              ),
-                                                                              child: const Text('Delete'),
-                                                                              onPressed: () {
-                                                                                deleteFeed(
-                                                                                  widget.feedId,
-                                                                                );
-                                                                                Navigator.of(context).pop();
-                                                                                Navigator.of(context).pop();
-                                                                              },
+                                                                            child: const Text('Cancel'),
+                                                                            onPressed: () {
+                                                                              Navigator.of(context).pop();
+                                                                            },
+                                                                          ),
+                                                                          TextButton(
+                                                                            style: TextButton.styleFrom(
+                                                                              textStyle: Theme.of(context).textTheme.labelLarge,
                                                                             ),
-                                                                          ],
-                                                                        );
-                                                                      });
-                                                                },
-                                                                icon: const Icon(
-                                                                    Icons
-                                                                        .delete,
-                                                                    color: Colors
-                                                                        .red),
-                                                              )),
-                                                        )
-                                                      ],
-                                                    )
-                                                  : const Row()
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.favorite,
-                                                size: 30.0,
+                                                                            child: const Text('Delete'),
+                                                                            onPressed: () {
+                                                                              deleteFeed(
+                                                                                widget.feedId,
+                                                                              );
+                                                                              Navigator.of(context).pop();
+                                                                              Navigator.of(context).pop();
+                                                                            },
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    });
+                                                              },
+                                                              icon: const Icon(
+                                                                  Icons
+                                                                      .delete,
+                                                                  color: Colors
+                                                                      .red),
+                                                            )),
+                                                      )
+                                                    ],
+                                                  )
+                                                : const Row()
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.favorite,
+                                              size: 30.0,
+                                              color: Colors.black,
+                                            ),
+                                            const SizedBox(width: 15),
+                                            Text(
+                                              snapshot.data!["likes"].length
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                fontFamily: 'PoppinsBold',
+                                                fontSize: 15,
                                                 color: Colors.black,
+                                                fontWeight: FontWeight.w600,
+                                                height: 1.2,
                                               ),
-                                              const SizedBox(width: 15),
-                                              Text(
-                                                snapshot.data!["likes"].length
-                                                    .toString(),
-                                                style: const TextStyle(
-                                                  fontFamily: 'PoppinsBold',
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                  height: 1.2,
-                                                ),
-                                              ),
-                                              const SizedBox(width: 50),
-                                              const Icon(
-                                                Icons.comment_rounded,
+                                            ),
+                                            const SizedBox(width: 50),
+                                            const Icon(
+                                              Icons.comment_rounded,
+                                              color: Colors.black,
+                                            ),
+                                            const SizedBox(width: 15),
+                                            Text(
+                                              snapshot
+                                                  .data!["comments"].length
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                fontFamily: 'PoppinsBold',
+                                                fontSize: 15,
                                                 color: Colors.black,
+                                                fontWeight: FontWeight.w600,
+                                                height: 1.2,
                                               ),
-                                              const SizedBox(width: 15),
-                                              Text(
-                                                snapshot
-                                                    .data!["comments"].length
-                                                    .toString(),
-                                                style: const TextStyle(
-                                                  fontFamily: 'PoppinsBold',
-                                                  fontSize: 15,
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w600,
-                                                  height: 1.2,
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ],
-                                      ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
                                     ),
 
                                     const Divider(

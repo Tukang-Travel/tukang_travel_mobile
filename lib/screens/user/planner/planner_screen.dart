@@ -30,7 +30,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
+                padding: const EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
                 child: Row(
                   children: [
                     const Text(
@@ -83,7 +83,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
 
                   var planners = snapshot.data!.docs;
 
-                  return Container(
+                  return SizedBox(
                     height: h * 0.55,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
@@ -113,15 +113,13 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(top: 10.0),
-                                          child: Text(
-                                            planner['title'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w800,
-                                              fontSize: 22.0,
-                                            ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 10.0),
+                                        child: Text(
+                                          planner['title'],
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 22.0,
                                           ),
                                         ),
                                       ),
@@ -143,7 +141,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                       ),
                                       const SizedBox(height: 30.0),
                                       Center(
-                                        child: Container(
+                                        child: SizedBox(
                                           width: 350,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
@@ -160,7 +158,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                         ),
                                       ),
                                       Center(
-                                        child: Container(
+                                        child: SizedBox(
                                           width: 350,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(
@@ -177,7 +175,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                         ),
                                       ),
                                       Center(
-                                        child: Container(
+                                        child: SizedBox(
                                           width: 350,
                                           child: ElevatedButton(
                                             style: ElevatedButton.styleFrom(

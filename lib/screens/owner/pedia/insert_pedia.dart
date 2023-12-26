@@ -8,6 +8,7 @@ import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
+import 'package:tuktraapp/utils/utils.dart';
 
 class InsertPedia extends StatefulWidget {
   const InsertPedia({super.key});
@@ -22,15 +23,27 @@ class _InsertPediaState extends State<InsertPedia> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   List<File> _pickedImages = [];
 
-  List<String> _types = ['Sejarah', 'Cagar Alam', 'Pantai', 'Kuliner', 'Belanja', 'Religi', 'Petualangan', 'Seni & Budaya', 'Kesehatan & Kebugaran', 'Edukasi', 'Keluarga'];
-  List<String> _selectedTypes = [];
+  final List<String> _types = [
+    'Sejarah',
+    'Cagar Alam',
+    'Pantai',
+    'Kuliner',
+    'Belanja',
+    'Religi',
+    'Petualangan',
+    'Seni & Budaya',
+    'Kesehatan & Kebugaran',
+    'Edukasi',
+    'Keluarga'
+  ];
+  final List<String> _selectedTypes = [];
 
   Future<void> _pickImage() async {
     final pickedFiles = await ImagePicker().pickMultiImage(
       imageQuality: 50,
     );
 
-    if (pickedFiles != null && pickedFiles.isNotEmpty) {
+    if (pickedFiles.isNotEmpty) {
       try {
         // Check if the picked files are images
         List<File> imageFiles = [];
@@ -39,12 +52,9 @@ class _InsertPediaState extends State<InsertPedia> {
           if (await isImageFile(imagePath)) {
             imageFiles.add(File(imagePath));
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('All files must be images!'),
-                duration: Duration(seconds: 3),
-              ),
-            );
+            if (context.mounted) {
+              showSnackBar(context, 'All files must be images!');
+            }
             return;
           }
         }
@@ -52,24 +62,30 @@ class _InsertPediaState extends State<InsertPedia> {
         setState(() {
           _pickedImages = imageFiles;
         });
-        print(_pickedImages);
       } catch (e) {
-        print('Error picking images: $e');
+        if (context.mounted) {
+          showSnackBar(context, 'Error picking images: $e');
+        }
       }
     } else {
-      print('No images selected.');
+      if (context.mounted) {
+        showSnackBar(context, 'No images selected.');
+      }
     }
   }
 
-
   Future<bool> isImageFile(String filePath) async {
-    final imageExtensions = ['jpg', 'jpeg', 'png']; // Add more extensions if needed
+    final imageExtensions = [
+      'jpg',
+      'jpeg',
+      'png'
+    ]; // Add more extensions if needed
 
     // Check the file extension
     final extension = filePath.split('.').last.toLowerCase();
     return imageExtensions.contains(extension);
   }
-  
+
   TextEditingController titleTxt = TextEditingController();
   TextEditingController descTxt = TextEditingController();
   bool checked = false;
@@ -78,190 +94,187 @@ class _InsertPediaState extends State<InsertPedia> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.only(top: 70.0, bottom: 10.0, left: 5.0),
-                  child: Text(
-                    'Unggah Pedia Baru',
-                    style: TextStyle(
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.w900,
-                    ),
+          child: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(top: 70.0, bottom: 10.0, left: 5.0),
+                child: Text(
+                  'Unggah Pedia Baru',
+                  style: TextStyle(
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.w900,
                   ),
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
-                  child: Text(
-                    'Promosikan tempat wisatamu dengan menunggah pedia yang mendeskripsikan usaha wisatamu!',
-                    style: TextStyle(
-                      fontSize: 15.0,
-                      color: Color.fromARGB(255, 81, 81, 81)
-                    ),
-                  ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
+                child: Text(
+                  'Promosikan tempat wisatamu dengan menunggah pedia yang mendeskripsikan usaha wisatamu!',
+                  style: TextStyle(
+                      fontSize: 15.0, color: Color.fromARGB(255, 81, 81, 81)),
                 ),
-                const SizedBox(height: 10.0,),
-                Form(
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              Form(
                   key: formKey,
-                  child:  Column(
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(left: 5.0),
                         child: RichText(
                           text: const TextSpan(
-                            text: 'Judul ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan> [
-                              TextSpan(
-                                text: '*',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15.0,
-                                ),
-                              )
-                            ]
-                          ),
+                              text: 'Judul ',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15.0,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: '*',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15.0,
+                                  ),
+                                )
+                              ]),
                         ),
                       ),
-                      const SizedBox(height: 10.0,),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                              offset: Offset(1, 1),
-                              color: Color.fromARGB(128, 170, 188, 192),
-                            )
-                          ]
-                        ),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: const [
+                              BoxShadow(
+                                blurRadius: 10,
+                                spreadRadius: 2,
+                                offset: Offset(1, 1),
+                                color: Color.fromARGB(128, 170, 188, 192),
+                              )
+                            ]),
                         child: TextFormField(
                           controller: titleTxt,
-                          validator: ((value) => value!.isEmpty ? 'Judul harus diisi' : null),
+                          validator: ((value) =>
+                              value!.isEmpty ? 'Judul harus diisi' : null),
                           decoration: InputDecoration(
-                            hintText: 'Judul',
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                                width: 1.0
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                            )
-                          ),
+                              hintText: 'Judul',
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color.fromARGB(128, 170, 188, 192),
+                                      width: 1.0),
+                                  borderRadius: BorderRadius.circular(20)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Color.fromARGB(128, 170, 188, 192),
+                                  ),
+                                  borderRadius: BorderRadius.circular(20)),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20))),
                         ),
                       ),
-                      const SizedBox(height: 10.0,),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
 
                       Padding(
                         padding: const EdgeInsets.only(left: 5.0),
                         child: RichText(
                           text: const TextSpan(
-                            text: 'Deskripsi ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan> [
-                              TextSpan(
-                                text: '*',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15.0,
-                                ),
-                              )
-                            ]
-                          ),
+                              text: 'Deskripsi ',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15.0,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: '*',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15.0,
+                                  ),
+                                )
+                              ]),
                         ),
                       ),
-                      const SizedBox(height: 10.0,),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
                       Container(
                         decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                              offset: Offset(1, 1),
-                              color: Color.fromARGB(128, 170, 188, 192),
-                            )
-                          ]
-                        ),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: const [
+                              BoxShadow(
+                                blurRadius: 10,
+                                spreadRadius: 2,
+                                offset: Offset(1, 1),
+                                color: Color.fromARGB(128, 170, 188, 192),
+                              )
+                            ]),
                         child: TextFormField(
                           maxLines: null,
                           controller: descTxt,
-                          validator: ((value) => value!.isEmpty ? 'Judul harus diisi' : null),
+                          validator: ((value) =>
+                              value!.isEmpty ? 'Judul harus diisi' : null),
                           decoration: InputDecoration(
-                            hintText: 'Deskripsikan tempat wisatamu...',
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                                width: 1.0
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                            )
-                          ),
+                              hintText: 'Deskripsikan tempat wisatamu...',
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color.fromARGB(128, 170, 188, 192),
+                                      width: 1.0),
+                                  borderRadius: BorderRadius.circular(20)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Color.fromARGB(128, 170, 188, 192),
+                                  ),
+                                  borderRadius: BorderRadius.circular(20)),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20))),
                         ),
                       ),
-                      const SizedBox(height: 10.0,),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
 
                       Padding(
                         padding: const EdgeInsets.only(left: 5.0),
                         child: RichText(
                           text: const TextSpan(
-                            text: 'Foto Tempat Wisata ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan> [
-                              TextSpan(
-                                text: '*',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15.0,
-                                ),
-                              )
-                            ]
-                          ),
+                              text: 'Foto Tempat Wisata ',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15.0,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: '*',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15.0,
+                                  ),
+                                )
+                              ]),
                         ),
                       ),
-                      const SizedBox(height: 10.0,),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
                       // GestureDetector(
                       //   onTap: () {
                       //     _pickImage();
@@ -299,7 +312,7 @@ class _InsertPediaState extends State<InsertPedia> {
                                 color: const Color.fromARGB(255, 188, 188, 188),
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
-                              child: const  Center(
+                              child: const Center(
                                 child: Text(
                                   'Pilih Foto',
                                   style: TextStyle(
@@ -311,60 +324,66 @@ class _InsertPediaState extends State<InsertPedia> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10.0,),
+                          const SizedBox(
+                            height: 10.0,
+                          ),
                           GridView.builder(
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
                               crossAxisSpacing: 8.0,
                               mainAxisSpacing: 8.0,
                               childAspectRatio: 1.0,
                             ),
                             shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             itemCount: _pickedImages.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return Image.file(_pickedImages[index], height: 100, width: 100);
+                              return Image.file(_pickedImages[index],
+                                  height: 100, width: 100);
                             },
                           ),
                         ],
                       ),
 
-
-                      const SizedBox(height: 10.0,),
+                      const SizedBox(
+                        height: 10.0,
+                      ),
 
                       Padding(
                         padding: const EdgeInsets.only(left: 5.0),
                         child: RichText(
                           text: const TextSpan(
-                            text: 'Tag (Min. 1 Tag dipilih)',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan> [
-                              TextSpan(
-                                text: '*',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15.0,
-                                ),
-                              )
-                            ]
-                          ),
+                              text: 'Tag (Min. 1 Tag dipilih)',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15.0,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: '*',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 15.0,
+                                  ),
+                                )
+                              ]),
                         ),
                       ),
-                      const SizedBox(height: 10.0,),
-                      Container(
+                      const SizedBox(
+                        height: 10.0,
+                      ),
+                      SizedBox(
                         height: 200.0,
                         child: GridView.builder(
-                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            crossAxisSpacing: 8.0,
-                            mainAxisSpacing: 8.0,
-                            childAspectRatio: 2.5
-                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 3,
+                                  crossAxisSpacing: 8.0,
+                                  mainAxisSpacing: 8.0,
+                                  childAspectRatio: 2.5),
                           itemCount: _types.length,
                           itemBuilder: (BuildContext context, int index) {
                             return TagCheckbox(
@@ -372,50 +391,60 @@ class _InsertPediaState extends State<InsertPedia> {
                               checked: false,
                               onChanged: (bool? value) {
                                 setState(() {
-                                  if(value == true) _selectedTypes.add(_types[index]);
-                                  else _selectedTypes.remove(_types[index]);
+                                  if (value == true) {
+                                    _selectedTypes.add(_types[index]);
+                                  } else {
+                                    _selectedTypes.remove(_types[index]);
+                                  }
                                 });
-                                print(_selectedTypes);
                               },
                             );
                           },
                         ),
                       ),
                     ],
-                  )
-                ),
-                const SizedBox(height: 10.0,),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      if(formKey.currentState!.validate()) {
-                        await pediaService.insertPedia(userService.currUser!.uid, descTxt.text, _pickedImages, _selectedTypes, titleTxt.text);
-                        NavigationUtils.pushRemoveTransition(context, const OwnerPediaScreen());
+                  )),
+              const SizedBox(
+                height: 10.0,
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (formKey.currentState!.validate()) {
+                      await pediaService.insertPedia(
+                          userService.currUser!.uid,
+                          descTxt.text,
+                          _pickedImages,
+                          _selectedTypes,
+                          titleTxt.text);
+                      if (context.mounted) {
+                        NavigationUtils.pushRemoveTransition(
+                            context, const OwnerPediaScreen());
                       }
-                    },
-                    style: ElevatedButton.styleFrom(
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15.0),
                       ),
-                      backgroundColor: const Color.fromARGB(255, 82, 114, 255)
-                    ),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-                      child: Text(
-                        'Buat',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                        ),
+                      backgroundColor: const Color.fromARGB(255, 82, 114, 255)),
+                  child: const Padding(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                    child: Text(
+                      'Buat',
+                      style: TextStyle(
+                        fontSize: 18.0,
                       ),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        )
-      ),
+        ),
+      )),
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(top: 80.0, left: 30.0),
         child: Align(
@@ -424,7 +453,8 @@ class _InsertPediaState extends State<InsertPedia> {
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             onPressed: () {
-              NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0));
+              NavigationUtils.pushRemoveTransition(
+                  context, const MainScreen(page: 0));
             },
             child: const Padding(
               padding: EdgeInsets.only(left: 6.0),

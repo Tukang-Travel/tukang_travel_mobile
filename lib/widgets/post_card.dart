@@ -5,14 +5,13 @@ import 'package:tuktraapp/services/feed_service.dart';
 import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/utils/color.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/image_video_slider.dart';
 import 'package:tuktraapp/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PostCard extends StatefulWidget {
-  final snap;
+  final dynamic snap;
   const PostCard({
     super.key,
     required this.snap,

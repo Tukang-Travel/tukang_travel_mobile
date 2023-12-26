@@ -2,11 +2,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
+import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/authentication/register_owner_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
-import 'package:tuktraapp/services/user_service.dart';
-import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/user/forgot_pass_screen.dart';
+import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
@@ -14,7 +14,7 @@ class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
@@ -381,11 +381,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ))
                         ])),
                     const Text(
-                            'Atau ',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15.0,
-                            ),
+                      'Atau ',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 15.0,
+                      ),
                     ),
                     RichText(
                         text: TextSpan(
@@ -509,7 +509,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       const Color.fromARGB(255, 82, 114, 255),
                                   elevation: 5,
                                   shadowColor: Colors.black,
-                                  padding: const EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 15.0, horizontal: 20.0),
                                   shape: RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(20.0)),

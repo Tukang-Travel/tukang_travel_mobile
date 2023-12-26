@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class TagsCard extends StatelessWidget {
   final String snap;
