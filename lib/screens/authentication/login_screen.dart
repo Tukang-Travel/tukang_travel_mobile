@@ -226,6 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   // login button
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Padding(
                         padding: const EdgeInsets.symmetric(

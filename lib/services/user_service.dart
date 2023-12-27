@@ -75,35 +75,6 @@ class UserService {
     }
   }
 
-  //register google
-  Future<String> registerGoogle() async {
-    // CollectionReference users = FirebaseFirestore.instance.collection('users');
-    // try {
-    //   await FirebaseAuth.instance
-    //       .createUserWithEmailAndPassword(
-    //     email: email,
-    //     password: password,
-    //   )
-    //       .then((response) {
-    //     refreshUser();
-    //     currUser?.updateDisplayName(name);
-    //     users.add(UserModel(response.user?.uid, name, username, email, userType)
-    //         .toMap());
-    //   });
-    //   return 'Success';
-    // } on FirebaseAuthException catch (e) {
-    //   if (e.code == 'weak-password') {
-    //     return 'The password provided is too weak.';
-    //   } else if (e.code == 'email-already-in-use') {
-    //     return 'The account already exists for that email.';
-    //   }
-    //   return e.code;
-    // } catch (e) {
-    //   return e.toString();
-    // }
-    return '';
-  }
-
   // login
   Future<String> login(String username, String password) async {
     FirebaseAuth auth = FirebaseAuth.instance;
@@ -165,7 +136,9 @@ class UserService {
         users.doc(userCredential.user!.uid).set(UserModel(
                 uid: userCredential.user!.uid,
                 name: userCredential.user!.displayName!,
-                username: userCredential.user!.displayName!.toLowerCase().replaceAll(' ', '_'),
+                username: userCredential.user!.displayName!
+                    .toLowerCase()
+                    .replaceAll(' ', '_'),
                 email: userCredential.user!.email!,
                 type: type)
             .toMap());
@@ -206,35 +179,37 @@ class UserService {
     return pref.getInt('userId') ?? 0;
   }
 
-  // // user detail
-  // Future<ApiResponseModel> getUserDetail() async {
-  //   ApiResponseModel apiResponse = ApiResponseModel();
+  Future<List<Map<String, dynamic>>> getPreferencesTemplate() async {
+    try {
+      CollectionReference preferences =
+          FirebaseFirestore.instance.collection('preferences');
+      QuerySnapshot preferencesSnapshot = await preferences.get();
 
-  //   try {
-  //     String token = await getToken();
+      List<Map<String, dynamic>> resultList = [];
 
-  //     final response = await http.get(Uri.parse(userURL), headers: {
-  //       'Accept': 'application/json',
-  //       'Authorization': 'Bearer $token'
-  //     });
+      for (QueryDocumentSnapshot documentSnapshot in preferencesSnapshot.docs) {
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+        resultList.add(data);
+      }
+      return resultList;
+    } catch (e) {
+      print('Error retrieving preferences data: $e');
+      return [];
+    }
+  }
 
-  //     switch (response.statusCode) {
-  //       case 200:
-  //         apiResponse.data = UserModel.fromJson(jsonDecode(response.body));
-  //         break;
-
-  //       case 401:
-  //         apiResponse.err = unauthorized;
-  //         break;
-
-  //       default:
-  //         apiResponse.err = other;
-  //         break;
-  //     }
-  //   } catch (e) {
-  //     apiResponse.err = serverError;
-  //   }
-
-  //   return apiResponse;
-  // }
+  Future<String> createUpdateUserPreferences(List<String> data) async {
+    String res = "Some error occurred";
+    try {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(currUser?.uid)
+          .update({'interest': FieldValue.arrayUnion(data)});
+      res = 'success';
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
 }
