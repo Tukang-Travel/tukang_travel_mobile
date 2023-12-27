@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:tuktraapp/services/feed_service.dart';
+import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
 class EditFeedScreen extends StatefulWidget {
@@ -23,11 +25,22 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _tagsController = TextEditingController();
   final List<String> _tags = [];
+  List<String> defaultTags = [];
+
+  Future<void> getTagsTemplate() async {
+    final List<Map<String, dynamic>> temp =
+        await UserService().getPreferencesTemplate();
+    setState(() {
+      defaultTags = temp.map((e) => e['name'].toString()).toList();
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    
+
+    getTagsTemplate();
+
     // Set initial values for title and tags
     _titleController.text = widget.initialTitle;
     _tags.addAll(widget.initialTags);
@@ -110,21 +123,53 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
             suffixIcon: IconButton(
               icon: const Icon(Icons.add),
               onPressed: () {
-                _addTag();
+                _addTag(_tagsController.text.trim());
               },
             ),
           ),
           onSubmitted: (value) {
-            _addTag();
+            _addTag(value);
           },
           maxLines: null, // Allow multiple lines
+        ),
+        const SizedBox(
+          height: 15.0,
+        ),
+        const Text(
+          'Recommended Tags',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+          padding: const EdgeInsets.all(10.0),
+          height: 140.0,
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+                childAspectRatio: 2.5),
+            itemCount: defaultTags.length,
+            itemBuilder: (BuildContext context, int index) {
+              final tag = defaultTags[index];
+              return TagCheckbox(
+                text: tag,
+                checked: false,
+                onChanged: (bool? value) {
+                  _addTag(tag);
+                },
+              );
+            },
+          ),
         ),
       ],
     );
   }
 
-  void _addTag() {
-    String tag = _tagsController.text.trim();
+  void _addTag(String tag) {
     if (tag.isNotEmpty && !_tags.contains(tag)) {
       setState(() {
         _tags.add(tag);
@@ -135,27 +180,27 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
 
   // Function to update the feed in Firestore
   void _updateFeed() {
-  // Validate the title and tags
-  String updatedTitle = _titleController.text.trim();
-  List<String> updatedTags = _tags;
+    // Validate the title and tags
+    String updatedTitle = _titleController.text.trim();
+    List<String> updatedTags = _tags;
 
-  if (updatedTitle.isEmpty) {
-    // Show an error message for the empty title
-    showSnackBar(context, "Title cannot be empty");
-    return;
+    if (updatedTitle.isEmpty) {
+      // Show an error message for the empty title
+      showSnackBar(context, "Title cannot be empty");
+      return;
+    }
+
+    if (updatedTags.isEmpty) {
+      // Show an error message for the empty tags
+      showSnackBar(context, "Tags cannot be empty");
+      return;
+    }
+
+    FeedService().updateFeed(widget.feedId, updatedTitle, updatedTags);
+
+    // Close the screen
+    Navigator.pop(context);
   }
-
-  if (updatedTags.isEmpty) {
-    // Show an error message for the empty tags
-    showSnackBar(context, "Tags cannot be empty");
-    return;
-  }
-
-  FeedService().updateFeed(widget.feedId, updatedTitle, updatedTags);
-
-  // Close the screen
-  Navigator.pop(context);
-}
 
   @override
   void dispose() {

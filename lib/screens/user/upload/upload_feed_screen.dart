@@ -8,6 +8,7 @@ import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/services/feed_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
 class UploadFeedScreen extends StatefulWidget {
@@ -24,12 +25,25 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
   List<String> tags = [];
   List<File> files = [];
   String username = '';
+  List<String> defaultTags = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getTagsTemplate();
+  }
+
+  Future<void> getTagsTemplate() async {
+    final List<Map<String, dynamic>> temp =
+        await UserService().getPreferencesTemplate();
+    setState(() {
+      defaultTags = temp.map((e) => e['name'].toString()).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final UserModel user = Provider
-        .of<UserProvider>(context)
-        .user;
+    final UserModel user = Provider.of<UserProvider>(context).user;
     username = user.username;
     return Scaffold(
       appBar: AppBar(
@@ -51,6 +65,13 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const Text(
+                'Title',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               TextFormField(
                 controller: titleController,
                 decoration: const InputDecoration(labelText: 'Title'),
@@ -81,32 +102,74 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Wrap(
-          spacing: 8.0,
-          runSpacing: 8.0,
-          children: tags.map((tag) {
-            return Chip(
-              label: Text(tag),
-              onDeleted: () {
-                _removeTag(tag);
-              },
-            );
-          }).toList(),
+        const Text(
+          'Selected Tags',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16.0),
+        // Code for selected tags remains the same
+        tags.isNotEmpty
+            ? Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                children: tags.map((tag) {
+                  return Chip(
+                    label: Text(tag),
+                    onDeleted: () {
+                      _removeTag(tag);
+                    },
+                  );
+                }).toList(),
+              )
+            : const Text('No selected Tags'),
+        const SizedBox(height: 16.0),
+        const Text(
+          'Recommended Tags',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Container(
+          decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+          padding: const EdgeInsets.all(10.0),
+          height: 140.0,
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 8.0,
+                mainAxisSpacing: 8.0,
+                childAspectRatio: 2.5),
+            itemCount: defaultTags.length,
+            itemBuilder: (BuildContext context, int index) {
+              final tag = defaultTags[index];
+              return TagCheckbox(
+                text: tag,
+                checked: false,
+                onChanged: (bool? value) {
+                  _addTag(tag);
+                },
+              );
+            },
+          ),
         ),
         const SizedBox(height: 8.0),
         TextField(
           controller: tagsController,
           decoration: InputDecoration(
-            labelText: 'Tags',
+            labelText: 'Input Tag',
             suffixIcon: IconButton(
               icon: const Icon(Icons.add),
               onPressed: () {
-                _addTag();
+                _addTag(tagsController.text.trim());
               },
             ),
           ),
           onSubmitted: (value) {
-            _addTag();
+            _addTag(value.trim());
           },
           maxLines: null,
         ),
@@ -118,7 +181,14 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('Selected Files:'),
+        const Text(
+          'Selected File: ',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 16.0),
         if (files.isNotEmpty)
           Column(
             children: files.map((file) {
@@ -159,8 +229,7 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
     }
   }
 
-  void _addTag() {
-    String tag = tagsController.text.trim();
+  void _addTag(String tag) {
     if (tag.isNotEmpty && !tags.contains(tag)) {
       setState(() {
         tags.add(tag);
@@ -200,22 +269,19 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
       showSnackBar(context, "Tags cannot be empty");
       return;
     }
-    
+
     try {
       // Upload files to Firebase Storage
       List<Map<String, dynamic>> content =
-      await FeedService().uploadFiles(title, files);
+          await FeedService().uploadFiles(title, files);
 
+      // Add feed details to Firestore
+      await FeedService().uploadFeed(
+          userService.currUser!.uid, username, title, content, updatedTags);
 
-
-        // Add feed details to Firestore
-        await FeedService()
-            .uploadFeed(userService.currUser!.uid, username, title, content, updatedTags);
-
-
-        super.initState();
+      super.initState();
     } catch (e) {
-      if(context.mounted) {
+      if (context.mounted) {
         showSnackBar(context, e.toString());
       }
     }

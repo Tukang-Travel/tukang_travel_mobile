@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tuktraapp/screens/user/profile/edit_profile_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
@@ -74,7 +75,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             height: 15.0,
           ),
           ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                NavigationUtils.pushTransition(context, const EditProfileScreen());
+              },
               style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 82, 114, 255),
                   padding: const EdgeInsets.symmetric(
