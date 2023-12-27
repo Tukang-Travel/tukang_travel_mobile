@@ -2,12 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
-<<<<<<< HEAD
 import 'package:tuktraapp/screens/authentication/login_owner_screen.dart';
-import 'package:tuktraapp/screens/main_screen.dart';
-import 'package:tuktraapp/services/user_service.dart';
-=======
->>>>>>> 8d89a8363820e2fb311401a2ece0d1befb53b0f8
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/authentication/register_owner_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
@@ -537,44 +532,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           ])
                                   ],
                                 ),
-<<<<<<< HEAD
-                              ],
-                            ),
-                          ),
-                        ),
-                        isLoading
-                            ? const Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 5.0),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    if (formKey.currentState!.validate()) {
-                                      setState(() {
-                                        isLoading = true;
-                                        _regisAuth();
-                                      });
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color.fromARGB(255, 82, 114, 255),
-                                    elevation: 5,
-                                    shadowColor: Colors.black,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15.0, horizontal: 55.0),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20.0)),
-                                  ),
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(width: 8.0),
-                                      Center(
-=======
                               ),
                             )),
                         Padding(
@@ -611,7 +568,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       const CircularProgressIndicator()
                                     else
                                       const Center(
->>>>>>> 8d89a8363820e2fb311401a2ece0d1befb53b0f8
                                         child: Text(
                                           'DAFTAR',
                                           style: TextStyle(

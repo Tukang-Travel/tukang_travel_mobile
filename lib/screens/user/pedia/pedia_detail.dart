@@ -468,8 +468,6 @@ class _PediaDetailState extends State<PediaDetail> {
                                     pediaService.insertPediaComment(widget.id,
                                         comment, userService.currUser!.uid);
                                     commentTxt.text = "";
-
-<<<<<<< HEAD
                                     rating = 0;
                                     pedia = {};
                                     medias = [];
@@ -479,10 +477,6 @@ class _PediaDetailState extends State<PediaDetail> {
                                     avgRate = 0;
                                     
                                     NavigationUtils.pushRemoveTransition(context, PediaDetail(id: widget.id));
-=======
-                                    NavigationUtils.pushRemoveTransition(
-                                        context, PediaDetail(id: widget.id));
->>>>>>> 8d89a8363820e2fb311401a2ece0d1befb53b0f8
                                   },
                                   child: Container(
                                     width: 50.0,

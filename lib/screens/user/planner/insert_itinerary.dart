@@ -668,7 +668,6 @@ class _InsertItineraryState extends State<InsertItinerary> {
                       } else if (formKey.currentState!.validate()) {
                         if (widget.type == "full") {
                           setState(() {
-<<<<<<< HEAD
                             itinerary = [{
                               'title': titleTxt.text,
                               'source': sourceTxt.text,
@@ -683,7 +682,6 @@ class _InsertItineraryState extends State<InsertItinerary> {
                               'day': widget.day, 
                               'itineraries': itinerary,
                             },];
-=======
                             itinerary = [
                               {
                                 'title': titleTxt.text,
@@ -703,7 +701,6 @@ class _InsertItineraryState extends State<InsertItinerary> {
                                 'itineraries': itinerary,
                               },
                             ];
->>>>>>> 8d89a8363820e2fb311401a2ece0d1befb53b0f8
                             isLoading = true;
                             planService.insertItinerary(widget.id, days);
                           });

@@ -187,7 +187,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Icons.password_rounded,
                                     color: Color.fromARGB(255, 82, 114, 255),
                                   ))),
-<<<<<<< HEAD
                       ),
                       const SizedBox(height: 20),
                     ],
@@ -225,16 +224,12 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 15.0,),
                 
                 RichText(
-                  text: TextSpan(
+                  text: const TextSpan(
                     text: 'Belum punya akun? ',
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.grey,
                       fontSize: 15.0,
-=======
-                        ),
-                        const SizedBox(height: 20),
-                      ],
->>>>>>> 8d89a8363820e2fb311401a2ece0d1befb53b0f8
+                      ),
                     ),
                   ),
                   RichText(

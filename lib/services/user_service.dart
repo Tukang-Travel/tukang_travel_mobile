@@ -212,4 +212,58 @@ class UserService {
     }
     return res;
   }
+
+  //register google
+  Future<String> registerGoogle() async {
+    // CollectionReference users = FirebaseFirestore.instance.collection('users');
+    // try {
+    //   await FirebaseAuth.instance
+    //       .createUserWithEmailAndPassword(
+    //     email: email,
+    //     password: password,
+    //   )
+    //       .then((response) {
+    //     refreshUser();
+    //     currUser?.updateDisplayName(name);
+    //     users.add(UserModel(response.user?.uid, name, username, email, userType)
+    //         .toMap());
+    //   });
+    //   return 'Success';
+    // } on FirebaseAuthException catch (e) {
+    //   if (e.code == 'weak-password') {
+    //     return 'The password provided is too weak.';
+    //   } else if (e.code == 'email-already-in-use') {
+    //     return 'The account already exists for that email.';
+    //   }
+    //   return e.code;
+    // } catch (e) {
+    //   return e.toString();
+    // }
+    return '';
+  }
+
+  // login
+  Future<String> loginGoogle() async {
+    //  FirebaseAuth auth = FirebaseAuth.instance;
+    // try {
+    //   CollectionReference users = FirebaseFirestore.instance.collection('users');
+    //   QuerySnapshot querySnapshot = await users.get();
+    //   for (var data in querySnapshot.docs) {
+    //     if(data.get('username').toString() == username) {
+    //       await auth.signInWithEmailAndPassword(email: data.get('email'), password: password);
+    //       refreshUser();
+    //     }
+    //   }
+    //   return 'Account not found';
+    // } on FirebaseAuthException catch (e) {
+    //   if (e.code == 'user-not-found') {
+    //     return 'No user found for that email.';
+    //   } else if (e.code == 'wrong-password') {
+    //     return 'Wrong password provided.';
+    //   }
+    // } catch (e) {
+    //   return e.toString();
+    // }
+    return '';
+  }
 }
