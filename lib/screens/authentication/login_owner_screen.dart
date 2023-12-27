@@ -16,14 +16,14 @@ import 'package:http/http.dart' as http;
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class LoginOwnerScreen extends StatefulWidget {
+  const LoginOwnerScreen({super.key});
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _LoginOwnerScreenState createState() => _LoginOwnerScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginOwnerScreenState extends State<LoginOwnerScreen> {
   UserService userService = UserService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -106,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             child: Padding(
                               padding: EdgeInsets.only(bottom: 10.0, left: 5.0),
                               child: Text(
-                                'Masuk sebagai User',
+                                'Masuk sebagai Owner',
                                 style: TextStyle(
                                   fontSize: 18.0,
                                 ),
@@ -180,37 +180,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 RichText(
                   text: TextSpan(
-                    text: 'Ingin menjadi owner? ',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 15.0,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'Daftar ',
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 82, 114, 255),
-                          fontWeight: FontWeight.w600,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          NavigationUtils.pushRemoveTransition(context, const RegisterOwnerScreen());
-                        }
-                      ),
-                      const TextSpan(
-                        text: 'disini.',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 15.0,
-                        )
-                      )
-                    ]
-                  )
-                ),
-                const SizedBox(height: 15.0,),
-                
-                RichText(
-                  text: TextSpan(
                     text: 'Belum punya akun? ',
                     style: const TextStyle(
                       color: Colors.grey,
@@ -226,6 +195,37 @@ class _LoginScreenState extends State<LoginScreen> {
                         recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           NavigationUtils.pushRemoveTransition(context, const RegisterScreen());
+                        }
+                      ),
+                      const TextSpan(
+                        text: 'disini.',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 15.0,
+                        )
+                      )
+                    ]
+                  )
+                ),
+                const SizedBox(height: 15.0,),
+
+                RichText(
+                  text: TextSpan(
+                    text: 'Ingin menjadi owner? ',
+                    style: const TextStyle(
+                      color: Colors.grey,
+                      fontSize: 15.0,
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(
+                        text: 'Daftar ',
+                        style: const TextStyle(
+                          color: Color.fromARGB(255, 82, 114, 255),
+                          fontWeight: FontWeight.w600,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          NavigationUtils.pushRemoveTransition(context, const RegisterOwnerScreen());
                         }
                       ),
                       const TextSpan(

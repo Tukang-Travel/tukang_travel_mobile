@@ -527,7 +527,15 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                       final comment = commentTxt.text ?? "";
                                       pediaService.insertPediaComment(widget.id, comment, userService.currUser!.uid);
                                       commentTxt.text = "";
-
+                                      
+                                      rating = 0;
+                                      pedia = {};
+                                      medias = [];
+                                      tags = [];
+                                      rates = [];
+                                      comments = [];
+                                      avgRate = 0;
+                                      
                                       NavigationUtils.pushRemoveTransition(context, PediaDetail(id: widget.id));
                                     }
                                   },

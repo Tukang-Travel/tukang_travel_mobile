@@ -9,14 +9,14 @@ import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/user/forgot_pass_screen.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class RegisterOwnerScreen extends StatefulWidget {
+  const RegisterOwnerScreen({super.key});
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _RegisterOwnerScreenState createState() => _RegisterOwnerScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
   UserService userService = UserService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -51,7 +51,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _regisAuth() async {
     String apiResponse = await userService.register(
-        nameTxt.text, usernameTxt.text, emailTxt.text, passTxt.text, 'user');
+        nameTxt.text, usernameTxt.text, emailTxt.text, passTxt.text, 'owner');
     if (apiResponse == 'Success') {
       _successfulLogin();
     } else {
@@ -103,7 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             child: Padding(
                               padding: EdgeInsets.only(bottom: 10.0, left: 5.0),
                               child: Text(
-                                'Daftar sebagai User',
+                                'Daftar sebagai Owner',
                                 style: TextStyle(
                                   fontSize: 18.0,
                                 ),

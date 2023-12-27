@@ -659,7 +659,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
                             },];
                             
                             days = [{
-                              'day': widget.day,
+                              'day': widget.day, 
                               'itineraries': itinerary,
                             },];
                             isLoading = true;

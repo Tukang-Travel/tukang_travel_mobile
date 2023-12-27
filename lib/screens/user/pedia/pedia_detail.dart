@@ -457,6 +457,14 @@ class _PediaDetailState extends State<PediaDetail> {
                                     pediaService.insertPediaComment(widget.id, comment, userService.currUser!.uid);
                                     commentTxt.text = "";
 
+                                    rating = 0;
+                                    pedia = {};
+                                    medias = [];
+                                    tags = [];
+                                    rates = null;
+                                    comments = null;
+                                    avgRate = 0;
+                                    
                                     NavigationUtils.pushRemoveTransition(context, PediaDetail(id: widget.id));
                                   },
                                   child: Container(
