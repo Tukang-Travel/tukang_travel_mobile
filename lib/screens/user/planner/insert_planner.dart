@@ -41,7 +41,6 @@ class _InsertPlannerState extends State<InsertPlanner> {
         _dateStartController.text = _selectedStartDate!.toLocal().toString().split(' ')[0];
       });
 
-      print(_dateStartController.text);
     }
   }
 
@@ -591,13 +590,6 @@ class _InsertPlannerState extends State<InsertPlanner> {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
                     onPressed: () {
-                      print(titleTxt.text);
-                      print(sourceTxt.text);
-                      print(destinationTxt.text);
-                      print(_dateStartController.text);
-                      print(_dateEndController.text);
-                      print(budget);
-                      print(numOfPeople);
                       if(formKey.currentState!.validate()) {
                         setState(() {
                           isLoading = true;

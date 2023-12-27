@@ -3,23 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>707520215944-fa3umbp5pm0gloaoovae197lssup6l9m.apps.googleusercontent.com</string>
+	<string>489232324737-jkgn4jj7ulgvem5lq25v665k2hl514c4.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.707520215944-fa3umbp5pm0gloaoovae197lssup6l9m</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>707520215944-0jscob4fb5ri0h0sift9pbh8b5n2mjm3.apps.googleusercontent.com</string>
+	<string>com.googleusercontent.apps.489232324737-jkgn4jj7ulgvem5lq25v665k2hl514c4</string>
 	<key>API_KEY</key>
-	<string>AIzaSyA68yqSFHDc54BAvSIAZmBBQn30Dv_I21E</string>
+	<string>AIzaSyBplbixseyD7iYJC98C7C5lh6-g8H8TWoM</string>
 	<key>GCM_SENDER_ID</key>
-	<string>707520215944</string>
+	<string>489232324737</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.tuktraapp</string>
+	<string>com.tuktra.mobile</string>
 	<key>PROJECT_ID</key>
-	<string>tukang-travel</string>
+	<string>tukangtravel</string>
 	<key>STORAGE_BUCKET</key>
-	<string>tukang-travel.appspot.com</string>
+	<string>tukangtravel.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:707520215944:ios:c2229819be94f3ab1bd83d</string>
+	<string>1:489232324737:ios:7c92449e2149d40bbe5580</string>
 </dict>
 </plist>

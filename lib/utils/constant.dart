@@ -18,14 +18,14 @@ class TagCheckbox extends StatefulWidget {
   final String text;
 
   const TagCheckbox({
-    Key? key,
+    super.key,
     this.onChanged,
     required this.text,
     required this.checked,
-  }) : super(key: key);
+  });
 
   @override
-  _TagCheckboxState createState() => _TagCheckboxState();
+  State<TagCheckbox> createState() => _TagCheckboxState();
 }
 
 class _TagCheckboxState extends State<TagCheckbox> {

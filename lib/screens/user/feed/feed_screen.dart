@@ -39,21 +39,33 @@ class _FeedScreenState extends State<FeedScreen> {
                         child: CircularProgressIndicator(),
                       );
                     }
-                    return SizedBox.expand(
-                        child: Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: ListView.builder(
-                              physics: const AlwaysScrollableScrollPhysics(),
-                              itemCount: snapshot.data!.docs.length,
-                              itemBuilder: (ctx, index) => Container(
-                                margin:
-                                    const EdgeInsets.symmetric(vertical: 20.0),
-                                child: PostCard(
-                                  snap: snapshot.data!.docs[index].data(),
-                                ),
-                              ),
-                            )));
+
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return const Center(child: Text('No data available'));
+                    }
+
+                    return !snapshot.hasData
+                        ? const Center(child: Text('No Feed yet'))
+                        : SizedBox.expand(
+                            child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0),
+                                child: ListView.builder(
+                                  physics:
+                                      const AlwaysScrollableScrollPhysics(),
+                                  itemCount: snapshot.data!.docs.length,
+                                  itemBuilder: (ctx, index) => Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 20.0),
+                                    child: PostCard(
+                                      snap: snapshot.data!.docs[index].data(),
+                                    ),
+                                  ),
+                                )));
                   })),
         ));
   }
