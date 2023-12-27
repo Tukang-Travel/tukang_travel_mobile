@@ -223,15 +223,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 const SizedBox(height: 15.0,),
                 
-                RichText(
-                  text: const TextSpan(
-                    text: 'Belum punya akun? ',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 15.0,
-                      ),
-                    ),
-                  ),
                   RichText(
                       text: TextSpan(
                           text: 'Belum punya akun? ',
