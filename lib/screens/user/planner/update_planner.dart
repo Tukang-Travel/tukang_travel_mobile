@@ -16,6 +16,7 @@ class UpdatePlanner extends StatefulWidget {
 var isSet = false;
 
 class _UpdatePlannerState extends State<UpdatePlanner> {
+  PlanService planService = PlanService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   Map<String, dynamic>? plan;
 
@@ -67,7 +68,7 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
     super.didChangeDependencies();
 
     List<dynamic> results = await Future.wait([
-      getPlan(widget.id)
+      planService.getPlan(widget.id)
     ]);
 
     setState(() {
@@ -621,7 +622,7 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                       if(formKey.currentState!.validate()) {
                         setState(() {
                           isLoading = true;
-                          updatePlanner(widget.id, titleTxt.text, sourceTxt.text, destinationTxt.text, _dateStartController.text, _dateEndController.text, budget, numOfPeople);
+                          planService.updatePlanner(widget.id, titleTxt.text, sourceTxt.text, destinationTxt.text, _dateStartController.text, _dateEndController.text, budget, numOfPeople);
                           NavigationUtils.pushRemoveTransition(context, const PlannerScreen());
                         });
                       }

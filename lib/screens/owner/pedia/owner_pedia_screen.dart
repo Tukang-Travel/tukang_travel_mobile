@@ -12,6 +12,7 @@ class OwnerPediaScreen extends StatefulWidget {
 }
 
 class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
+  @override
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
     double w = MediaQuery.of(context).size.width;
@@ -26,7 +27,7 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
+                  padding: const EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
                   child: Row(
                     children: [
                       const Text(
@@ -52,7 +53,7 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
                     ],
                   ), 
                 ),
-                SizedBox(width: 8.0,),
+                const SizedBox(width: 8.0,),
                 const Padding(
                   padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
                   child: Text(
@@ -78,12 +79,12 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
                       }
 
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return Text('No data available'); 
+                        return const Text('No data available'); 
                       }
 
                       return Align(
                         alignment: Alignment.center,
-                        child: Container(
+                        child: SizedBox(
                           height: h,
                           child: GridView.builder(
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -112,7 +113,7 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
                                         borderRadius: const BorderRadius.only(topLeft: Radius.circular(10.0), topRight: Radius.circular(10.0)),
                                         child: Image.network(
                                           itemData['medias'][0],
-                                          height: 100,
+                                          height: 90,
                                           width: 300,
                                         )
                                       ),
@@ -124,6 +125,7 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
                                           children: [
                                             Text(
                                               itemData['title'],
+                                              overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 17.0
@@ -133,7 +135,7 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
                                             Text(
                                               itemData['description'],
                                               overflow: TextOverflow.ellipsis,
-                                              maxLines: 3,
+                                              maxLines: 2,
                                             ),
                                           ],
                                         ),

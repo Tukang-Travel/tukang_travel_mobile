@@ -1,25 +1,21 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_swiper_null_safety/flutter_swiper_null_safety.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:tuktraapp/models/user_model.dart';
+import 'package:tuktraapp/provider/user_provider.dart';
+import 'package:tuktraapp/screens/user/feed/edit_feed_screen.dart';
+import 'package:tuktraapp/services/feed_service.dart';
+import 'package:tuktraapp/utils/utils.dart';
+import 'package:tuktraapp/widgets/comment_card.dart';
+import 'package:tuktraapp/widgets/image_video_slider.dart';
+import 'package:tuktraapp/widgets/tags_card.dart';
 
 class FeedDetailScreen extends StatefulWidget {
-  const FeedDetailScreen(
-      {super.key,
-      required this.name,
-      required this.location,
-      required this.description,
-      required this.file,
-      required this.rating,
-      required this.estimasi});
+  const FeedDetailScreen({super.key, required this.feedId});
 
-  final String name;
-  final String location;
-  final String description;
-  final List<String> file;
-  final double rating;
-  final String estimasi;
+  final String feedId;
 
   @override
   State<FeedDetailScreen> createState() => _FeedDetailScreenState();
@@ -27,264 +23,411 @@ class FeedDetailScreen extends StatefulWidget {
 
 class _FeedDetailScreenState extends State<FeedDetailScreen> {
   final oCcy = NumberFormat("#,##0.00", "en_US");
+  final TextEditingController commentEditingController =
+      TextEditingController();
 
-  Widget _customScrollView() {
-    return CustomScrollView(
-      slivers: <Widget>[
-        SliverAppBar(
-          expandedHeight: 250.0,
-          floating: false,
-          pinned: true,
-          flexibleSpace: FlexibleSpaceBar(
-              centerTitle: false,
-              title: Text(widget.name,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.0,
-                  )),
-              background: Swiper(
-                itemCount: widget.file.length,
-                itemBuilder: (BuildContext context, int index) => Image.network(
-                  widget.file[index],
-                  fit: BoxFit.cover,
-                ),
-                autoplay: (widget.file.length != 1) ? true : false,
-                loop: true,
-              )),
-        ),
-        SliverList(
-          delegate: SliverChildListDelegate(
-            [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    buildRow1(),
-                    const Divider(
-                      height: 50,
-                      color: Colors.transparent,
-                    ),
-                    buildDeskripsi(),
-                    const Divider(
-                      height: 50,
-                      color: Colors.transparent,
-                    ),
-                    buildTourGuide(),
-                  ],
-                ),
-              )
-            ],
-          ),
-        )
-      ],
-    );
+  void postComment(String uid, String username) async {
+    try {
+      String res = await FeedService().postComment(
+          widget.feedId, commentEditingController.text, uid, username);
+
+      if (res != 'success') {
+        if (context.mounted) showSnackBar(context, res);
+      }
+      setState(() {
+        commentEditingController.text = "";
+      });
+    } catch (err) {
+      if (context.mounted) {
+        showSnackBar(
+          context,
+          err.toString(),
+        );
+      }
+    }
+  }
+
+  deleteFeed(String feedId) async {
+    try {
+      await FeedService().deleteFeed(feedId);
+      if (context.mounted) {
+        showSnackBar(
+          context,
+          'Feed Deleted',
+        );
+      }
+    } catch (err) {
+      if (context.mounted) {
+        showSnackBar(
+          context,
+          err.toString(),
+        );
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    commentEditingController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final UserModel user = Provider.of<UserProvider>(context).user;
+
     return Scaffold(
-      body: _customScrollView(),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        child: Container(
-          height: 50,
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
-          decoration: const BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.black, width: 2))),
-          child: buildBottom(),
-        ),
-      ),
-    );
-  }
+        body: SafeArea(
+            child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection('feeds')
+                    .doc(widget.feedId)
+                    .snapshots(),
+                builder: (context,
+                    AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                        snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                  return NestedScrollView(
+                    headerSliverBuilder:
+                        (BuildContext context, bool innerBoxIsScrolled) {
+                      return <Widget>[
+                        SliverAppBar(
+                          expandedHeight: 250.0,
+                          floating: false,
+                          pinned: true,
+                          flexibleSpace: FlexibleSpaceBar(
+                              centerTitle: true,
+                              background: ImageVideoSlider()
+                                  .checkImageVideo(snapshot.data!["content"])),
+                        ),
+                        SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
+                              Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //JUDUL, JUMLAH LIKE, JUMLAH KOMENTAR, BUTTON EDIT, BUTTON DELETE
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            AutoSizeText(
+                                              snapshot.data!["title"],
+                                              maxLines: 10,
+                                              style: const TextStyle(
+                                                fontFamily: 'PoppinsBold',
+                                                fontSize: 25,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600,
+                                                height: 1.2,
+                                              ),
+                                            ),
+                                            snapshot.data!["userId"] ==
+                                                    user.uid
+                                                ? Row(
+                                                    children: [
+                                                      Card(
+                                                        elevation: 10.0,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      15.0),
+                                                        ),
+                                                        child: Container(
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                                color: const Color(
+                                                                    0xffE9E9E9)),
+                                                            child: IconButton(
+                                                              onPressed: () {
+                                                                Navigator
+                                                                    .push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder: (context) =>
+                                                                          EditFeedScreen(
+                                                                            feedId: widget.feedId,
+                                                                            initialTitle: snapshot.data!["title"],
+                                                                            initialTags: (snapshot.data!["tags"] as List<dynamic>).cast<String>(),
+                                                                          )),
+                                                                );
+                                                              },
+                                                              icon: const Icon(
+                                                                  Icons.edit,
+                                                                  color: Colors
+                                                                      .blue),
+                                                            )),
+                                                      ),
+                                                      Card(
+                                                        elevation: 10.0,
+                                                        shape:
+                                                            RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      15.0),
+                                                        ),
+                                                        child: Container(
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            15.0),
+                                                                color: const Color(
+                                                                    0xffE9E9E9)),
+                                                            child: IconButton(
+                                                              onPressed: () {
+                                                                showDialog(
+                                                                    context:
+                                                                        context,
+                                                                    builder:
+                                                                        (BuildContext
+                                                                            context) {
+                                                                      return AlertDialog(
+                                                                        title:
+                                                                            const Text(
+                                                                          'Are you sure you want to delete this feed?',
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontFamily: 'PoppinsBold',
+                                                                            fontSize: 15,
+                                                                            color: Colors.black,
+                                                                            fontWeight: FontWeight.w600,
+                                                                            height: 1.2,
+                                                                          ),
+                                                                        ),
+                                                                        actions: <Widget>[
+                                                                          TextButton(
+                                                                            style: TextButton.styleFrom(
+                                                                              textStyle: Theme.of(context).textTheme.labelLarge,
+                                                                            ),
+                                                                            child: const Text('Cancel'),
+                                                                            onPressed: () {
+                                                                              Navigator.of(context).pop();
+                                                                            },
+                                                                          ),
+                                                                          TextButton(
+                                                                            style: TextButton.styleFrom(
+                                                                              textStyle: Theme.of(context).textTheme.labelLarge,
+                                                                            ),
+                                                                            child: const Text('Delete'),
+                                                                            onPressed: () {
+                                                                              deleteFeed(
+                                                                                widget.feedId,
+                                                                              );
+                                                                              Navigator.of(context).pop();
+                                                                              Navigator.of(context).pop();
+                                                                            },
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    });
+                                                              },
+                                                              icon: const Icon(
+                                                                  Icons
+                                                                      .delete,
+                                                                  color: Colors
+                                                                      .red),
+                                                            )),
+                                                      )
+                                                    ],
+                                                  )
+                                                : const Row()
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.favorite,
+                                              size: 30.0,
+                                              color: Colors.black,
+                                            ),
+                                            const SizedBox(width: 15),
+                                            Text(
+                                              snapshot.data!["likes"].length
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                fontFamily: 'PoppinsBold',
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600,
+                                                height: 1.2,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 50),
+                                            const Icon(
+                                              Icons.comment_rounded,
+                                              color: Colors.black,
+                                            ),
+                                            const SizedBox(width: 15),
+                                            Text(
+                                              snapshot
+                                                  .data!["comments"].length
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                fontFamily: 'PoppinsBold',
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w600,
+                                                height: 1.2,
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
 
-  Widget buildBottom() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Divider(
-              height: 5,
-              color: Colors.transparent,
-            ),
-            const AutoSizeText(
-              "Estimasi Biaya",
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 12,
-                color: Colors.black,
-                fontWeight: FontWeight.normal,
-                height: 1.2,
-              ),
-            ),
-            AutoSizeText(
-              "Rp ${oCcy.format(int.parse(widget.estimasi))}",
-              style: const TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 18,
-                color: Colors.black,
-                fontWeight: FontWeight.w900,
-                height: 1.2,
-              ),
-            ),
-          ],
-        )
-      ],
-    );
-  }
+                                    const Divider(
+                                      height: 50,
+                                      color: Colors.transparent,
+                                    ),
 
-  Widget buildRow1() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SizedBox(
-          width: MediaQuery.of(context).size.width * 0.85,
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            AutoSizeText(
-              widget.name,
-              maxLines: 10,
-              style: const TextStyle(
-                fontFamily: 'PoppinsBold',
-                fontSize: 16,
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-                height: 1.2,
-              ),
-            ),
-            const Divider(height: 5),
-            AutoSizeText(
-              widget.location,
-              maxLines: 10,
-              style: const TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 12,
-                color: Colors.black,
-                fontWeight: FontWeight.normal,
-                height: 1.2,
-              ),
-            ),
-            const Divider(
-              height: 5,
-              color: Colors.transparent,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                RatingBarIndicator(
-                  rating: widget.rating,
-                  itemBuilder: (context, index) => const Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                  ),
-                  itemCount: 5,
-                  itemSize: 30.0,
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
-                Column(
-                  children: [
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      widget.rating.toString(),
-                      style: const TextStyle(
-                        fontFamily: 'PoppinsBold',
-                        fontSize: 16,
-                        color: Color.fromARGB(255, 187, 142,
-                            7), //Color.fromRGBO(239, 90, 38, 1.0),
-                        fontWeight: FontWeight.w600,
-                        height: 1.2,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ]),
-        ),
-        // IconButton(
-        //     padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-        //     constraints: const BoxConstraints(),
-        //     onPressed: () => {},
-        //     icon: SvgPicture.asset(
-        //       'assets/images/homescreen/love.svg',
-        //       color: Colors.black,
-        //       fit: BoxFit.contain,
-        //     )),
-      ],
-    );
-  }
+                                    //TAGS
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Tags',
+                                          style: TextStyle(
+                                            fontFamily: 'PoppinsBold',
+                                            fontSize: 15,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w600,
+                                            height: 1.2,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.1,
+                                          child: ListView.builder(
+                                            shrinkWrap: true,
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount:
+                                                snapshot.data!['tags'].length,
+                                            itemBuilder: (ctx, index) =>
+                                                TagsCard(
+                                              snap: snapshot.data!['tags']
+                                                  [index],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
 
-  Widget buildDeskripsi() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const AutoSizeText(
-          "Deskripsi Singkat",
-          style: TextStyle(
-            fontFamily: 'PoppinsBold',
-            fontSize: 14,
-            color: Colors.black,
-            fontWeight: FontWeight.w100,
-            height: 1.2,
-          ),
-        ),
-        const Divider(
-          color: Colors.black,
-        ),
-        AutoSizeText(
-          widget.description,
-          textAlign: TextAlign.justify,
-          style: const TextStyle(
-            fontFamily: 'Poppins',
-            fontSize: 16,
-            color: Colors.black,
-            fontWeight: FontWeight.normal,
-            height: 1.7,
-          ),
-        ),
-      ],
-    );
-  }
+                                    const Divider(
+                                      height: 50,
+                                      color: Colors.transparent,
+                                    ),
 
-  Widget buildTourGuide() {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Center(
-          child: AutoSizeText(
-            "Tour Guide",
-            style: TextStyle(
-              fontFamily: 'PoppinsBold',
-              fontSize: 20,
-              color: Colors.black,
-              fontWeight: FontWeight.w100,
-              height: 1.2,
-            ),
-          ),
-        ),
-        Divider(
-          color: Colors.black,
-        ),
-        Center(
-          child: AutoSizeText(
-            "Coming Soon",
-            style: TextStyle(
-              fontFamily: 'PoppinsBold',
-              fontSize: 20,
-              color: Colors.grey,
-              fontWeight: FontWeight.normal,
-              height: 1.2,
-            ),
-          ),
-        ),
-      ],
-    );
+                                    //Komentar
+                                    const Text(
+                                      'Komentar',
+                                      style: TextStyle(
+                                        fontFamily: 'PoppinsBold',
+                                        fontSize: 15,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600,
+                                        height: 1.2,
+                                      ),
+                                    ),
+                                    const Divider(
+                                      height: 20,
+                                      color: Colors.transparent,
+                                    ),
+                                    Container(
+                                      height: kToolbarHeight,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(30.0),
+                                          color: const Color(0xffE9E9E9)),
+                                      margin: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      padding: const EdgeInsets.only(
+                                          left: 16, right: 8),
+                                      child: Row(
+                                        children: [
+                                          const CircleAvatar(
+                                            backgroundImage: AssetImage(
+                                              'asset/images/default_profile.png',
+                                            ),
+                                            radius: 18,
+                                          ),
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                  left: 16, right: 8),
+                                              child: TextField(
+                                                controller:
+                                                    commentEditingController,
+                                                decoration: InputDecoration(
+                                                  hintText:
+                                                      'Comment as ${user.username}',
+                                                  border: InputBorder.none,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap: () => postComment(
+                                                user.uid, user.username),
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 8,
+                                                      horizontal: 8),
+                                              child: const Text(
+                                                'Post',
+                                                style: TextStyle(
+                                                    color: Colors.blue),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ];
+                    },
+                    body: snapshot.data?['comments'].length == 0
+                        ? const Center(
+                            child: Text('No Comment Yet'),
+                          )
+                        : SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.1,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: snapshot.data!['comments'].length,
+                              itemBuilder: (ctx, index) => CommentCard(
+                                snap: snapshot.data!['comments'][index],
+                              ),
+                            )),
+                  );
+                })));
   }
 }

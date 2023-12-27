@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
@@ -13,16 +15,26 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
+    UserService userService = UserService();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
   late Future<void> _animationFuture;
 
   Future<void> _loadUserInfo() async {
-    if (currUser == null) {
+    if (userService.currUser == null) {
       NavigationUtils.pushRemoveTransition(context, const LoginScreen());
     } else {
-      NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0,));
+      UserProvider userProvider =
+          Provider.of<UserProvider>(context, listen: false);
+      await userProvider.refreshUser();
+      if (context.mounted) {
+        NavigationUtils.pushRemoveTransition(
+            context,
+            const MainScreen(
+              page: 0,
+            ));
+      }
     }
   }
 

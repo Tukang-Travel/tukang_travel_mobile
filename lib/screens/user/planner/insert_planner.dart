@@ -13,6 +13,7 @@ class InsertPlanner extends StatefulWidget {
 }
 
 class _InsertPlannerState extends State<InsertPlanner> {
+  PlanService planService = PlanService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   TextEditingController titleTxt = TextEditingController();
@@ -40,7 +41,6 @@ class _InsertPlannerState extends State<InsertPlanner> {
         _dateStartController.text = _selectedStartDate!.toLocal().toString().split(' ')[0];
       });
 
-      print(_dateStartController.text);
     }
   }
 
@@ -590,17 +590,10 @@ class _InsertPlannerState extends State<InsertPlanner> {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
                     onPressed: () {
-                      print(titleTxt.text);
-                      print(sourceTxt.text);
-                      print(destinationTxt.text);
-                      print(_dateStartController.text);
-                      print(_dateEndController.text);
-                      print(budget);
-                      print(numOfPeople);
                       if(formKey.currentState!.validate()) {
                         setState(() {
                           isLoading = true;
-                          insertPlanner(titleTxt.text, sourceTxt.text, destinationTxt.text, _dateStartController.text, _dateEndController.text, budget, numOfPeople);
+                          planService.insertPlanner(titleTxt.text, sourceTxt.text, destinationTxt.text, _dateStartController.text, _dateEndController.text, budget, numOfPeople);
                           NavigationUtils.pushRemoveTransition(context, const PlannerScreen());
                         });
                       }

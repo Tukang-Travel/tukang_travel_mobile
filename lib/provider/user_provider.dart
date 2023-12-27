@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:tuktraapp/models/user_model.dart';
+import 'package:tuktraapp/services/user_service.dart';
 
 class UserProvider extends ChangeNotifier {
-  Map<String, dynamic>? _user;
+  UserService userService = UserService();
+  UserModel? _user;
+  UserModel get user => _user!;
 
-  Map<String, dynamic>? get user => _user;
-
-  void setUser(Map<String, dynamic> userData) {
-    _user = userData;
+  Future<void> refreshUser() async {
+    UserModel user = await userService.getUserDetails();
+    _user = user;
     notifyListeners();
   }
 }

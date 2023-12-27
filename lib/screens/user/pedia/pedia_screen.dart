@@ -36,7 +36,7 @@ class _PediaScreenState extends State<PediaScreen> {
                     ),
                   ), 
                 ),
-                SizedBox(width: 8.0,),
+                const SizedBox(width: 8.0,),
                 const Padding(
                   padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
                   child: Text(
@@ -54,7 +54,7 @@ class _PediaScreenState extends State<PediaScreen> {
                     stream: FirebaseFirestore.instance.collection('pedias').snapshots(), 
                     builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator()); 
+                        return const Center(child: CircularProgressIndicator()); 
                       }
 
                       if (snapshot.hasError) {
@@ -62,12 +62,12 @@ class _PediaScreenState extends State<PediaScreen> {
                       }
 
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return Text('No data available'); 
+                        return const Text('No data available'); 
                       }
 
                       return Align(
                         alignment: Alignment.center,
-                        child: Container(
+                        child: SizedBox(
                           height: h,
                           child: GridView.builder(
                             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -108,6 +108,7 @@ class _PediaScreenState extends State<PediaScreen> {
                                           children: [
                                             Text(
                                               itemData['title'],
+                                              overflow: TextOverflow.ellipsis,
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.w600,
                                                 fontSize: 17.0
@@ -117,7 +118,7 @@ class _PediaScreenState extends State<PediaScreen> {
                                             Text(
                                               itemData['description'],
                                               overflow: TextOverflow.ellipsis,
-                                              maxLines: 3,
+                                              maxLines: 2,
                                             ),
                                           ],
                                         ),
