@@ -29,37 +29,42 @@ class _MainScreenState extends State<MainScreen> {
   UserService userService = UserService();
 
   @override
-void initState() {
-  super.initState();
-  checkInterest(); // Call the asynchronous method here
-}
-
-Future<void> checkInterest() async {
-  try {
-    QuerySnapshot<Map<String, dynamic>> usersSnapshot =
-        await FirebaseFirestore.instance
-            .collection('users')
-            .where('uid', isEqualTo: userService.currUser!.uid)
-            .get();
-    if (usersSnapshot.docs.isNotEmpty) {
-      Map<String, dynamic> userData = usersSnapshot.docs.first.data();
-
-      dynamic interest = userData['interest'];
-
-      if (interest == null && context.mounted) {
-        NavigationUtils.pushTransition(context, const InterestSelectionScreen());
+  void initState() {
+    super.initState();
+    userService.getUserDetails().then((res) {
+      if (res.type == 'user') {
+        checkInterest();
       }
-    }
-  } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
-      print('No user found for that email.');
-    } else if (e.code == 'wrong-password') {
-      print('Wrong password provided.');
-    }
-  } catch (e) {
-    print(e);
+    });
   }
-}
+
+  Future<void> checkInterest() async {
+    try {
+      QuerySnapshot<Map<String, dynamic>> usersSnapshot =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .where('uid', isEqualTo: userService.currUser!.uid)
+              .get();
+      if (usersSnapshot.docs.isNotEmpty) {
+        Map<String, dynamic> userData = usersSnapshot.docs.first.data();
+
+        dynamic interest = userData['interest'];
+
+        if (interest == null && context.mounted) {
+          NavigationUtils.pushTransition(
+              context, const InterestSelectionScreen());
+        }
+      }
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        print('No user found for that email.');
+      } else if (e.code == 'wrong-password') {
+        print('Wrong password provided.');
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 
   Map<String, dynamic>? user;
 
