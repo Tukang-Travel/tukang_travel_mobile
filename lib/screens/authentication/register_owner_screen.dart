@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/authentication/login_owner_screen.dart';
-import 'package:tuktraapp/screens/main_screen.dart';
-import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
+import 'package:tuktraapp/screens/authentication/register_owner_screen.dart';
+import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/user/forgot_pass_screen.dart';
+import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
+import 'package:tuktraapp/utils/utils.dart';
 
 class RegisterOwnerScreen extends StatefulWidget {
   const RegisterOwnerScreen({super.key});
 
   @override
-  _RegisterOwnerScreenState createState() => _RegisterOwnerScreenState();
+  State<RegisterOwnerScreen> createState() => _RegisterOwnerScreenState();
 }
 
 class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
@@ -27,6 +29,7 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
   TextEditingController conTxt = TextEditingController();
 
   bool isLoading = false;
+  bool isGoogle = false;
 
   @override
   void dispose() {
@@ -58,8 +61,25 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
       setState(() {
         isLoading = !isLoading;
       });
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(apiResponse)));
+      if (context.mounted) {
+        showSnackBar(context, apiResponse);
+      }
+    }
+  }
+
+  void _loginGoogleAuth(String type) async {
+    String apiResponse = await userService.googleLoginRegister(type);
+    if (apiResponse == 'Success') {
+      // save user info and redirect to home
+      _successfulLogin();
+    } else {
+      setState(() {
+        isGoogle = !isGoogle;
+        isLoading = !isLoading;
+      });
+      if (context.mounted) {
+        showSnackBar(context, apiResponse);
+      }
     }
   }
 
@@ -376,6 +396,39 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
                                 fontSize: 15.0,
                               ))
                         ])),
+                    const Text(
+                      'Atau ',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 15.0,
+                      ),
+                    ),
+                    RichText(
+                        text: TextSpan(
+                            text: 'Pemilik usaha? ',
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 15.0,
+                            ),
+                            children: <TextSpan>[
+                          TextSpan(
+                              text: 'Registrasi ',
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 82, 114, 255),
+                                fontWeight: FontWeight.w600,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  NavigationUtils.pushRemoveTransition(
+                                      context, const RegisterOwnerScreen());
+                                }),
+                          const TextSpan(
+                              text: 'disini.',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 15.0,
+                              ))
+                        ])),
                     const SizedBox(
                       height: 15.0,
                     ),
@@ -427,73 +480,94 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
                     ),
                     // sign up with google
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 10.0, horizontal: 15.0),
-                          child: ElevatedButton(
-                            onPressed: () {},
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              elevation: 5,
-                              shadowColor: Colors.black,
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 15.0, horizontal: 30.0),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0)),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Image.asset(
-                                  'asset/images/google_logo.webp',
-                                  width: 24.0,
-                                  height: 24.0,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 15.0),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              height: MediaQuery.of(context).size.height * 0.07,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isGoogle = true;
+                                    isLoading = true;
+                                    _loginGoogleAuth('user');
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  elevation: 5,
+                                  shadowColor: Colors.black,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 15.0, horizontal: 30.0),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20.0)),
                                 ),
-                                const SizedBox(width: 8.0),
-                                const Text(
-                                  'Google',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20.0,
-                                  ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    if (isLoading && isGoogle)
+                                      const CircularProgressIndicator()
+                                    else
+                                      Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              'asset/images/google_logo.webp',
+                                              width: 24.0,
+                                              height: 24.0,
+                                            ),
+                                            const SizedBox(width: 8.0),
+                                            const Text(
+                                              'Google',
+                                              style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 20.0,
+                                              ),
+                                            ),
+                                          ])
+                                  ],
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        isLoading
-                            ? const Center(
-                                child: CircularProgressIndicator(),
-                              )
-                            : Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 5.0),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    if (formKey.currentState!.validate()) {
-                                      setState(() {
-                                        isLoading = true;
-                                        _regisAuth();
-                                      });
-                                    }
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        const Color.fromARGB(255, 82, 114, 255),
-                                    elevation: 5,
-                                    shadowColor: Colors.black,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 15.0, horizontal: 55.0),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(20.0)),
-                                  ),
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SizedBox(width: 8.0),
-                                      Center(
+                              ),
+                            )),
+                        Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10.0, horizontal: 15.0),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              height: MediaQuery.of(context).size.height * 0.07,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                    setState(() {
+                                      isLoading = true;
+                                      _regisAuth();
+                                    });
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 82, 114, 255),
+                                  elevation: 5,
+                                  shadowColor: Colors.black,
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 15.0, horizontal: 20.0),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(20.0)),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(width: 8.0),
+                                    if (isLoading && !isGoogle)
+                                      const CircularProgressIndicator()
+                                    else
+                                      const Center(
                                         child: Text(
                                           'DAFTAR',
                                           style: TextStyle(
@@ -502,10 +576,10 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                  ],
                                 ),
                               ),
+                            )),
                       ],
                     ),
                   ],

@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuktraapp/models/user_model.dart';
 
 class UserService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   User? currUser = FirebaseAuth.instance.currentUser;
 
   void refreshUser() {
@@ -155,6 +156,22 @@ class UserService {
     }
 
     return '';
+  }
+
+  // Update Profile
+  Future<String> updateProfile(
+    String uid, String newName, String newUsername) async {
+    String res = "Some error occurred";
+    try {
+      _firestore
+          .collection('users')
+          .doc(uid)
+          .update({'name': newName, 'username': newUsername});
+      res = 'success';
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
   }
 
   // logout
