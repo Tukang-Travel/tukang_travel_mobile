@@ -66,7 +66,10 @@ class PediaService{
   }
 
   Future<void> rateAnalytics(String id) async {
-    _analytics.logEvent(name: '>3 ratings');
+    _analytics.logEvent(
+      name: 'SELECT_ITEM',
+      parameters: {'ITEM_ID': id},
+    );
   }
 
   Future<String> insertPediaRate(String id, int rate, String userId) async {
@@ -89,6 +92,10 @@ class PediaService{
 
       await pediaRef.update({'rates': rates});
 
+      if(rate > 3) {
+        await rateAnalytics(id);
+      }
+      
       res = 'success';
     } catch (err) {
       res = err.toString();
