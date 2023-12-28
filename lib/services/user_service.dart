@@ -283,4 +283,23 @@ class UserService {
     // }
     return '';
   }
+
+  Future<String> sendForgotEmail(String email) async{
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      return 'success';
+      // Password reset email sent successfully
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        // Email address not found
+        return 'The account does not exist for the provided email.';
+      } else {
+        // Handle other FirebaseAuthException errors
+        return e.code;
+      }
+    } catch (e) {
+      // Handle other errors
+      return e.toString();
+    }
+  }
 }
