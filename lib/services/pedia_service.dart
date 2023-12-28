@@ -1,12 +1,14 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tuktraapp/services/user_service.dart';
 
 class PediaService {
   UserService userService = UserService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAnalytics _analytics = FirebaseAnalytics.instance;
   // Post comment
   Future<String> postComment(
       String pediaId, String text, String uid, String username) async {
@@ -66,6 +68,13 @@ class PediaService {
     }
   }
 
+  Future<void> rateAnalytics(String id) async {
+    _analytics.logEvent(
+      name: 'SELECT_ITEM',
+      parameters: {'ITEM_ID': id},
+    );
+  }
+
   Future<String> insertPediaRate(String id, int rate, String userId) async {
     String res = "Some error occurred";
     try {
@@ -88,6 +97,10 @@ class PediaService {
 
       await pediaRef.update({'rates': rates});
 
+      if(rate > 3) {
+        await rateAnalytics(id);
+      }
+      
       res = 'success';
     } catch (err) {
       res = err.toString();
