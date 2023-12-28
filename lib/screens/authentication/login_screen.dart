@@ -253,36 +253,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   )
                 ),
                 const SizedBox(height: 15.0,),
-                
-                  RichText(
-                      text: TextSpan(
-                          text: 'Belum punya akun? ',
-                          style: const TextStyle(
-                            color: Colors.grey,
-                            fontSize: 15.0,
-                          ),
-                          children: <TextSpan>[
-                        TextSpan(
-                            text: 'Buat akunmu ',
-                            style: const TextStyle(
-                              color: Color.fromARGB(255, 82, 114, 255),
-                              fontWeight: FontWeight.w600,
-                            ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                NavigationUtils.pushRemoveTransition(
-                                    context, const RegisterScreen());
-                              }),
-                        const TextSpan(
-                            text: 'disini.',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15.0,
-                            ))
-                      ])),
-                  const SizedBox(
-                    height: 15.0,
-                  ),
 
                   RichText(
                     text: TextSpan(
