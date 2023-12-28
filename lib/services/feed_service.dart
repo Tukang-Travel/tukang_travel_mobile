@@ -163,4 +163,20 @@ class FeedService {
     }
     return res;
   }
+
+  Future<String> deleteFiles(String title) async {
+    String folderPath = 'feeds/$title/';
+    Reference storageRef = FirebaseStorage.instance.ref().child(folderPath);
+
+    try {
+      await storageRef.listAll().then((value) {
+        for (var element in value.items) {
+          FirebaseStorage.instance.ref(element.fullPath).delete();
+        }
+      });
+      return 'success';
+    } catch (e) {
+      return e.toString();
+    }
+  }
 }

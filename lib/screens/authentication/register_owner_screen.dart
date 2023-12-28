@@ -403,35 +403,7 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
                         fontSize: 15.0,
                       ),
                     ),
-                    RichText(
-                        text: TextSpan(
-                            text: 'Pemilik usaha? ',
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan>[
-                          TextSpan(
-                              text: 'Registrasi ',
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 82, 114, 255),
-                                fontWeight: FontWeight.w600,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  NavigationUtils.pushRemoveTransition(
-                                      context, const RegisterOwnerScreen());
-                                }),
-                          const TextSpan(
-                              text: 'disini.',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 15.0,
-                              ))
-                        ])),
-                    const SizedBox(
-                      height: 15.0,
-                    ),
+                    
                     RichText(
                         text: TextSpan(
                             text: 'Sudah punya akun owner? ',

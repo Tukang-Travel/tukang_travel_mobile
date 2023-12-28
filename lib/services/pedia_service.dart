@@ -4,11 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tuktraapp/services/user_service.dart';
 
-class PediaService{
+class PediaService {
   UserService userService = UserService();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   // Post comment
-  Future<String> postComment(String pediaId, String text, String uid, String username) async {
+  Future<String> postComment(
+      String pediaId, String text, String uid, String username) async {
     String res = "Some error occurred";
     try {
       if (text.isNotEmpty) {
@@ -35,7 +36,8 @@ class PediaService{
 
   Future<Map<String, dynamic>?> getPedia(String id) async {
     try {
-      CollectionReference pedias = FirebaseFirestore.instance.collection('pedias');
+      CollectionReference pedias =
+          FirebaseFirestore.instance.collection('pedias');
       DocumentSnapshot pediaDocument = await pedias.doc(id).get();
 
       if (pediaDocument.exists) {
@@ -50,7 +52,8 @@ class PediaService{
     }
   }
 
-  Future<void> insertPediaComment(String id, String comment, String userId) async {
+  Future<void> insertPediaComment(
+      String id, String comment, String userId) async {
     try {
       await FirebaseFirestore.instance.collection('pedias').doc(id).update({
         'comments': FieldValue.arrayUnion([
@@ -66,10 +69,12 @@ class PediaService{
   Future<String> insertPediaRate(String id, int rate, String userId) async {
     String res = "Some error occurred";
     try {
-      DocumentReference pediaRef = FirebaseFirestore.instance.collection('pedias').doc(id);
+      DocumentReference pediaRef =
+          FirebaseFirestore.instance.collection('pedias').doc(id);
 
       DocumentSnapshot pediaSnapshot = await pediaRef.get();
-      List<Map<String, dynamic>> rates = List.from((pediaSnapshot.data() as Map<String, dynamic>?)?['rates'] ?? []);
+      List<Map<String, dynamic>> rates = List.from(
+          (pediaSnapshot.data() as Map<String, dynamic>?)?['rates'] ?? []);
 
       int userIndex = rates.indexWhere((rate) => rate['userid'] == userId);
 
@@ -90,7 +95,8 @@ class PediaService{
     return res;
   }
 
-  Future<void> insertPedia(String userid, String description, List<File> medias, List<String> tags, String title) async {
+  Future<void> insertPedia(String userid, String description, List<File> medias,
+      List<String> tags, String title) async {
     Map<String, dynamic> pedia = {
       'userid': userid,
       'description': description,
@@ -100,19 +106,22 @@ class PediaService{
     List<String> media_names = [];
 
     try {
-      DocumentReference newPedia = await FirebaseFirestore.instance.collection('pedias').add(pedia);
+      DocumentReference newPedia =
+          await FirebaseFirestore.instance.collection('pedias').add(pedia);
       // print('Pedia inserted successfully!');
 
-      for(int i = 0; i < medias.length; i++) {
-        String url = await uploadImageToFirebase(userid, medias[i], getFileName(medias[i]));
+      for (int i = 0; i < medias.length; i++) {
+        String url = await uploadImageToFirebase(
+            userid, medias[i], getFileName(medias[i]), title);
         media_names.add(url);
         // print(getFileName(medias[i]));
         // print(medias[i]);
       }
 
-      await FirebaseFirestore.instance.collection('pedias').doc(newPedia.id).update({
-        'medias': media_names
-      });
+      await FirebaseFirestore.instance
+          .collection('pedias')
+          .doc(newPedia.id)
+          .update({'medias': media_names});
 
       print('Pedia inserted successfully');
     } catch (e) {
@@ -133,9 +142,12 @@ class PediaService{
     return fileName;
   }
 
-  Future<String> uploadImageToFirebase(String userid, File imageFile, String imageName) async {
+  Future<String> uploadImageToFirebase(
+      String userid, File imageFile, String imageName, String title) async {
     try {
-      Reference storageReference = FirebaseStorage.instance.ref().child("pedias/$userid/$imageName");
+      Reference storageReference = FirebaseStorage.instance
+          .ref()
+          .child("pedias/$userid/$title/$imageName");
 
       await storageReference.putFile(imageFile);
       String downloadURL = await storageReference.getDownloadURL();
@@ -148,13 +160,13 @@ class PediaService{
     return "";
   }
 
-  Future<void> updatePedia(String id, String title, String description, List<dynamic> tags) async {
+  Future<void> updatePedia(
+      String id, String title, String description, List<dynamic> tags) async {
     try {
-      FirebaseFirestore.instance.collection('pedias').doc(id).update({
-        'title': title,
-        'description': description,
-        'tags': tags
-      });
+      FirebaseFirestore.instance
+          .collection('pedias')
+          .doc(id)
+          .update({'title': title, 'description': description, 'tags': tags});
 
       print('Pedia updated successfully');
     } catch (e) {
@@ -162,7 +174,7 @@ class PediaService{
     }
   }
 
-  Future<void> deletePedia(String id) async {
+  Future<void> deletePedia(String id, String title) async {
     // Replace this with the name of the folder you want to delete
     String folderName = userService.currUser!.uid;
 
@@ -170,20 +182,14 @@ class PediaService{
     var storage = FirebaseStorage.instance;
 
     // Reference to the parent folder
-    var parentFolderRef = storage.ref().child('pedias/$folderName');
-
-    // Reference to the folder with the specific name
-    var folderRef = parentFolderRef.child(folderName);
+    var folderRef = storage.ref().child('pedias/$folderName/$title');
 
     try {
-      // List all items in the folder
-      var result = await folderRef.listAll();
-
-      // Delete each file in the folder
-      await Future.wait(result.items.map((item) => item.delete()));
-
-      // Now, you can delete the empty folder
-      await folderRef.delete();
+      await folderRef.listAll().then((value) {
+        for (var element in value.items) {
+          FirebaseStorage.instance.ref(element.fullPath).delete();
+        }
+      });
 
       print('Folder deleted successfully.');
     } catch (e) {
@@ -191,7 +197,7 @@ class PediaService{
     }
 
     try {
-      FirebaseFirestore.instance.collection('pedias').doc(id).delete(); 
+      FirebaseFirestore.instance.collection('pedias').doc(id).delete();
       print('Pedia deleted successfully.');
     } catch (e) {
       print('Error deleting pedia: $e');
