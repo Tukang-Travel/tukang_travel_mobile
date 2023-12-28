@@ -1,4 +1,3 @@
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -117,16 +116,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(bottom: 10.0, left: 5.0),
-                              child: Text(
-                                'Masuk sebagai User',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                ),
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 10.0, left: 5.0),
+                            child: Text(
+                              'Masuk sebagai User',
+                              style: TextStyle(
+                                fontSize: 18.0,
                               ),
                             ),
                           ),
+                        ),
                         const SizedBox(
                           height: 5,
                         ),
@@ -187,12 +186,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Icons.password_rounded,
                                     color: Color.fromARGB(255, 82, 114, 255),
                                   ))),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
                   ),
-                ),
-                
+
                   RichText(
                       text: TextSpan(
                           text: 'Belum punya akun? ',
@@ -223,47 +222,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 15.0,
                   ),
 
-                RichText(
-                  text: TextSpan(
-                    text: 'Ingin menjadi owner? ',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontSize: 15.0,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: 'Daftar ',
-                        style: const TextStyle(
-                          color: Color.fromARGB(255, 82, 114, 255),
-                          fontWeight: FontWeight.w600,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          NavigationUtils.pushRemoveTransition(context, const RegisterOwnerScreen());
-                        }
-                      ),
-                      const TextSpan(
-                        text: 'disini.',
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 15.0,
-                        )
-                      )
-                    ]
-                  )
-                ),
-                const SizedBox(height: 15.0,),
-                
                   RichText(
                       text: TextSpan(
-                          text: 'Belum punya akun? ',
+                          text: 'Ingin menjadi owner? ',
                           style: const TextStyle(
                             color: Colors.grey,
                             fontSize: 15.0,
                           ),
                           children: <TextSpan>[
                         TextSpan(
-                            text: 'Buat akunmu ',
+                            text: 'Daftar ',
                             style: const TextStyle(
                               color: Color.fromARGB(255, 82, 114, 255),
                               fontWeight: FontWeight.w600,
@@ -271,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 NavigationUtils.pushRemoveTransition(
-                                    context, const RegisterScreen());
+                                    context, const RegisterOwnerScreen());
                               }),
                         const TextSpan(
                             text: 'disini.',
