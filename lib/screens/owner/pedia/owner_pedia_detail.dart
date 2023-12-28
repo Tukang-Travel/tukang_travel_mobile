@@ -219,6 +219,9 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                             fontWeight: FontWeight.w700, fontSize: 22.0),
                       ),
                     ),
+                    pedia["userid"] ==
+                                                    userService.currUser!.uid
+                                                ?
                     Row(
                       children: [
                         ElevatedButton(
@@ -256,7 +259,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                     TextButton(
                                       onPressed: () async {
                                         await pediaService
-                                            .deletePedia(widget.id);
+                                            .deletePedia(widget.id, pedia['title']);
                                         if (context.mounted) {
                                           NavigationUtils.pushRemoveTransition(
                                               context,
@@ -273,7 +276,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                           child: const Icon(Icons.delete),
                         ),
                       ],
-                    )
+                    ) : const Row()
                   ],
                 ),
               ),

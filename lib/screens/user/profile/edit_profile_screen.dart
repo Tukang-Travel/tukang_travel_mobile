@@ -6,7 +6,7 @@ import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/authentication/register_owner_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
-import 'package:tuktraapp/screens/user/forgot_pass_screen.dart';
+import 'package:tuktraapp/screens/authentication/forgot_pass_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';

@@ -23,20 +23,22 @@ class _InsertPediaState extends State<InsertPedia> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   List<File> _pickedImages = [];
 
-  final List<String> _types = [
-    'Sejarah',
-    'Cagar Alam',
-    'Pantai',
-    'Kuliner',
-    'Belanja',
-    'Religi',
-    'Petualangan',
-    'Seni & Budaya',
-    'Kesehatan & Kebugaran',
-    'Edukasi',
-    'Keluarga'
-  ];
+  List<String> _types = [];
   final List<String> _selectedTypes = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getTagsTemplate();
+  }
+
+  Future<void> getTagsTemplate() async {
+    final List<Map<String, dynamic>> temp =
+        await UserService().getPreferencesTemplate();
+    setState(() {
+      _types = temp.map((e) => e['name'].toString()).toList();
+    });
+  }
 
   Future<void> _pickImage() async {
     final pickedFiles = await ImagePicker().pickMultiImage(

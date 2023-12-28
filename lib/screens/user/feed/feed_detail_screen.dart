@@ -47,9 +47,10 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
     }
   }
 
-  deleteFeed(String feedId) async {
+  deleteFeed(String feedId, String title) async {
     try {
       await FeedService().deleteFeed(feedId);
+      await FeedService().deleteFiles(title);
       if (context.mounted) {
         showSnackBar(
           context,
@@ -229,7 +230,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                             child: const Text('Delete'),
                                                                             onPressed: () {
                                                                               deleteFeed(
-                                                                                widget.feedId,
+                                                                                widget.feedId, snapshot.data!["title"]
                                                                               );
                                                                               Navigator.of(context).pop();
                                                                               Navigator.of(context).pop();
