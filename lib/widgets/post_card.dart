@@ -3,6 +3,7 @@ import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/user/feed/feed_detail_screen.dart';
 import 'package:tuktraapp/services/feed_service.dart';
 import 'package:tuktraapp/models/user_model.dart';
+import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/color.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/widgets/image_video_slider.dart';
@@ -88,11 +89,27 @@ class _PostCardState extends State<PostCard> {
               // IMAGE SECTION OF THE POST
               GestureDetector(
                 onDoubleTap: () {
-                  FeedService().likePost(
-                    widget.snap['feedId'].toString(),
-                    user.uid,
-                    widget.snap['likes'],
-                  );
+                  final currentUserID = UserService().currUser!.uid;
+                  final likedByCurrentUser = widget.snap['likes']
+                      .any((like) => like['userId'] == currentUserID);
+
+                  if (likedByCurrentUser) {
+                    FeedService().likePost(
+                      widget.snap['feedId'].toString(),
+                      user.uid,
+                      widget.snap['likes'],
+                    );
+                    widget.snap['likes']
+                        .removeWhere((like) => like['userId'] == currentUserID);
+                  } else {
+                    FeedService().likePost(
+                      widget.snap['feedId'].toString(),
+                      user.uid,
+                      widget.snap['likes'],
+                    );
+                    widget.snap['likes'].add({'userId': currentUserID});
+                  }
+
                   setState(() {
                     isLikeAnimating = true;
                   });
@@ -157,7 +174,9 @@ class _PostCardState extends State<PostCard> {
                         Icons.comment_outlined,
                       ),
                       onPressed: () => NavigationUtils.pushTransition(
-                          context, FeedDetailScreen(feedId: widget.snap['feedId'].toString()))),
+                          context,
+                          FeedDetailScreen(
+                              feedId: widget.snap['feedId'].toString()))),
                 ],
               ),
               //DESCRIPTION AND NUMBER OF COMMENTS
@@ -210,7 +229,9 @@ class _PostCardState extends State<PostCard> {
                           ),
                         ),
                         onTap: () => NavigationUtils.pushTransition(
-                            context, FeedDetailScreen(feedId: widget.snap['feedId'].toString()))),
+                            context,
+                            FeedDetailScreen(
+                                feedId: widget.snap['feedId'].toString()))),
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Text(
