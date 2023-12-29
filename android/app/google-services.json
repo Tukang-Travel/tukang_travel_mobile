@@ -1,48 +1,156 @@
 {
   "project_info": {
-    "project_number": "489232324737",
-    "project_id": "tukangtravel",
-    "storage_bucket": "tukangtravel.appspot.com"
+    "project_number": "707520215944",
+    "project_id": "tukang-travel",
+    "storage_bucket": "tukang-travel.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:489232324737:android:6be4337bb563e4b0be5580",
+        "mobilesdk_app_id": "1:707520215944:android:ab0f92e72c300d0f1bd83d",
         "android_client_info": {
-          "package_name": "com.tuktra.mobile"
+          "package_name": "com.kangkouding.tukangtravel"
         }
       },
       "oauth_client": [
         {
-          "client_id": "489232324737-190k3h2oubluar5crhqmar62ijbo1sbq.apps.googleusercontent.com",
+          "client_id": "707520215944-0jscob4fb5ri0h0sift9pbh8b5n2mjm3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.tuktra.mobile",
-            "certificate_hash": "dd020ad428ff898aee7de51a98095428e81f2578"
+            "package_name": "com.kangkouding.tukangtravel",
+            "certificate_hash": "cc10a87f7657abf0212745523fbe26a20cfaad09"
           }
         },
         {
-          "client_id": "489232324737-shc553o2ik1uaffksdu7p4io3urp7tfl.apps.googleusercontent.com",
+          "client_id": "707520215944-h5tf4v93b6uas0bna5rfoqmqu34ilmh4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCcs-cIi4-JrNsim6EiAgCLEzhX1JI1wgA"
+          "current_key": "AIzaSyDmx3cSfi3zvJXtmeeH59LyXzE7FK1DqJI"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "489232324737-shc553o2ik1uaffksdu7p4io3urp7tfl.apps.googleusercontent.com",
+              "client_id": "707520215944-h5tf4v93b6uas0bna5rfoqmqu34ilmh4.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "489232324737-jkgn4jj7ulgvem5lq25v665k2hl514c4.apps.googleusercontent.com",
+              "client_id": "707520215944-1oa6s2fiqc1h5omfrlugcpe0u6i5kukr.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.tuktra.mobile"
+                "bundle_id": "com.example.tuktraapp.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707520215944:android:663d9eee64a45d031bd83d",
+        "android_client_info": {
+          "package_name": "com.kangkouding.uploader.tuktrauploader"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707520215944-h5tf4v93b6uas0bna5rfoqmqu34ilmh4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmx3cSfi3zvJXtmeeH59LyXzE7FK1DqJI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707520215944-h5tf4v93b6uas0bna5rfoqmqu34ilmh4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "707520215944-1oa6s2fiqc1h5omfrlugcpe0u6i5kukr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tuktraapp.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707520215944:android:4a92a55031233a461bd83d",
+        "android_client_info": {
+          "package_name": "com.tuktra.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707520215944-h5tf4v93b6uas0bna5rfoqmqu34ilmh4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmx3cSfi3zvJXtmeeH59LyXzE7FK1DqJI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707520215944-h5tf4v93b6uas0bna5rfoqmqu34ilmh4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "707520215944-1oa6s2fiqc1h5omfrlugcpe0u6i5kukr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tuktraapp.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:707520215944:android:c7b9ed049bde426c1bd83d",
+        "android_client_info": {
+          "package_name": "com.tuktra.tuktraadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "707520215944-h5tf4v93b6uas0bna5rfoqmqu34ilmh4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmx3cSfi3zvJXtmeeH59LyXzE7FK1DqJI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "707520215944-h5tf4v93b6uas0bna5rfoqmqu34ilmh4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "707520215944-1oa6s2fiqc1h5omfrlugcpe0u6i5kukr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tuktraapp.RunnerTests"
               }
             }
           ]
