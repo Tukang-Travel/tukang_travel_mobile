@@ -80,7 +80,6 @@ class _FeedScreenState extends State<FeedScreen> {
                     tagOccurrences[tag] = (tagOccurrences[tag] ?? 0) + 1;
                   }
 
-
                   var feeds = snapshot.data!.docs.map((doc) {
                     var tags = List<String>.from(doc['tags']);
                     var likedTagsCount = tags.fold(
@@ -88,32 +87,33 @@ class _FeedScreenState extends State<FeedScreen> {
                         (count, tag) =>
                             count + (tagOccurrences[tag.toLowerCase()] ?? 0));
 
+                    var likes = List<Map<String, dynamic>>.from(doc['likes']);
+                    var userLikedFeed = likes.any((like) =>
+                        like['userId'] == UserService().currUser!.uid);
+
                     return {
                       'originalDoc': doc.data(),
                       'likedTagsCount': likedTagsCount,
+                      'userLikedFeed': userLikedFeed,
                     };
                   }).toList();
 
                   feeds.sort((a, b) {
+                    var userLikedFeedA = a['userLikedFeed'] as bool;
+                    var userLikedFeedB = b['userLikedFeed'] as bool;
+
+                    if (!userLikedFeedA && userLikedFeedB) {
+                      return -1; // Feed A (not liked) comes before Feed B (liked)
+                    } else if (userLikedFeedA && !userLikedFeedB) {
+                      return 1; // Feed A (liked) comes after Feed B (not liked)
+                    }
+
                     var likedTagsCountA = a['likedTagsCount'] as int;
                     var likedTagsCountB = b['likedTagsCount'] as int;
 
                     if (likedTagsCountA != likedTagsCountB) {
                       return likedTagsCountB.compareTo(
                           likedTagsCountA); // Sort by likedTagsCount descending
-                    }
-
-                    var userLikedFeedA = likedTags.contains(((a['originalDoc']
-                            as Map<String, dynamic>?)?['feedId'] as String?) ??
-                        '');
-                    var userLikedFeedB = likedTags.contains(((b['originalDoc']
-                            as Map<String, dynamic>?)?['feedId'] as String?) ??
-                        '');
-
-                    if (userLikedFeedA && !userLikedFeedB) {
-                      return 1; // Feed A comes after Feed B
-                    } else if (!userLikedFeedA && userLikedFeedB) {
-                      return -1; // Feed A comes before Feed B
                     }
 
                     return 0; // Both feeds are either liked or not liked, maintain their order based on tag occurrence
@@ -132,7 +132,7 @@ class _FeedScreenState extends State<FeedScreen> {
                                 margin:
                                     const EdgeInsets.symmetric(vertical: 20.0),
                                 child: PostCard(
-                                  snap: feeds[feeds.length - 1 - index]
+                                  snap: feeds[index]
                                       ['originalDoc'], // Use the sorted feeds
                                 ),
                               ),
