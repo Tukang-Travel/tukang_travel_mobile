@@ -160,7 +160,7 @@ class UserService {
 
   // Update Profile
   Future<String> updateProfile(
-    String uid, String newName, String newUsername) async {
+      String uid, String newName, String newUsername) async {
     String res = "Some error occurred";
     try {
       _firestore
@@ -209,6 +209,31 @@ class UserService {
             documentSnapshot.data() as Map<String, dynamic>;
         resultList.add(data);
       }
+      return resultList;
+    } catch (e) {
+      print('Error retrieving preferences data: $e');
+      return [];
+    }
+  }
+
+  Future<List<String>> getUserPreference() async {
+    try {
+      DocumentReference preferences = FirebaseFirestore.instance
+          .collection('users')
+          .doc(UserService().currUser!.uid);
+      DocumentSnapshot preferencesSnapshot = await preferences.get();
+
+      List<String> resultList = [];
+
+      if (preferencesSnapshot.exists) {
+        // Check if 'interest' field exists and is not null
+        if ((preferencesSnapshot.data() as Map<String, dynamic>)['interest'] !=
+            null) {
+          // Assuming the 'interest' field is an array of strings
+          resultList = List<String>.from(preferencesSnapshot['interest']);
+        }
+      }
+
       return resultList;
     } catch (e) {
       print('Error retrieving preferences data: $e');
@@ -284,7 +309,7 @@ class UserService {
     return '';
   }
 
-  Future<String> sendForgotEmail(String email) async{
+  Future<String> sendForgotEmail(String email) async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
       return 'success';

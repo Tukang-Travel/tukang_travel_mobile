@@ -11,8 +11,22 @@ class FeedScreen extends StatefulWidget {
 }
 
 class _FeedScreenState extends State<FeedScreen> {
+  var userInterestTags = <String>[];
+
   Future<void> _pullRefresh() async {
-    setState(() {});
+    setState(() {
+      getPreference();
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getPreference();
+  }
+
+  Future<void> getPreference() async {
+    userInterestTags = await UserService().getUserPreference();
   }
 
   @override
@@ -45,6 +59,8 @@ class _FeedScreenState extends State<FeedScreen> {
                     return const Center(child: Text('No data available'));
                   }
 
+                  // Fetch user's interest tags from 'users' collection
+
                   var likedTags = <String>[];
                   for (var doc in snapshot.data!.docs) {
                     var likes = List<Map<String, dynamic>>.from(doc['likes']);
@@ -60,9 +76,10 @@ class _FeedScreenState extends State<FeedScreen> {
 
                   // Count the occurrences of each tag in likedTags
                   var tagOccurrences = <String, int>{};
-                  for (var tag in likedTags) {
+                  for (var tag in likedTags + userInterestTags) {
                     tagOccurrences[tag] = (tagOccurrences[tag] ?? 0) + 1;
                   }
+
 
                   var feeds = snapshot.data!.docs.map((doc) {
                     var tags = List<String>.from(doc['tags']);
