@@ -279,7 +279,9 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
       await FeedService().uploadFeed(
           userService.currUser!.uid, username, title, content, updatedTags);
 
-      super.initState();
+      if (context.mounted) {
+        showSnackBar(context, 'Upload Completed');
+      }
     } catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString());
