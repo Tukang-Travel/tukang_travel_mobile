@@ -12,6 +12,7 @@ import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
 class UploadFeedScreen extends StatefulWidget {
+  
   const UploadFeedScreen({super.key});
 
   @override
@@ -278,8 +279,9 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
       // Add feed details to Firestore
       await FeedService().uploadFeed(
           userService.currUser!.uid, username, title, content, updatedTags);
-
-      super.initState();
+      if (context.mounted) {
+        showSnackBar(context, "Upload complete");
+      }
     } catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString());
