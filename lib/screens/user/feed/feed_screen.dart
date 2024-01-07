@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tuktraapp/services/user_service.dart';
@@ -42,8 +44,11 @@ class _FeedScreenState extends State<FeedScreen> {
         body: SafeArea(
           child: RefreshIndicator(
               onRefresh: _pullRefresh,
-              child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                future: FirebaseFirestore.instance.collection('feeds').get(),
+              child: FutureBuilder<List<dynamic>>(
+                future: Future.wait([
+                  FirebaseFirestore.instance.collection('feeds').get(),
+                  FirebaseFirestore.instance.collection('pedias').get(),
+                ]),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
@@ -55,22 +60,40 @@ class _FeedScreenState extends State<FeedScreen> {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   }
 
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                  if (!snapshot.data![0].docs.isNotEmpty) {
                     return const Center(child: Text('No data available'));
                   }
 
                   // Fetch user's interest tags from 'users' collection
-
                   var likedTags = <String>[];
-                  for (var doc in snapshot.data!.docs) {
+                  for (var doc in snapshot.data![0].docs) {
                     var likes = List<Map<String, dynamic>>.from(doc['likes']);
                     if (likes.any((like) =>
                         like['userId'] == UserService().currUser!.uid)) {
                       var tags = List<String>.from(
                           doc['tags'].map((tag) => tag.toLowerCase()));
-                      for (var tag in tags) {
-                        likedTags.add(tag);
-                      }
+                      likedTags.addAll(tags);
+                    }
+                  }
+
+                  // Use snapshot.data![1] to reference the "pedia" collection
+                  var pediaSnapshot = snapshot.data![1];
+
+                  // Check "pedia" collection for user's rate
+                  var pediaDataList =
+                      pediaSnapshot.docs.map((doc) => doc.data()).toList();
+                  for (var pediaData in pediaDataList) {
+                    var rates =
+                        List<Map<String, dynamic>>.from(pediaData['rates']);
+                    var userRate = rates.firstWhere(
+                      (rate) => rate['userid'] == UserService().currUser!.uid,
+                      orElse: () => {'rate': 0, 'userId': ''},
+                    );
+
+                    if ((userRate['rate'] == 4 || userRate['rate'] == 5)) {
+                      // If user's rate is 4 or 5, add "tags" from "pedia" collection
+                      var pediaTags = List<String>.from(pediaData['tags']);
+                      likedTags.addAll(pediaTags);
                     }
                   }
 
@@ -80,12 +103,14 @@ class _FeedScreenState extends State<FeedScreen> {
                     tagOccurrences[tag] = (tagOccurrences[tag] ?? 0) + 1;
                   }
 
-                  var feeds = snapshot.data!.docs.map((doc) {
+                  // Sorting logic and creating feeds list
+                  var feeds = snapshot.data![0].docs.map((doc) {
                     var tags = List<String>.from(doc['tags']);
                     var likedTagsCount = tags.fold(
                         0,
                         (count, tag) =>
-                            count + (tagOccurrences[tag.toLowerCase()] ?? 0));
+                            count + (tagOccurrences[tag] ?? 0));
+
 
                     var likes = List<Map<String, dynamic>>.from(doc['likes']);
                     var userLikedFeed = likes.any((like) =>
@@ -119,7 +144,9 @@ class _FeedScreenState extends State<FeedScreen> {
                     return 0; // Both feeds are either liked or not liked, maintain their order based on tag occurrence
                   });
 
-                  return !snapshot.hasData
+                  // Displaying feeds in UI
+
+                  return !snapshot.data![0].docs.isNotEmpty
                       ? const Center(child: Text('No Feed yet'))
                       : SizedBox.expand(
                           child: Container(
