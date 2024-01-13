@@ -7,6 +7,7 @@ import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/screens/authentication/register_owner_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/authentication/forgot_pass_screen.dart';
+import 'package:tuktraapp/screens/welcome_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
@@ -94,6 +95,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     return Scaffold(
         backgroundColor: const Color(0xFFFFFFFF),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(top: 60.0, left: 40.0),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: FloatingActionButton(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              onPressed: () {
+                NavigationUtils.pushRemoveTransition(
+                    context, const WelcomeScreen());
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(left: 6.0),
+                child: Icon(Icons.arrow_back_ios),
+              ),
+            ),
+          ),
+        ),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -102,485 +121,375 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   children: [
                     Container(
-                        margin: const EdgeInsets.only(top:50.0),
-                        width: w,
-                        height: 100.0, // one third of the page
-                        decoration: const BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage('asset/images/tuktra_logo.png'),
-                              fit: BoxFit.cover),
-                        )),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Container(
                       margin: const EdgeInsets.only(left: 20.0, right: 20.0),
                       width: w,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(bottom: 10.0, left: 5.0),
-                              child: Text(
-                                'Daftar sebagai User',
-                                style: TextStyle(
-                                  fontSize: 18.0,
+                          Padding(
+                            padding: const EdgeInsets.only(top: 110.0),
+                            child: Container(
+                              child: Card(
+                                color: Colors.white,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        width: w,
+                                        height: 100.0, // one third of the page
+                                        decoration: const BoxDecoration(
+                                          image: DecorationImage(
+                                              image: AssetImage('asset/images/tuktra_logo.png'),
+                                              fit: BoxFit.cover),
+                                        )
+                                      ),
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(20),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                blurRadius: 10,
+                                                spreadRadius: 2,
+                                                offset: Offset(1, 1),
+                                                color: Color.fromARGB(128, 170, 188, 192),
+                                              )
+                                            ]),
+                                        child: TextFormField(
+                                          controller: nameTxt,
+                                          validator: ((value) => value!.isEmpty
+                                              ? 'Name must be filled'
+                                              : null),
+                                          decoration: InputDecoration(
+                                              prefixIcon: const Icon(
+                                                Icons.abc_rounded,
+                                                color: Color.fromARGB(255, 82, 114, 255),
+                                              ),
+                                              hintText: 'Name',
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Color.fromARGB(
+                                                          128, 170, 188, 192),
+                                                      width: 1.0),
+                                                  borderRadius: BorderRadius.circular(20)),
+                                              enabledBorder: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                    color:
+                                                        Color.fromARGB(128, 170, 188, 192),
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(20)),
+                                              border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(20))),
+                                        ),
+                                      ),
+                                      
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      
+                                      // username text field
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(20),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                blurRadius: 10,
+                                                spreadRadius: 2,
+                                                offset: Offset(1, 1),
+                                                color: Color.fromARGB(128, 170, 188, 192),
+                                              )
+                                            ]),
+                                        child: TextFormField(
+                                          controller: usernameTxt,
+                                          validator: ((value) => value!.isEmpty
+                                              ? 'Username must be filled'
+                                              : null),
+                                          decoration: InputDecoration(
+                                              prefixIcon: const Icon(
+                                                Icons.person_rounded,
+                                                color: Color.fromARGB(255, 82, 114, 255),
+                                              ),
+                                              hintText: 'Username',
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Color.fromARGB(
+                                                          128, 170, 188, 192),
+                                                      width: 1.0),
+                                                  borderRadius: BorderRadius.circular(20)),
+                                              enabledBorder: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                    color:
+                                                        Color.fromARGB(128, 170, 188, 192),
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(20)),
+                                              border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(20))),
+                                        ),
+                                      ),
+                                      
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      
+                                      // email text field
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(20),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                blurRadius: 10,
+                                                spreadRadius: 2,
+                                                offset: Offset(1, 1),
+                                                color: Color.fromARGB(128, 170, 188, 192),
+                                              )
+                                            ]),
+                                        child: TextFormField(
+                                          controller: emailTxt,
+                                          validator: ((value) => value!.isEmpty
+                                              ? 'Email must be filled'
+                                              : null),
+                                          decoration: InputDecoration(
+                                              prefixIcon: const Icon(
+                                                Icons.email_rounded,
+                                                color: Color.fromARGB(255, 82, 114, 255),
+                                              ),
+                                              hintText: 'Email',
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Color.fromARGB(
+                                                          128, 170, 188, 192),
+                                                      width: 1.0),
+                                                  borderRadius: BorderRadius.circular(20)),
+                                              enabledBorder: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                    color:
+                                                        Color.fromARGB(128, 170, 188, 192),
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(20)),
+                                              border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(20))),
+                                        ),
+                                      ),
+                                      
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      // password text field
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(20),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                blurRadius: 10,
+                                                spreadRadius: 2,
+                                                offset: Offset(1, 1),
+                                                color: Color.fromARGB(128, 170, 188, 192),
+                                              )
+                                            ]),
+                                        child: TextFormField(
+                                          controller: passTxt,
+                                          validator: ((value) => value!.isEmpty
+                                              ? 'Password must be filled'
+                                              : null),
+                                          obscureText: true,
+                                          enableSuggestions: false,
+                                          autocorrect: false,
+                                          decoration: InputDecoration(
+                                              prefixIcon: const Icon(
+                                                Icons.password_rounded,
+                                                color: Color.fromARGB(255, 82, 114, 255),
+                                              ),
+                                              hintText: 'Password',
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Color.fromARGB(
+                                                          128, 170, 188, 192),
+                                                      width: 1.0),
+                                                  borderRadius: BorderRadius.circular(20)),
+                                              enabledBorder: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Color.fromARGB(
+                                                          128, 170, 188, 192),
+                                                      width: 1.5),
+                                                  borderRadius: BorderRadius.circular(20)),
+                                              border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(20))),
+                                        ),
+                                      ),
+                                      
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      //password confirmation
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(20),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                blurRadius: 10,
+                                                spreadRadius: 2,
+                                                offset: Offset(1, 1),
+                                                color: Color.fromARGB(128, 170, 188, 192),
+                                              )
+                                            ]),
+                                        child: TextFormField(
+                                          controller: conTxt,
+                                          validator: ((value) {
+                                            if (value!.isEmpty) {
+                                              return 'Confirmation must be filled';
+                                            } else if (value != passTxt.text) {
+                                              return 'Password do not match';
+                                            } else {
+                                              return null;
+                                            }
+                                          }),
+                                          obscureText: true,
+                                          enableSuggestions: false,
+                                          autocorrect: false,
+                                          decoration: InputDecoration(
+                                              prefixIcon: const Icon(
+                                                Icons.password_rounded,
+                                                color: Color.fromARGB(255, 82, 114, 255),
+                                              ),
+                                              hintText: 'Confirm Password',
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Color.fromARGB(
+                                                          128, 170, 188, 192),
+                                                      width: 1.0),
+                                                  borderRadius: BorderRadius.circular(20)),
+                                              enabledBorder: OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Color.fromARGB(
+                                                          128, 170, 188, 192),
+                                                      width: 1.5),
+                                                  borderRadius: BorderRadius.circular(20)),
+                                              border: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.circular(20))),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20.0,),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: [
+                                          Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  vertical: 10.0, horizontal: 5.0),
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context).size.width * 0.4,
+                                                height: MediaQuery.of(context).size.height * 0.07,
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      isGoogle = true;
+                                                      isLoading = true;
+                                                      _loginGoogleAuth('user');
+                                                    });
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: Colors.white,
+                                                    elevation: 5,
+                                                    shadowColor: Colors.black,
+                                                    padding: const EdgeInsets.symmetric(
+                                                        vertical: 15.0, horizontal: 30.0),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(20.0)),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      if (isLoading && isGoogle)
+                                                        const CircularProgressIndicator()
+                                                      else
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment.center,
+                                                          children: [
+                                                            Image.asset(
+                                                              'asset/images/google_logo.webp',
+                                                              width: 20.0,
+                                                              height: 20.0,
+                                                            ),
+                                                            const SizedBox(width: 8.0),
+                                                            const Text(
+                                                              'Google',
+                                                              style: TextStyle(
+                                                                color: Colors.black,
+                                                                fontSize: 18.0,
+                                                              ),
+                                                            ),
+                                                          ]
+                                                        )
+                                                    ],
+                                                  ),
+                                                ),
+                                              )),
+                                          Padding(
+                                              padding: const EdgeInsets.symmetric(
+                                                  vertical: 10.0, horizontal: 5.0),
+                                              child: SizedBox(
+                                                width: MediaQuery.of(context).size.width * 0.35,
+                                                height: MediaQuery.of(context).size.height * 0.07,
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    if (formKey.currentState!.validate()) {
+                                                      setState(() {
+                                                        isLoading = true;
+                                                        _regisAuth();
+                                                      });
+                                                    }
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        const Color.fromARGB(255, 82, 114, 255),
+                                                    elevation: 5,
+                                                    shadowColor: Colors.black,
+                                                    padding: const EdgeInsets.symmetric(
+                                                        vertical: 15.0, horizontal: 20.0),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius.circular(20.0)),
+                                                  ),
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      //const SizedBox(width: 8.0),
+                                                      if (isLoading && !isGoogle)
+                                                        const CircularProgressIndicator()
+                                                      else
+                                                        const Center(
+                                                          child: Text(
+                                                            'DAFTAR',
+                                                            style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 18.0,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              )),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 10.0,)
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                          ),
-
-                          //name text field
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    blurRadius: 10,
-                                    spreadRadius: 2,
-                                    offset: Offset(1, 1),
-                                    color: Color.fromARGB(128, 170, 188, 192),
-                                  )
-                                ]),
-                            child: TextFormField(
-                              controller: nameTxt,
-                              validator: ((value) => value!.isEmpty
-                                  ? 'Name must be filled'
-                                  : null),
-                              decoration: InputDecoration(
-                                  prefixIcon: const Icon(
-                                    Icons.person_rounded,
-                                    color: Color.fromARGB(255, 82, 114, 255),
-                                  ),
-                                  hintText: 'Name',
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Color.fromARGB(
-                                              128, 170, 188, 192),
-                                          width: 1.0),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        color:
-                                            Color.fromARGB(128, 170, 188, 192),
-                                      ),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20))),
-                            ),
-                          ),
-
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          // username text field
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    blurRadius: 10,
-                                    spreadRadius: 2,
-                                    offset: Offset(1, 1),
-                                    color: Color.fromARGB(128, 170, 188, 192),
-                                  )
-                                ]),
-                            child: TextFormField(
-                              controller: usernameTxt,
-                              validator: ((value) => value!.isEmpty
-                                  ? 'Username must be filled'
-                                  : null),
-                              decoration: InputDecoration(
-                                  prefixIcon: const Icon(
-                                    Icons.person_rounded,
-                                    color: Color.fromARGB(255, 82, 114, 255),
-                                  ),
-                                  hintText: 'Username',
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Color.fromARGB(
-                                              128, 170, 188, 192),
-                                          width: 1.0),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        color:
-                                            Color.fromARGB(128, 170, 188, 192),
-                                      ),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20))),
-                            ),
-                          ),
-
-                          const SizedBox(
-                            height: 10,
-                          ),
-
-                          // email text field
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    blurRadius: 10,
-                                    spreadRadius: 2,
-                                    offset: Offset(1, 1),
-                                    color: Color.fromARGB(128, 170, 188, 192),
-                                  )
-                                ]),
-                            child: TextFormField(
-                              controller: emailTxt,
-                              validator: ((value) => value!.isEmpty
-                                  ? 'Email must be filled'
-                                  : null),
-                              decoration: InputDecoration(
-                                  prefixIcon: const Icon(
-                                    Icons.email_rounded,
-                                    color: Color.fromARGB(255, 82, 114, 255),
-                                  ),
-                                  hintText: 'Email',
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Color.fromARGB(
-                                              128, 170, 188, 192),
-                                          width: 1.0),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                        color:
-                                            Color.fromARGB(128, 170, 188, 192),
-                                      ),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20))),
-                            ),
-                          ),
-
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          // password text field
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    blurRadius: 10,
-                                    spreadRadius: 2,
-                                    offset: Offset(1, 1),
-                                    color: Color.fromARGB(128, 170, 188, 192),
-                                  )
-                                ]),
-                            child: TextFormField(
-                              controller: passTxt,
-                              validator: ((value) => value!.isEmpty
-                                  ? 'Password must be filled'
-                                  : null),
-                              obscureText: true,
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              decoration: InputDecoration(
-                                  prefixIcon: const Icon(
-                                    Icons.password_rounded,
-                                    color: Color.fromARGB(255, 82, 114, 255),
-                                  ),
-                                  hintText: 'Password',
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Color.fromARGB(
-                                              128, 170, 188, 192),
-                                          width: 1.0),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Color.fromARGB(
-                                              128, 170, 188, 192),
-                                          width: 1.5),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20))),
-                            ),
-                          ),
-
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          //password confirmation
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    blurRadius: 10,
-                                    spreadRadius: 2,
-                                    offset: Offset(1, 1),
-                                    color: Color.fromARGB(128, 170, 188, 192),
-                                  )
-                                ]),
-                            child: TextFormField(
-                              controller: conTxt,
-                              validator: ((value) {
-                                if (value!.isEmpty) {
-                                  return 'Confirmation must be filled';
-                                } else if (value != passTxt.text) {
-                                  return 'Password do not match';
-                                } else {
-                                  return null;
-                                }
-                              }),
-                              obscureText: true,
-                              enableSuggestions: false,
-                              autocorrect: false,
-                              decoration: InputDecoration(
-                                  prefixIcon: const Icon(
-                                    Icons.password_rounded,
-                                    color: Color.fromARGB(255, 82, 114, 255),
-                                  ),
-                                  hintText: 'Confirm Password',
-                                  focusedBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Color.fromARGB(
-                                              128, 170, 188, 192),
-                                          width: 1.0),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderSide: const BorderSide(
-                                          color: Color.fromARGB(
-                                              128, 170, 188, 192),
-                                          width: 1.5),
-                                      borderRadius: BorderRadius.circular(20)),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(20))),
-                            ),
-                          ),
+                          )                          
                         ],
                       ),
                     ),
                     const SizedBox(
                       height: 25,
-                    ),
-                    RichText(
-                        text: TextSpan(
-                            text: 'Sudah punya akun? ',
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan>[
-                          TextSpan(
-                              text: 'Masuk ke akunmu ',
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 82, 114, 255),
-                                fontWeight: FontWeight.w600,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  NavigationUtils.pushRemoveTransition(
-                                      context, const LoginScreen());
-                                }),
-                          const TextSpan(
-                              text: 'disini.',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 15.0,
-                              ))
-                        ])),
-                    const Text(
-                      'Atau ',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 15.0,
-                      ),
-                    ),
-                    RichText(
-                        text: TextSpan(
-                            text: 'Pemilik usaha? ',
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan>[
-                          TextSpan(
-                              text: 'Registrasi ',
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 82, 114, 255),
-                                fontWeight: FontWeight.w600,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  NavigationUtils.pushRemoveTransition(
-                                      context, const RegisterOwnerScreen());
-                                }),
-                          const TextSpan(
-                              text: 'disini.',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 15.0,
-                              ))
-                        ])),
-                    const SizedBox(
-                      height: 15.0,
-                    ),
-                    RichText(
-                        text: TextSpan(
-                            text: 'Sudah punya akun owner? ',
-                            style: const TextStyle(
-                              color: Colors.grey,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan>[
-                          TextSpan(
-                              text: 'Masuk ke akunmu ',
-                              style: const TextStyle(
-                                color: Color.fromARGB(255, 82, 114, 255),
-                                fontWeight: FontWeight.w600,
-                              ),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  NavigationUtils.pushRemoveTransition(
-                                      context, const LoginOwnerScreen());
-                                }),
-                          const TextSpan(
-                              text: 'disini.',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 15.0,
-                              ))
-                        ])),
-                    const SizedBox(
-                      height: 15.0,
-                    ),
-                    RichText(
-                      text: TextSpan(
-                          text: 'Lupa kata sandi anda?',
-                          style: const TextStyle(
-                            color: Color.fromARGB(255, 82, 114, 255),
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15.0,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              NavigationUtils.pushTransition(
-                                  context, const ForgotPasswordScreen());
-                            }),
-                    ),
-                    const SizedBox(
-                      height: 30.0,
-                    ),
-                    // sign up with google
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10.0, horizontal: 15.0),
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              height: MediaQuery.of(context).size.height * 0.07,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    isGoogle = true;
-                                    isLoading = true;
-                                    _loginGoogleAuth('user');
-                                  });
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.white,
-                                  elevation: 5,
-                                  shadowColor: Colors.black,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 15.0, horizontal: 30.0),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(20.0)),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    if (isLoading && isGoogle)
-                                      const CircularProgressIndicator()
-                                    else
-                                      Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Image.asset(
-                                              'asset/images/google_logo.webp',
-                                              width: 24.0,
-                                              height: 24.0,
-                                            ),
-                                            const SizedBox(width: 8.0),
-                                            const Text(
-                                              'Google',
-                                              style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 20.0,
-                                              ),
-                                            ),
-                                          ])
-                                  ],
-                                ),
-                              ),
-                            )),
-                        Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10.0, horizontal: 15.0),
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              height: MediaQuery.of(context).size.height * 0.07,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    setState(() {
-                                      isLoading = true;
-                                      _regisAuth();
-                                    });
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 82, 114, 255),
-                                  elevation: 5,
-                                  shadowColor: Colors.black,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 15.0, horizontal: 20.0),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(20.0)),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(width: 8.0),
-                                    if (isLoading && !isGoogle)
-                                      const CircularProgressIndicator()
-                                    else
-                                      const Center(
-                                        child: Text(
-                                          'DAFTAR',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20.0,
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
-                              ),
-                            )),
-                      ],
                     ),
                   ],
                 ),

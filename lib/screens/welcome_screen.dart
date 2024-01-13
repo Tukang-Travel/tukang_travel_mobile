@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
+import 'package:tuktraapp/screens/authentication/login_owner_screen.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
+import 'package:tuktraapp/screens/authentication/register_owner_screen.dart';
+import 'package:tuktraapp/screens/authentication/register_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
@@ -23,7 +26,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
 
   Future<void> _loadUserInfo() async {
     if (userService.currUser == null) {
-      NavigationUtils.pushRemoveTransition(context, const LoginScreen());
+      // NavigationUtils.pushRemoveTransition(context, const LoginScreen());
     } else {
       UserProvider userProvider =
           Provider.of<UserProvider>(context, listen: false);
@@ -62,9 +65,10 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             // Animation has completed, show the rest of the content
-            return _buildLoadingIndicator();
-          } else {
             return _buildContent();
+            
+          } else {
+            return _buildLoadingIndicator();
           }
         },
       ),
@@ -92,8 +96,116 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             ),
           ),
         ),
+        Positioned(
+          bottom: 30.0,
+          left: MediaQuery.of(context).size.width / 2 - 185,
+          child: Row(
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      const Color.fromARGB(255, 82, 114, 255),
+                  elevation: 5,
+                  shadowColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 15.0, horizontal: 20.0),
+                  shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(20.0)),
+                ),
+                onPressed: () {
+                  NavigationUtils.pushRemoveTransition(context, const LoginOwnerScreen());
+                },
+                child: const Text(
+                  "Masuk sebagai Owner",
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                ),
+              ),
+              const SizedBox(width: 20.0,),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Colors.black,
+                  elevation: 5,
+                  shadowColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 15.0, horizontal: 20.0),
+                  shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(20.0)),
+                ),
+                onPressed: () {
+                  NavigationUtils.pushRemoveTransition(context, const LoginScreen());
+                },
+                child: const Text(
+                  "Masuk sebagai User",
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Positioned(
+          bottom: 100.0,
+          left: MediaQuery.of(context).size.width / 2 - 185,
+          child: Row(
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      const Color.fromARGB(255, 82, 114, 255),
+                  elevation: 5,
+                  shadowColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 15.0, horizontal: 20.0),
+                  shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(20.0)),
+                ),
+                onPressed: () {
+                  NavigationUtils.pushRemoveTransition(context, const RegisterOwnerScreen());
+                },
+                child: const Text(
+                  "Daftar sebagai Owner",
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                ),
+              ),
+              const SizedBox(width: 25.0,),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Colors.black,
+                  elevation: 5,
+                  shadowColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 15.0, horizontal: 20.0),
+                  shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(20.0)),
+                ),
+                onPressed: () {
+                  NavigationUtils.pushRemoveTransition(context, const RegisterScreen());
+                },
+                child: const Text(
+                  "Daftar sebagai User",
+                  style: TextStyle(
+                    color: Colors.white
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
+
+
   }
 
   Widget _buildLoadingIndicator() {

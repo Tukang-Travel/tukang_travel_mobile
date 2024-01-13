@@ -18,6 +18,26 @@ class PlanService {
     }
   }
 
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>?> getPlans(String userId) async {
+    try {
+      Query<Map<String, dynamic>> plansQuery = FirebaseFirestore.instance.collection('planners').where('userid', isEqualTo: userId);
+
+      QuerySnapshot<Map<String, dynamic>> querySnapshot = await plansQuery.get();
+
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> planList = [];
+
+      querySnapshot.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) {
+        planList.add(document);
+      });
+
+      return planList;
+    } catch (e) {
+      print('Error retrieving plan data: $e');
+      return null;
+    }
+  }
+
+
   Future<void> insertPlanner(String title, String source, String destination, String startDate, String endDate, int budget, int people) async {
     Map<String, dynamic> plan = {
       'title': title,
