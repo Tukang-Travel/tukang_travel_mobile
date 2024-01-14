@@ -18,6 +18,16 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
     double w = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        title: const Text(
+          'Pedia Perjalanan',
+          style: TextStyle(
+            fontSize: 25.0,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      ),
       body: SafeArea(
           child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -26,38 +36,41 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding:
-                    const EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
-                child: Row(
-                  children: [
-                    const Text(
-                      'Pedia Perjalanan',
-                      style: TextStyle(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 8.0,
-                    ),
-                    ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100.0)),
-                            backgroundColor:
-                                const Color.fromARGB(255, 82, 114, 255)),
-                        onPressed: () {
-                          NavigationUtils.pushRemoveTransition(
-                              context, const InsertPedia());
-                        },
-                        child: const Icon(Icons.add, color: Colors.white,))
-                  ],
-                ),
-              ),
-              const SizedBox(
-                width: 8.0,
-              ),
+              // Padding(
+              //   padding:
+              //       const EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
+              //   child: Row(
+              //     children: [
+              //       const Text(
+              //         'Pedia Perjalanan',
+              //         style: TextStyle(
+              //           fontSize: 25.0,
+              //           fontWeight: FontWeight.w900,
+              //         ),
+              //       ),
+              //       const SizedBox(
+              //         width: 8.0,
+              //       ),
+              //       ElevatedButton(
+              //           style: ElevatedButton.styleFrom(
+              //               shape: RoundedRectangleBorder(
+              //                   borderRadius: BorderRadius.circular(100.0)),
+              //               backgroundColor:
+              //                   const Color.fromARGB(255, 82, 114, 255)),
+              //           onPressed: () {
+              //             NavigationUtils.pushRemoveTransition(
+              //                 context, const InsertPedia());
+              //           },
+              //           child: const Icon(
+              //             Icons.add,
+              //             color: Colors.white,
+              //           ))
+              //     ],
+              //   ),
+              // ),
+              // const SizedBox(
+              //   width: 8.0,
+              // ),
               const Padding(
                 padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
                 child: Text(
