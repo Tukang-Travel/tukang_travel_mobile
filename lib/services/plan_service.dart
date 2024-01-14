@@ -43,7 +43,7 @@ class PlanService {
   }
 
   Future<void> insertPlanner(String title, String source, String destination,
-      String startDate, String endDate, int budget, int people) async {
+      String startDate, String endDate, int budget, int people, String userId) async {
     Map<String, dynamic> plan = {
       'title': title,
       'source': source,
@@ -52,6 +52,7 @@ class PlanService {
       'endDate': endDate,
       'budget': budget,
       'people': people,
+      'userid': userId
     };
     try {
       await FirebaseFirestore.instance.collection('planners').add(plan);

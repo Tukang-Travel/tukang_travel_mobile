@@ -13,7 +13,6 @@ class UpdatePlanner extends StatefulWidget {
   State<UpdatePlanner> createState() => _UpdatePlannerState();
 }
 
-var isSet = false;
 
 class _UpdatePlannerState extends State<UpdatePlanner> {
   PlanService planService = PlanService();
@@ -65,28 +64,30 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
     }
   }
 
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-
+  Future<void> _getAllData() async {
     List<dynamic> results = await Future.wait([planService.getPlan(widget.id)]);
-
+    plan = results[0];
+    
     setState(() {
-      plan = results[0];
+      titleTxt.text = plan?['title'];
+      sourceTxt.text = plan?['source'];
+      destinationTxt.text = plan?['destination'];
+      _dateStartController.text = plan?['startDate'];
+      _dateEndController.text = plan?['endDate'];
+      budget = plan?['budget'];
+      numOfPeople = plan?['people'];
     });
+  }
 
-    if (!isSet) {
-      setState(() {
-        isSet = true;
-        titleTxt.text = plan?['title'];
-        sourceTxt.text = plan?['source'];
-        destinationTxt.text = plan?['destination'];
-        _dateStartController.text = plan?['startDate'];
-        _dateEndController.text = plan?['endDate'];
-        budget = plan?['budget'];
-        numOfPeople = plan?['peeple'];
-      });
-    }
+  @override
+  void setState(VoidCallback fn) {
+    super.setState(fn);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getAllData();
   }
 
   @override
@@ -630,8 +631,7 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                               _dateEndController.text,
                               budget,
                               numOfPeople);
-                          NavigationUtils.pushRemoveTransition(
-                              context, const PlannerScreen());
+                          Navigator.of(context).pop();
                         });
                       }
                     },
@@ -648,6 +648,7 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                         'Ubah',
                         style: TextStyle(
                           fontSize: 18.0,
+                          color: Colors.white
                         ),
                       ),
                     ),
@@ -666,8 +667,7 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             onPressed: () {
-              NavigationUtils.pushRemoveTransition(
-                  context, const MainScreen(page: 2));
+              Navigator.of(context).pop();
             },
             child: const Padding(
               padding: EdgeInsets.only(left: 6.0),

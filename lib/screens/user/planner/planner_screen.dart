@@ -62,10 +62,13 @@ class _PlannerScreenState extends State<PlannerScreen> {
                           backgroundColor:
                               const Color.fromARGB(255, 82, 114, 255)),
                       onPressed: () {
-                        NavigationUtils.pushRemoveTransition(
+                        NavigationUtils.pushTransition(
                             context, const InsertPlanner());
                       },
-                      child: const Icon(Icons.add))
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.white,
+                      ))
                 ],
               ),
             ),
@@ -128,7 +131,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
                           String formatEnd =
                               DateFormat('d MMMM yyyy').format(endDate);
 
-                          return Padding(
+                          return Container(
+                            margin: const EdgeInsets.only(right: 20.0),
                             padding: const EdgeInsets.only(top: 30.0),
                             child: Center(
                               child: Card(
@@ -193,14 +197,17 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                     )),
                                                 onPressed: () {
                                                   NavigationUtils
-                                                      .pushRemoveTransition(
+                                                      .pushTransition(
                                                           context,
                                                           DetailPlanner(
                                                             id: plannerId,
                                                           ));
                                                 },
                                                 child: const Text(
-                                                    'Rencana Keseharian')),
+                                                  'Rencana Keseharian',
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                )),
                                           ),
                                         ),
                                         Center(
@@ -218,14 +225,17 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                     )),
                                                 onPressed: () {
                                                   NavigationUtils
-                                                      .pushRemoveTransition(
+                                                      .pushTransition(
                                                           context,
                                                           UpdatePlanner(
                                                             id: plannerId,
                                                           ));
                                                 },
-                                                child:
-                                                    const Text('Ubah Rencana')),
+                                                child: const Text(
+                                                  'Ubah Rencana',
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                )),
                                           ),
                                         ),
                                         Center(
@@ -233,7 +243,9 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                             width: 350,
                                             child: ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
-                                                    backgroundColor: Colors.red,
+                                                    backgroundColor:
+                                                        const Color.fromRGBO(
+                                                            209, 26, 42, 1.0),
                                                     shape:
                                                         RoundedRectangleBorder(
                                                       borderRadius:
@@ -259,25 +271,37 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                             child: const Text(
                                                                 'Batal'),
                                                           ),
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              planService
-                                                                  .deletePlanner(
-                                                                      plannerId);
-                                                              Navigator.pop(
-                                                                  context,
-                                                                  'Delete');
-                                                            },
-                                                            child: const Text(
-                                                                'Hapus'),
-                                                          ),
+                                                          ElevatedButton(
+                                                              style: ElevatedButton.styleFrom(
+                                                                  backgroundColor:
+                                                                      const Color
+                                                                          .fromRGBO(
+                                                                          209,
+                                                                          26,
+                                                                          42,
+                                                                          1.0)),
+                                                              child: const Text(
+                                                                'Hapus',
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .white),
+                                                              ),
+                                                              onPressed: () {
+                                                                planService
+                                                                    .deletePlanner(
+                                                                        plannerId);
+                                                                Navigator.of(context).pop();
+                                                              }),
                                                         ],
                                                       );
                                                     },
                                                   );
                                                 },
                                                 child: const Text(
-                                                    'Hapus Rencana')),
+                                                  'Hapus Rencana',
+                                                  style: TextStyle(
+                                                      color: Colors.white),
+                                                )),
                                           ),
                                         ),
                                       ],

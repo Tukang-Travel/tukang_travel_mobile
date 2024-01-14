@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
 import 'package:tuktraapp/services/plan_service.dart';
+import 'package:tuktraapp/services/transport_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class UpdateItinerary extends StatefulWidget {
@@ -27,7 +29,6 @@ class UpdateItinerary extends StatefulWidget {
   State<UpdateItinerary> createState() => _UpdateItineraryState();
 }
 
-var isSet = false;
 var startTimeIdx = 0, endTimeIdx = 0, transportIdx = 0;
 
 int searchValue(List<Map<String, dynamic>> list, String key) {
@@ -49,45 +50,9 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
   TextEditingController startTimeController = TextEditingController();
   TextEditingController endTimeController = TextEditingController();
   TextEditingController transportationController = TextEditingController();
+  TransportService transService = TransportService();
 
-  final List<Map<String, dynamic>> _times = [
-    {'Pilih Waktu': 0},
-    {'00:00': 1},
-    {'01:00': 2},
-    {'02:00': 3},
-    {'03:00': 4},
-    {'04:00': 5},
-    {'05:00': 6},
-    {'06:00': 7},
-    {'07:00': 8},
-    {'08:00': 9},
-    {'09:00': 10},
-    {'10:00': 11},
-    {'11:00': 12},
-    {'12:00': 13},
-    {'13:00': 14},
-    {'14:00': 15},
-    {'15:00': 16},
-    {'16:00': 17},
-    {'17:00': 18},
-    {'18:00': 19},
-    {'19:00': 20},
-    {'20:00': 21},
-    {'21:00': 22},
-    {'22:00': 23},
-    {'23:00': 24}
-  ];
-  final List<Map<String, dynamic>> _tranportations = [
-    {'Pilih Transportasi': 0},
-    {'Mobil': 1},
-    {'Motor': 2},
-    {'Sepeda': 3},
-    {'Bis': 4},
-    {'Kereta': 5},
-    {'Kapal': 6},
-    {'Pesawat': 7},
-  ];
-
+  List<Map<int, String>> _transportations = [];
   int selectStartTime = 1;
   int selectEndTime = 1;
   int selectTransportation = 1;
@@ -95,29 +60,67 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
   bool isLoading = false;
   int budget = 0;
 
-  @override
-  void initState() {
-    super.initState();
+  Future<void> _selectTime(
+      BuildContext context, TextEditingController controller) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (picked != null && context.mounted) {
+      controller.text = picked.format(context);
+    }
+  }
+
+  String convertToWib(String time) {
+    List<String> parts = time.split(" ");
+    List<String> timeParts = parts[0].split(":");
+
+    int hour = int.parse(timeParts[0]);
+    int minute = int.parse(timeParts[1]);
+
+    if (parts[1] == "PM" && hour != 12) {
+      hour += 12;
+    } else if (parts[1] == "AM" && hour == 12) {
+      hour = 0;
+    }
+
+    return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
+  }
+
+  Future<void> _getAllData() async {
+    List<Map<String, dynamic>> results = await transService.getTransports();
+
+    setState(() {
+      _transportations = transformList(results);
+    });
+
+    titleTxt.text = widget.title;
+    sourceTxt.text = widget.source;
+    destinationTxt.text = widget.destination;
+    startTimeController.text = widget.startTime;
+    endTimeController.text = widget.endTime;
+    transportationController.text = widget.transportation;
+    budget = widget.transportationCost;
+    startTimeIdx = int.parse(startTimeController.text);
+    endTimeIdx = int.parse(endTimeController.text);
+    transportIdx = int.parse(transportationController.text);
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    _getAllData();
+  }
 
-    if (!isSet) {
-      titleTxt.text = widget.title;
-      sourceTxt.text = widget.source;
-      destinationTxt.text = widget.destination;
-      startTimeController.text =
-          searchValue(_times, widget.startTime).toString();
-      endTimeController.text = searchValue(_times, widget.endTime).toString();
-      transportationController.text =
-          searchValue(_tranportations, widget.transportation).toString();
-      budget = widget.transportationCost;
-      startTimeIdx = int.parse(startTimeController.text);
-      endTimeIdx = int.parse(endTimeController.text);
-      transportIdx = int.parse(transportationController.text);
+  List<Map<int, String>> transformList(List<Map<String, dynamic>> inputList) {
+    List<Map<int, String>> resultList = [];
+
+    for (int i = 0; i < inputList.length; i++) {
+      resultList.add({i: inputList[i]['name']!});
     }
+
+    return resultList;
   }
 
   @override
@@ -366,32 +369,57 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                         const SizedBox(
                           height: 10.0,
                         ),
-                        DropdownButtonFormField<int>(
-                          value: _times[startTimeIdx].values.first,
-                          onChanged: (int? selectedStartTime) {
-                            if (selectedStartTime != null) {
-                              setState(() {
-                                selectStartTime = selectedStartTime;
-                                startTimeController.text = (_times
-                                        .firstWhere((time) =>
-                                            time.values.first ==
-                                            selectedStartTime)
-                                        .values
-                                        .first)
-                                    .toString();
-                              });
-                            }
-                          },
-                          items: _times.map((Map<String, dynamic> startTime) {
-                            return DropdownMenuItem<int>(
-                              value: startTime.values.first,
-                              child: Text(startTime.keys.first),
-                            );
-                          }).toList(),
+                        // DropdownButtonFormField<int>(
+                        //   value: _times[startTimeIdx].values.first,
+                        //   onChanged: (int? selectedStartTime) {
+                        //     if (selectedStartTime != null) {
+                        //       setState(() {
+                        //         selectStartTime = selectedStartTime;
+                        //         startTimeController.text = (_times
+                        //                 .firstWhere((time) =>
+                        //                     time.values.first ==
+                        //                     selectedStartTime)
+                        //                 .values
+                        //                 .first)
+                        //             .toString();
+                        //       });
+                        //     }
+                        //   },
+                        //   items: _times.map((Map<String, dynamic> startTime) {
+                        //     return DropdownMenuItem<int>(
+                        //       value: startTime.values.first,
+                        //       child: Text(startTime.keys.first),
+                        //     );
+                        //   }).toList(),
+                        //   decoration: InputDecoration(
+                        //     filled: true,
+                        //     fillColor: Colors.white,
+                        //     labelText: 'Pilih Waktu',
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderSide: const BorderSide(
+                        //         color: Color.fromARGB(128, 170, 188, 192),
+                        //         width: 1.0,
+                        //       ),
+                        //       borderRadius: BorderRadius.circular(20),
+                        //     ),
+                        //     enabledBorder: OutlineInputBorder(
+                        //       borderSide: const BorderSide(
+                        //         color: Color.fromARGB(128, 170, 188, 192),
+                        //       ),
+                        //       borderRadius: BorderRadius.circular(20),
+                        //     ),
+                        //     border: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(20),
+                        //     ),
+                        //   ),
+                        // ),
+                        TextFormField(
+                          controller: startTimeController,
+                          onTap: () =>
+                              _selectTime(context, startTimeController),
                           decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            labelText: 'Pilih Waktu',
+                            labelText: 'Pilih Waktu Awal',
+                            hintText: 'Pilih Waktu Awal',
                             focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Color.fromARGB(128, 170, 188, 192),
@@ -438,32 +466,56 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                         const SizedBox(
                           height: 10.0,
                         ),
-                        DropdownButtonFormField<int>(
-                          value: _times[endTimeIdx].values.first,
-                          onChanged: (int? selectedEndTime) {
-                            if (selectedEndTime != null) {
-                              setState(() {
-                                selectEndTime = selectedEndTime;
-                                endTimeController.text = (_times
-                                        .firstWhere((time) =>
-                                            time.values.first ==
-                                            selectedEndTime)
-                                        .values
-                                        .first)
-                                    .toString();
-                              });
-                            }
-                          },
-                          items: _times.map((Map<String, dynamic> endTime) {
-                            return DropdownMenuItem<int>(
-                              value: endTime.values.first,
-                              child: Text(endTime.keys.first),
-                            );
-                          }).toList(),
+                        // DropdownButtonFormField<int>(
+                        //   value: _times[endTimeIdx].values.first,
+                        //   onChanged: (int? selectedEndTime) {
+                        //     if (selectedEndTime != null) {
+                        //       setState(() {
+                        //         selectEndTime = selectedEndTime;
+                        //         endTimeController.text = (_times
+                        //                 .firstWhere((time) =>
+                        //                     time.values.first ==
+                        //                     selectedEndTime)
+                        //                 .values
+                        //                 .first)
+                        //             .toString();
+                        //       });
+                        //     }
+                        //   },
+                        //   items: _times.map((Map<String, dynamic> endTime) {
+                        //     return DropdownMenuItem<int>(
+                        //       value: endTime.values.first,
+                        //       child: Text(endTime.keys.first),
+                        //     );
+                        //   }).toList(),
+                        //   decoration: InputDecoration(
+                        //     filled: true,
+                        //     fillColor: Colors.white,
+                        //     labelText: 'Pilih Waktu',
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderSide: const BorderSide(
+                        //         color: Color.fromARGB(128, 170, 188, 192),
+                        //         width: 1.0,
+                        //       ),
+                        //       borderRadius: BorderRadius.circular(20),
+                        //     ),
+                        //     enabledBorder: OutlineInputBorder(
+                        //       borderSide: const BorderSide(
+                        //         color: Color.fromARGB(128, 170, 188, 192),
+                        //       ),
+                        //       borderRadius: BorderRadius.circular(20),
+                        //     ),
+                        //     border: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(20),
+                        //     ),
+                        //   ),
+                        // ),
+                        TextFormField(
+                          controller: endTimeController,
+                          onTap: () => _selectTime(context, endTimeController),
                           decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            labelText: 'Pilih Waktu',
+                            labelText: 'Pilih Waktu Akhir',
+                            hintText: 'Pilih Waktu Akhir',
                             focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Color.fromARGB(128, 170, 188, 192),
@@ -511,32 +563,33 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                           height: 10.0,
                         ),
                         DropdownButtonFormField<int>(
-                          value: _tranportations[transportIdx].values.first,
+                          value: _transportations[0].keys.first,
                           onChanged: (int? selectedTransportation) {
                             if (selectedTransportation != null) {
                               setState(() {
                                 selectTransportation = selectedTransportation;
-                                transportationController.text = (_tranportations
-                                        .firstWhere((time) =>
-                                            time.values.first ==
-                                            selectedTransportation)
-                                        .values
-                                        .first)
-                                    .toString();
+                                transportationController.text =
+                                    (_transportations
+                                            .firstWhere((time) =>
+                                                time.keys.first ==
+                                                selectedTransportation)
+                                            .values
+                                            .first)
+                                        .toString();
                               });
                             }
                           },
-                          items: _tranportations
-                              .map((Map<String, dynamic> transport) {
+                          items: _transportations
+                              .map((Map<int, String> transport) {
                             return DropdownMenuItem<int>(
-                              value: transport.values.first,
-                              child: Text(transport.keys.first),
+                              value: transport.keys.first,
+                              child: Text(transport.values.first),
                             );
                           }).toList(),
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
-                            labelText: 'Pilih Transportasi',
+                            labelText:  'Pilih Transportasi',
                             focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Color.fromARGB(128, 170, 188, 192),
@@ -637,23 +690,25 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (formKey.currentState!.validate()) {
+                      if (startTimeController.text.isEmpty ||
+                          endTimeController.text.isEmpty) {
+                        Alert.alertValidation('Waktu harus dipilih!', context);
+                      } else if (selectEndTime < selectStartTime) {
+                        Alert.alertValidation(
+                            'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
+                            context);
+                      } else if (selectTransportation == 0) {
+                        Alert.alertValidation(
+                            'Transportasi harus dipilih!', context);
+                      } else if (formKey.currentState!.validate()) {
                         setState(() async {
                           Map<String, dynamic> itinerary = {
                             'title': titleTxt.text,
                             'source': sourceTxt.text,
                             'destination': destinationTxt.text,
-                            'startTime':
-                                _times[int.parse(startTimeController.text)]
-                                    .keys
-                                    .first,
-                            'endTime': _times[int.parse(endTimeController.text)]
-                                .keys
-                                .first,
-                            'transportation': _tranportations[
-                                    int.parse(transportationController.text)]
-                                .keys
-                                .first,
+                            'startTime': convertToWib(startTimeController.text),
+                            'endTime': convertToWib(endTimeController.text),
+                            'transportation': transportationController.text,
                             'transportation_cost': budget,
                           };
 
@@ -703,11 +758,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             onPressed: () {
-              NavigationUtils.pushRemoveTransition(
-                  context,
-                  DetailPlanner(
-                    id: widget.planId,
-                  ));
+              Navigator.of(context).pop();
             },
             child: const Padding(
               padding: EdgeInsets.only(left: 6.0),

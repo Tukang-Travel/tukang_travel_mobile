@@ -90,6 +90,20 @@ class _InsertItineraryState extends State<InsertItinerary> {
     });
   }
 
+  Future<void> _getTransport() async {
+    List<Map<String, dynamic>> results = await transService.getTransports();
+
+    setState(() {
+      _transportations = transformList(results);
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getTransport();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -724,7 +738,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
                         }
 
                         if (context.mounted) {
-                          NavigationUtils.pushRemoveTransition(
+                          NavigationUtils.pushReplace(
                               context, DetailPlanner(id: widget.id));
                         }
                       }
@@ -740,9 +754,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
                           horizontal: 20.0, vertical: 15.0),
                       child: Text(
                         'Buat',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                        ),
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
                       ),
                     ),
                   ),
@@ -760,11 +772,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             onPressed: () {
-              NavigationUtils.pushRemoveTransition(
-                  context,
-                  DetailPlanner(
-                    id: widget.id,
-                  ));
+              Navigator.of(context).pop();
             },
             child: const Padding(
               padding: EdgeInsets.only(left: 6.0),
