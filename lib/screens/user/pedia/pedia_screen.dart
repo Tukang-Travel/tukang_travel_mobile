@@ -36,16 +36,16 @@ class _PediaScreenState extends State<PediaScreen> {
                 ),
               ),
               const SizedBox(
-                width: 8.0,
+                height: 16.0,
               ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
-                child: Text(
-                  'Dapatkan informasi tentang tempat wisata disini.',
-                  style: TextStyle(
-                      fontSize: 15.0, color: Color.fromARGB(255, 81, 81, 81)),
-                ),
-              ),
+              // const Padding(
+              //   padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
+              //   child: Text(
+              //     'Dapatkan informasi tentang tempat wisata disini.',
+              //     style: TextStyle(
+              //         fontSize: 15.0, color: Color.fromARGB(255, 81, 81, 81)),
+              //   ),
+              // ),
               Padding(
                 padding: const EdgeInsets.only(left: 5.0),
                 child: StreamBuilder(

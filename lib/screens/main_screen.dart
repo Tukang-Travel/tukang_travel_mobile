@@ -94,7 +94,7 @@ class _MainScreenState extends State<MainScreen> {
     Icons.person,
   ];
 
-  final List<String> menus = ['Home', 'Pedia', '', 'Diary', 'Profile'];
+  final List<String> menus = ['Home', 'Pedia', '', 'Planner', 'Profile'];
   final List<String> ownerMenus = ['Home', 'Profile'];
 
   final PageStorageBucket bucket = PageStorageBucket();

@@ -285,7 +285,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                                       NavigationUtils
                                                           .pushRemoveTransition(
                                                               context,
-                                                              const OwnerPediaScreen());
+                                                              const MainScreen(page: 0));
                                                     }
                                                   },
                                                   style:

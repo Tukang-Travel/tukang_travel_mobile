@@ -473,7 +473,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
               onPressed: () {
-                NavigationUtils.pushReplace(context, const MainScreen(page: 3));
+                NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 3));
               },
               child: const Padding(
                 padding: EdgeInsets.only(left: 6.0),

@@ -37,7 +37,13 @@ class _FeedScreenState extends State<FeedScreen> {
     return Scaffold(
         appBar: AppBar(
           centerTitle: false,
-          title: const Text("Feed"),
+          title: const Text(
+                  'Feed Perjalanan',
+                  style: TextStyle(
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
         ),
         body: SafeArea(
             child: RefreshIndicator(
@@ -108,7 +114,7 @@ class _FeedScreenState extends State<FeedScreen> {
                       });
 
                       return !snapshot.hasData
-                          ? const Center(child: Text('No Feed yet'))
+                          ? const Center(child: Text('Belum ada Feed'))
                           : SizedBox.expand(
                               child: Container(
                                   padding: const EdgeInsets.symmetric(

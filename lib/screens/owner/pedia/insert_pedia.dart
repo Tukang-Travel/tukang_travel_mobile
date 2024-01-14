@@ -112,8 +112,8 @@ class _InsertPediaState extends State<InsertPedia> {
       );
 
       if (context.mounted) {
-        NavigationUtils.pushRemoveTransition(context, const OwnerPediaScreen());
-        showSnackBar(context, 'Unggah Pedia Behasil');
+        NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0,));
+        showSnackBar(context, 'Unggah Pedia Berhasil');
       }
     } catch (error) {
       if (context.mounted) {

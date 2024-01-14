@@ -51,7 +51,7 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
                           NavigationUtils.pushRemoveTransition(
                               context, const InsertPedia());
                         },
-                        child: const Icon(Icons.add))
+                        child: const Icon(Icons.add, color: Colors.white,))
                   ],
                 ),
               ),
