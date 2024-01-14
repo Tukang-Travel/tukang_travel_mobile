@@ -116,7 +116,7 @@ class PediaService {
       'tags': tags,
       'title': title,
     };
-    List<String> media_names = [];
+    List<String> mediaNames = [];
 
     try {
       DocumentReference newPedia =
@@ -126,7 +126,7 @@ class PediaService {
       for (int i = 0; i < medias.length; i++) {
         String url = await uploadImageToFirebase(
             userid, medias[i], getFileName(medias[i]), title);
-        media_names.add(url);
+        mediaNames.add(url);
         // print(getFileName(medias[i]));
         // print(medias[i]);
       }
@@ -134,7 +134,7 @@ class PediaService {
       await FirebaseFirestore.instance
           .collection('pedias')
           .doc(newPedia.id)
-          .update({'medias': media_names});
+          .update({'medias': mediaNames});
 
       print('Pedia inserted successfully');
     } catch (e) {

@@ -320,9 +320,10 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
               return Center(
                 child: Text(fileTitle,
                     style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               );
             }
+            return null;
           },
         ),
       ],
@@ -398,6 +399,12 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
       if (context.mounted) {
         showSnackBar(context, 'Upload Completed');
       }
+      setState(() {
+        titleController.clear();
+      tagsController.clear();
+      tags = [];
+      files = [];
+      }); 
     } catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString());

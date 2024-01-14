@@ -1,13 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:tuktraapp/provider/user_provider.dart';
-import 'package:tuktraapp/screens/authentication/login_screen.dart';
-import 'package:tuktraapp/screens/authentication/register_owner_screen.dart';
-import 'package:tuktraapp/screens/main_screen.dart';
-import 'package:tuktraapp/screens/authentication/forgot_pass_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
-import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -279,7 +272,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:
-                                      Color.fromARGB(255, 255, 180, 82),
+                                      const Color.fromARGB(255, 255, 180, 82),
                                   elevation: 5,
                                   shadowColor: Colors.black,
                                   padding: const EdgeInsets.symmetric(

@@ -221,7 +221,7 @@ class _PostCardState extends State<PostCard> {
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: const Text(
-                            'View More',
+                            'Lihat Selengkapnya',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.grey,

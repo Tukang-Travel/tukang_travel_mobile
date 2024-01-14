@@ -7,6 +7,7 @@ import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/user/feed/edit_feed_screen.dart';
 import 'package:tuktraapp/services/feed_service.dart';
+import 'package:tuktraapp/utils/color.dart';
 import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/comment_card.dart';
 import 'package:tuktraapp/widgets/image_video_slider.dart';
@@ -201,7 +202,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                       return AlertDialog(
                                                                         title:
                                                                             const Text(
-                                                                          'Are you sure you want to delete this feed?',
+                                                                          'Apakah anda yakin ingin menghapus feed ini?',
                                                                           style:
                                                                               TextStyle(
                                                                             fontFamily:
@@ -223,19 +224,20 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                               textStyle: Theme.of(context).textTheme.labelLarge,
                                                                             ),
                                                                             child:
-                                                                                const Text('Cancel'),
+                                                                                const Text('Batal'),
                                                                             onPressed:
                                                                                 () {
                                                                               Navigator.of(context).pop();
                                                                             },
                                                                           ),
-                                                                          TextButton(
+                                                                          ElevatedButton(
                                                                             style:
-                                                                                TextButton.styleFrom(
-                                                                              textStyle: Theme.of(context).textTheme.labelLarge,
-                                                                            ),
+                                                                                ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(209, 26, 42, 1.0)),
                                                                             child:
-                                                                                const Text('Delete'),
+                                                                                const Text(
+                                                                              'Hapus',
+                                                                              style: TextStyle(color: Colors.white),
+                                                                            ),
                                                                             onPressed:
                                                                                 () {
                                                                               deleteFeed(widget.feedId, snapshot.data!["title"]);
@@ -388,7 +390,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                     commentEditingController,
                                                 decoration: InputDecoration(
                                                   hintText:
-                                                      'Comment as ${user.username}',
+                                                      'Komentar sebagai ${user.username}',
                                                   border: InputBorder.none,
                                                 ),
                                               ),
@@ -422,7 +424,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                     },
                     body: snapshot.data?['comments'].length == 0
                         ? const Center(
-                            child: Text('No Comment Yet'),
+                            child: Text('Belum ada komentar'),
                           )
                         : SizedBox(
                             height: MediaQuery.of(context).size.height * 0.1,

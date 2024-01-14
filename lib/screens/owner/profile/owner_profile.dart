@@ -216,7 +216,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                                           ),
                                         );
                                 } else {
-                                  return SizedBox.shrink();
+                                  return const SizedBox.shrink();
                                 }
                               },
                             ),

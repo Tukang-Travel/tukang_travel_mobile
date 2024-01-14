@@ -2,13 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
-import 'package:tuktraapp/screens/authentication/login_screen.dart';
-import 'package:tuktraapp/screens/authentication/register_owner_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/welcome_screen.dart';
-import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/services/user_service.dart';
-import 'package:tuktraapp/screens/authentication/register_screen.dart';
 import 'package:tuktraapp/screens/authentication/forgot_pass_screen.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
@@ -131,7 +127,7 @@ class _LoginOwnerScreenState extends State<LoginOwnerScreen> {
                                 const Card(
                                   color: Colors.black,
                                   child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
+                                    padding: EdgeInsets.all(12.0),
                                     child: Column(
                                       children: [
                                         Text("Masuk sebagai Owner",

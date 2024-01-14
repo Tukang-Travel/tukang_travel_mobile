@@ -216,7 +216,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           ),
                                         );
                                 } else {
-                                  return SizedBox.shrink();
+                                  return const SizedBox.shrink();
                                 }
                               },
                             ),

@@ -1,12 +1,7 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
-import 'package:tuktraapp/screens/authentication/login_owner_screen.dart';
-import 'package:tuktraapp/screens/authentication/login_screen.dart';
-import 'package:tuktraapp/screens/authentication/register_owner_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
-import 'package:tuktraapp/screens/authentication/forgot_pass_screen.dart';
 import 'package:tuktraapp/screens/welcome_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
@@ -134,7 +129,7 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
                                   const Card(
                                     color: Colors.black,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(12.0),
+                                      padding: EdgeInsets.all(12.0),
                                       child: Column(
                                         children: [
                                           Text("Daftar sebagai Owner",

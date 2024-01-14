@@ -23,7 +23,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
   Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>?>
       getPlansStream() async* {
     while (true) {
-      await Future.delayed(Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
       yield await planService.getPlans(userService.currUser!.uid);
     }
   }

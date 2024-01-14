@@ -154,7 +154,7 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: PageStorage(
         bucket: bucket,
-        child: currScreen!,
+        child: currScreen,
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),

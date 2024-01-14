@@ -22,9 +22,9 @@ class EditFeedScreen extends StatefulWidget {
 }
 
 class _EditFeedScreenState extends State<EditFeedScreen> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _tagsController = TextEditingController();
-  final List<String> _tags = [];
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController tagsController = TextEditingController();
+  final List<String> tags = [];
   List<String> defaultTags = [];
 
   Future<void> getTagsTemplate() async {
@@ -42,8 +42,8 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
     getTagsTemplate();
 
     // Set initial values for title and tags
-    _titleController.text = widget.initialTitle;
-    _tags.addAll(widget.initialTags);
+    titleController.text = widget.initialTitle;
+    tags.addAll(widget.initialTags);
   }
 
   @override
@@ -51,7 +51,7 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const AutoSizeText(
-          'Edit Feed',
+          'Ubah Feed',
           maxLines: 10,
           style: TextStyle(
             fontFamily: 'PoppinsBold',
@@ -68,10 +68,63 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              TextFormField(
-                controller: _titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
-                maxLines: null, // Allow multiple lines
+              // Title text field
+              Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                child: RichText(
+                  text: const TextSpan(
+                      text: 'Judul ',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15.0,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '*',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15.0,
+                          ),
+                        )
+                      ]),
+                ),
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                        offset: Offset(1, 1),
+                        color: Color.fromARGB(128, 170, 188, 192),
+                      )
+                    ]),
+                child: TextFormField(
+                  controller: titleController,
+                  validator: ((value) =>
+                      value!.isEmpty ? 'Judul harus diisi' : null),
+                  decoration: InputDecoration(
+                      hintText: 'Judul',
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              color: Color.fromARGB(128, 170, 188, 192),
+                              width: 1.0),
+                          borderRadius: BorderRadius.circular(20)),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Color.fromARGB(128, 170, 188, 192),
+                          ),
+                          borderRadius: BorderRadius.circular(20)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20))),
+                ),
               ),
               const SizedBox(height: 16.0),
               _buildTagsInput(),
@@ -101,42 +154,36 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Wrap(
-          spacing: 8.0,
-          runSpacing: 8.0,
-          children: _tags.map((tag) {
-            return Chip(
-              label: Text(tag),
-              onDeleted: () {
-                setState(() {
-                  _tags.remove(tag);
-                });
-              },
-            );
-          }).toList(),
-        ),
-        const SizedBox(height: 8.0),
-        TextField(
-          controller: _tagsController,
-          decoration: InputDecoration(
-            labelText: 'Tags',
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                _addTag(_tagsController.text.trim());
-              },
-            ),
+        const Text(
+          'Tags Terpilih',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
-          onSubmitted: (value) {
-            _addTag(value);
-          },
-          maxLines: null, // Allow multiple lines
         ),
+        const SizedBox(height: 16.0),
+        // Code for selected tags remains the same
+        tags.isNotEmpty
+            ? Wrap(
+                spacing: 8.0,
+                runSpacing: 8.0,
+                children: tags.map((tag) {
+                  return Chip(
+                    label: Text(tag),
+                    onDeleted: () {
+                      setState(() {
+                        tags.remove(tag);
+                      });
+                    },
+                  );
+                }).toList(),
+              )
+            : const Text('Tidak ada Tag yang terpilih/dimasukkan'),
         const SizedBox(
-          height: 15.0,
+          height: 16.0,
         ),
         const Text(
-          'Recommended Tags',
+          'Rekomendasi Tags',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -165,15 +212,71 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
             },
           ),
         ),
+        const SizedBox(
+          height: 16.0,
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 5.0),
+          child: RichText(
+            text: const TextSpan(
+              text: 'Tags',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 15.0,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: const [
+                BoxShadow(
+                  blurRadius: 10,
+                  spreadRadius: 2,
+                  offset: Offset(1, 1),
+                  color: Color.fromARGB(128, 170, 188, 192),
+                )
+              ]),
+          child: TextFormField(
+            controller: tagsController,
+            validator: ((value) => value!.isEmpty ? 'Tags harus diisi' : null),
+            decoration: InputDecoration(
+              hintText: 'Tags',
+              focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                      color: Color.fromARGB(128, 170, 188, 192), width: 1.0),
+                  borderRadius: BorderRadius.circular(20)),
+              enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(128, 170, 188, 192),
+                  ),
+                  borderRadius: BorderRadius.circular(20)),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () {
+                  _addTag(tagsController.text.trim());
+                },
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
 
   void _addTag(String tag) {
-    if (tag.isNotEmpty && !_tags.contains(tag)) {
+    if (tag.isNotEmpty && !tags.contains(tag)) {
       setState(() {
-        _tags.add(tag);
-        _tagsController.clear();
+        tags.add(tag);
+        tagsController.clear();
       });
     }
   }
@@ -181,8 +284,8 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
   // Function to update the feed in Firestore
   void _updateFeed() {
     // Validate the title and tags
-    String updatedTitle = _titleController.text.trim();
-    List<String> updatedTags = _tags;
+    String updatedTitle = titleController.text.trim();
+    List<String> updatedTags = tags;
 
     if (updatedTitle.isEmpty) {
       // Show an error message for the empty title
@@ -204,8 +307,8 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _tagsController.dispose();
+    titleController.dispose();
+    tagsController.dispose();
     super.dispose();
   }
 }

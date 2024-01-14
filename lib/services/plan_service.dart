@@ -31,10 +31,9 @@ class PlanService {
 
       List<QueryDocumentSnapshot<Map<String, dynamic>>> planList = [];
 
-      querySnapshot.docs
-          .forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) {
+      for (var document in querySnapshot.docs) {
         planList.add(document);
-      });
+      }
 
       return planList;
     } catch (e) {
