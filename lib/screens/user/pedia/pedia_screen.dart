@@ -17,6 +17,16 @@ class _PediaScreenState extends State<PediaScreen> {
     double w = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: false,
+        title: const Text(
+          'Pedia Perjalanan',
+          style: TextStyle(
+            fontSize: 25.0,
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      ),
       body: SafeArea(
           child: SingleChildScrollView(
         scrollDirection: Axis.vertical,
@@ -25,27 +35,27 @@ class _PediaScreenState extends State<PediaScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
-                child: Text(
-                  'Pedia Perjalanan',
-                  style: TextStyle(
-                    fontSize: 25.0,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 16.0,
-              ),
               // const Padding(
-              //   padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
+              //   padding: EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
               //   child: Text(
-              //     'Dapatkan informasi tentang tempat wisata disini.',
+              //     'Pedia Perjalanan',
               //     style: TextStyle(
-              //         fontSize: 15.0, color: Color.fromARGB(255, 81, 81, 81)),
+              //       fontSize: 25.0,
+              //       fontWeight: FontWeight.w900,
+              //     ),
               //   ),
               // ),
+              // const SizedBox(
+              //   height: 16.0,
+              // ),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
+                child: Text(
+                  'Dapatkan informasi tentang tempat wisata disini.',
+                  style: TextStyle(
+                      fontSize: 15.0, color: Color.fromARGB(255, 81, 81, 81)),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 5.0),
                 child: StreamBuilder(

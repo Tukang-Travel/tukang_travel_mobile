@@ -34,16 +34,9 @@ class _PlannerScreenState extends State<PlannerScreen> {
     double w = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: SafeArea(
-          child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding:
-                  const EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
-              child: Row(
+      appBar: AppBar(
+          centerTitle: false,
+          title: Row(
                 children: [
                   const Text(
                     'Rencana Perjalanan',
@@ -71,9 +64,47 @@ class _PlannerScreenState extends State<PlannerScreen> {
                       ))
                 ],
               ),
-            ),
+      ),
+      body: SafeArea(
+          child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Padding(
+            //   padding:
+            //       const EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
+            //   child: Row(
+            //     children: [
+            //       const Text(
+            //         'Rencana Perjalanan',
+            //         style: TextStyle(
+            //           fontSize: 25.0,
+            //           fontWeight: FontWeight.w900,
+            //         ),
+            //       ),
+            //       const SizedBox(
+            //         width: 8.0,
+            //       ),
+            //       ElevatedButton(
+            //           style: ElevatedButton.styleFrom(
+            //               shape: RoundedRectangleBorder(
+            //                   borderRadius: BorderRadius.circular(100.0)),
+            //               backgroundColor:
+            //                   const Color.fromARGB(255, 82, 114, 255)),
+            //           onPressed: () {
+            //             NavigationUtils.pushTransition(
+            //                 context, const InsertPlanner());
+            //           },
+            //           child: const Icon(
+            //             Icons.add,
+            //             color: Colors.white,
+            //           ))
+            //     ],
+            //   ),
+            // ),
             const Padding(
-              padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
+              padding: EdgeInsets.only(bottom: 10.0, left: 5.0),
               child: Text(
                 'Berikut adalah rencana perjalanan yang sudah pernah kamu buat sebelumnya',
                 style: TextStyle(
