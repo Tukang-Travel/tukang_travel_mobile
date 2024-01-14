@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tuktraapp/models/user_model.dart';
+import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/owner/pedia/owner_pedia_screen.dart';
 import 'package:tuktraapp/screens/owner/pedia/update_pedia.dart';
@@ -10,6 +13,7 @@ import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
+import 'package:tuktraapp/widgets/tags_card.dart';
 
 class OwnerPediaDetail extends StatefulWidget {
   final String id;
@@ -161,6 +165,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
     double w = MediaQuery.of(context).size.width;
+    final UserModel user = Provider.of<UserProvider>(context).user;
 
     if (!done) {
       return const Scaffold(
@@ -208,8 +213,10 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 15.0, left: 25.0),
+                padding:
+                    const EdgeInsets.only(top: 15.0, left: 25.0, right: 25.0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SizedBox(
                       width: 200,
@@ -222,66 +229,83 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                     pedia["userid"] == userService.currUser!.uid
                         ? Row(
                             children: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
+                              Card(
+                                elevation: 10.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                child: Container(
+                                    decoration: BoxDecoration(
                                         borderRadius:
-                                            BorderRadius.circular(100.0)),
-                                    backgroundColor: const Color.fromARGB(
-                                        255, 82, 114, 255)),
-                                onPressed: () {
-                                  NavigationUtils.pushRemoveTransition(
-                                      context, UpdatePedia(id: widget.id));
-                                },
-                                child: const Icon(Icons.edit, color: Colors.white,),
+                                            BorderRadius.circular(15.0),
+                                        color: const Color(0xffE9E9E9)),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        NavigationUtils.pushRemoveTransition(
+                                            context,
+                                            UpdatePedia(id: widget.id));
+                                      },
+                                      icon: const Icon(Icons.edit,
+                                          color: Colors.blue),
+                                    )),
                               ),
-                              const SizedBox(width: 10.0),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
+                              Card(
+                                elevation: 10.0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                child: Container(
+                                    decoration: BoxDecoration(
                                         borderRadius:
-                                            BorderRadius.circular(100.0)),
-                                    backgroundColor: Colors.red),
-                                onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text(
-                                            'Hapus Rencana Keseharian'),
-                                        content: Text(
-                                            'Apakah anda yakin untuk menghapus pedia "${pedia['title']}"?'),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            onPressed: () => Navigator.pop(
-                                                context, 'Cancel'),
-                                            child: const Text('Batal'),
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () async {
-                                              await pediaService.deletePedia(
-                                                  widget.id, pedia['title']);
-                                              if (context.mounted) {
-                                                NavigationUtils
-                                                    .pushRemoveTransition(
-                                                        context,
-                                                        const OwnerPediaScreen());
-                                              }
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    const Color.fromRGBO(
-                                                        209, 26, 42, 1.0)),
-                                            child: const Text('Hapus',
-                                                style: TextStyle(
-                                                    color: Colors.white)),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
-                                child: const Icon(Icons.delete, color: Colors.white,),
+                                            BorderRadius.circular(15.0),
+                                        color: const Color(0xffE9E9E9)),
+                                    child: IconButton(
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                  'Hapus Rencana Keseharian'),
+                                              content: Text(
+                                                  'Apakah anda yakin untuk menghapus pedia "${pedia['title']}"?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () =>
+                                                      Navigator.pop(
+                                                          context, 'Cancel'),
+                                                  child: const Text('Batal'),
+                                                ),
+                                                ElevatedButton(
+                                                  onPressed: () async {
+                                                    await pediaService
+                                                        .deletePedia(widget.id,
+                                                            pedia['title']);
+                                                    if (context.mounted) {
+                                                      NavigationUtils
+                                                          .pushRemoveTransition(
+                                                              context,
+                                                              const OwnerPediaScreen());
+                                                    }
+                                                  },
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                          backgroundColor:
+                                                              const Color
+                                                                  .fromRGBO(209,
+                                                                  26, 42, 1.0)),
+                                                  child: const Text('Hapus',
+                                                      style: TextStyle(
+                                                          color: Colors.white)),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      icon: const Icon(Icons.delete,
+                                          color: Colors.red),
+                                    )),
                               ),
                             ],
                           )
@@ -293,43 +317,30 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                 padding: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 25.0),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    for (var i = 1; i <= 5; i++)
-                      GestureDetector(
-                        onTap: () async {
-                          setState(() {
-                            rating = i;
-                          });
+                    Row(
+                      children: [
+                        for (var i = 1; i <= 5; i++)
+                          GestureDetector(
+                            onTap: () async {
+                              setState(() {
+                                rating = i;
+                              });
 
-                          await pediaService.insertPediaRate(
-                              widget.id, rating, userService.currUser!.uid);
-                          await fetch();
-                        },
-                        child: Icon(
-                          Icons.star,
-                          size: 25.0,
-                          color: i <= rating
-                              ? const Color.fromARGB(255, 255, 215, 0)
-                              : Colors.grey,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 10.0, horizontal: 25.0),
-                child: Row(
-                  children: [
-                    SizedBox(
-                      width: 290.0,
-                      child: Text(
-                        'Label: ${tags.join(', ')}',
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.w400,
-                        ),
-                      ),
+                              await pediaService.insertPediaRate(
+                                  widget.id, rating, userService.currUser!.uid);
+                              await fetch();
+                            },
+                            child: Icon(
+                              Icons.star,
+                              size: 25.0,
+                              color: i <= rating
+                                  ? const Color.fromARGB(255, 255, 215, 0)
+                                  : Colors.grey,
+                            ),
+                          ),
+                      ],
                     ),
                     RichText(
                       text: TextSpan(
@@ -351,13 +362,44 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                               ),
                             ),
                             TextSpan(
-                              text: avgRate.toStringAsFixed(1),
+                              text: '$avgRate',
                               style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 15.0,
                               ),
                             ),
                           ]),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 10.0, horizontal: 25.0),
+                child: //TAGS
+                    Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Tags',
+                      style: TextStyle(
+                        fontFamily: 'PoppinsBold',
+                        fontSize: 15,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        height: 1.2,
+                      ),
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.1,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: tags.length,
+                        itemBuilder: (ctx, index) => TagsCard(
+                          snap: tags[index],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -376,217 +418,189 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Komentar',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16.0,
-                        )),
-
-                    // comment list
-                    SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: SizedBox(
-                        height: 200.0,
-                        width: w,
-                        child: ListView.builder(
-                          itemCount: comments.length,
-                          itemBuilder: (context, index) {
-                            if (comments.isEmpty) {
-                              return const Padding(
-                                padding: EdgeInsets.only(top: 8.0),
-                                child: Text(
-                                  'Belum terdapat komentar',
-                                  style: TextStyle(
-                                      color:
-                                          Color.fromARGB(255, 107, 107, 107)),
+                    const Text(
+                      'Komentar',
+                      style: TextStyle(
+                        fontFamily: 'PoppinsBold',
+                        fontSize: 15,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        height: 1.2,
+                      ),
+                    ),
+                    const Divider(
+                      height: 20,
+                      color: Colors.transparent,
+                    ),
+                    Container(
+                      height: kToolbarHeight,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30.0),
+                          color: const Color(0xffE9E9E9)),
+                      margin: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      padding: const EdgeInsets.only(left: 16, right: 8),
+                      child: Row(
+                        children: [
+                          const CircleAvatar(
+                            backgroundImage: AssetImage(
+                              'asset/images/default_profile.png',
+                            ),
+                            radius: 18,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 16, right: 8),
+                              child: TextField(
+                                controller: commentTxt,
+                                decoration: InputDecoration(
+                                  hintText: 'Komentar sebagai ${user.username}',
+                                  border: InputBorder.none,
                                 ),
-                              );
-                            }
+                                keyboardType: TextInputType.multiline,
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              if (commentTxt.text != '' ||
+                                  commentTxt.text.isNotEmpty) {
+                                final comment = commentTxt.text;
+                                pediaService.insertPediaComment(widget.id,
+                                    comment, userService.currUser!.uid);
+                                commentTxt.text = "";
 
-                            if (index >= comments.length) {
-                              return const Padding(
-                                padding: EdgeInsets.only(top: 8.0),
-                                child: Text(
-                                  'Belum terdapat komentar',
-                                  style: TextStyle(
-                                      color:
-                                          Color.fromARGB(255, 107, 107, 107)),
-                                ),
-                              );
-                            }
-                            final comment = comments[index];
-
-                            return FutureBuilder(
-                              future: userService.getUser(comment['userid']),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child:
-                                          CircularProgressIndicator()); // Loading indicator while fetching data
-                                }
-
-                                if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                }
-
-                                final user = snapshot.data!;
-
-                                return Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(20.0),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 8.0, horizontal: 10.0),
-                                      child: Row(
-                                        children: [
-                                          user.containsKey('profile')
-                                              ? ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          100.0),
-                                                  child: Image.network(
-                                                    user['profile'],
-                                                    width: 50,
-                                                    height: 50,
-                                                  ),
-                                                )
-                                              : Image.asset(
-                                                  'asset/images/default_profile.png',
-                                                  width: 50,
-                                                  height: 50,
-                                                ),
-                                          const SizedBox(
-                                            width: 10.0,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                '${user['username']}',
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16.0,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                height: 5.0,
-                                              ),
-                                              Text(comment['comment']),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ));
-                              },
-                            );
-                          },
-                        ),
+                                setState(() {});
+                              } else {
+                                showSnackBar(
+                                    context, "Komentar tidak boleh kosong!");
+                              }
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 8),
+                              child: const Text(
+                                'Post',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
 
                     const SizedBox(
-                      height: 10.0,
+                      height: 20.0,
                     ),
 
-                    Form(
-                        key: formKey,
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  // Wrap with Expanded
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          blurRadius: 10,
-                                          spreadRadius: 2,
-                                          offset: Offset(1, 1),
+                    // comment list
+                    comments.isEmpty
+                        ? const Center(child: Text('Belum ada komentar'))
+                        : SizedBox(
+                            height: 200.0,
+                            width: w,
+                            child: ListView.builder(
+                              itemCount: comments.length,
+                              itemBuilder: (context, index) {
+                                if (comments.isEmpty) {
+                                  return const Padding(
+                                    padding: EdgeInsets.only(top: 8.0),
+                                    child: Text(
+                                      'Belum terdapat komentar',
+                                      style: TextStyle(
                                           color: Color.fromARGB(
-                                              128, 170, 188, 192),
-                                        )
-                                      ],
+                                              255, 107, 107, 107)),
                                     ),
-                                    child: TextFormField(
-                                      controller: commentTxt,
-                                      maxLines: null,
-                                      keyboardType: TextInputType.multiline,
-                                      validator: ((value) => value!.isEmpty
-                                          ? 'Komentar harus diisi'
-                                          : null),
-                                      decoration: InputDecoration(
-                                        hintText: 'Ketik komentar mu disini...',
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Color.fromARGB(
-                                                128, 170, 188, 192),
-                                            width: 1.0,
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                            color: Color.fromARGB(
-                                                128, 170, 188, 192),
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        border: OutlineInputBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                      ),
+                                  );
+                                }
+
+                                if (index >= comments.length) {
+                                  return const Padding(
+                                    padding: EdgeInsets.only(top: 8.0),
+                                    child: Text(
+                                      'Belum terdapat komentar',
+                                      style: TextStyle(
+                                          color: Color.fromARGB(
+                                              255, 107, 107, 107)),
                                     ),
-                                  ),
-                                ),
-                                const SizedBox(width: 8.0),
-                                InkWell(
-                                  onTap: () {
-                                    if (formKey.currentState!.validate()) {
-                                      final comment = commentTxt.text;
-                                      pediaService.insertPediaComment(widget.id,
-                                          comment, userService.currUser!.uid);
-                                      commentTxt.text = "";
+                                  );
+                                }
+                                final comment = comments[index];
 
-                                      rating = 0;
-                                      pedia = {};
-                                      medias = [];
-                                      tags = [];
-                                      rates = [];
-                                      comments = [];
-                                      avgRate = 0;
-
-                                      NavigationUtils.pushRemoveTransition(
-                                          context, PediaDetail(id: widget.id));
+                                return FutureBuilder(
+                                  future:
+                                      userService.getUser(comment['userid']),
+                                  builder: (context, snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.waiting) {
+                                      return const Center(
+                                          child:
+                                              CircularProgressIndicator()); // Loading indicator while fetching data
                                     }
+
+                                    if (snapshot.hasError) {
+                                      return Text('Error: ${snapshot.error}');
+                                    }
+
+                                    final user = snapshot.data!;
+
+                                    return Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 8.0, horizontal: 10.0),
+                                          child: Row(
+                                            children: [
+                                              user.containsKey('profile')
+                                                  ? ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              100.0),
+                                                      child: Image.network(
+                                                        user['profile'],
+                                                        width: 50,
+                                                        height: 50,
+                                                      ),
+                                                    )
+                                                  : Image.asset(
+                                                      'asset/images/default_profile.png',
+                                                      width: 50,
+                                                      height: 50,
+                                                    ),
+                                              const SizedBox(
+                                                width: 10.0,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    '${user['username']}',
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 16.0,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5.0,
+                                                  ),
+                                                  Text(comment['comment']),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ));
                                   },
-                                  child: Container(
-                                    width: 50.0,
-                                    height: 50.0,
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Color.fromARGB(217, 82, 114,
-                                          255), // Customize the color
-                                    ),
-                                    child: const Icon(
-                                      Icons.send,
-                                      color: Colors
-                                          .white, // Customize the icon color
-                                    ),
-                                  ),
-                                ),
-                              ],
+                                );
+                              },
                             ),
-                          ],
-                        )),
+                          ),
+
                     const SizedBox(
                       height: 20.0,
                     )

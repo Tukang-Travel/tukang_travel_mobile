@@ -127,7 +127,7 @@ class FeedService {
         });
         res = 'success';
       } else {
-        res = "Please enter text";
+        res = "Komentar tidak boleh kosong!";
       }
     } catch (err) {
       res = err.toString();
