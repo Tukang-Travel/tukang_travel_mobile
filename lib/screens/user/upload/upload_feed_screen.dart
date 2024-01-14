@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
+import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/feed_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/constant.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
 class UploadFeedScreen extends StatefulWidget {
@@ -26,6 +28,7 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
   List<File> files = [];
   String username = '';
   List<String> defaultTags = [];
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -45,104 +48,115 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
   Widget build(BuildContext context) {
     final UserModel user = Provider.of<UserProvider>(context).user;
     username = user.username;
-    return Scaffold(
-      appBar: AppBar(
-        title: const AutoSizeText(
-          'Unggah Feed',
-          maxLines: 10,
-          style: TextStyle(
-            fontFamily: 'PoppinsBold',
-            fontSize: 25,
-            color: Colors.black,
-            fontWeight: FontWeight.w600,
-            height: 1.2,
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: const AutoSizeText(
+              'Unggah Feed',
+              maxLines: 10,
+              style: TextStyle(
+                fontFamily: 'PoppinsBold',
+                fontSize: 25,
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                height: 1.2,
+              ),
+            ),
           ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Title text field
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0),
-                child: RichText(
-                  text: const TextSpan(
-                      text: 'Judul ',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15.0,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: '*',
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // Title text field
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: RichText(
+                      text: const TextSpan(
+                          text: 'Judul ',
                           style: TextStyle(
-                            color: Colors.red,
+                            color: Colors.black,
                             fontWeight: FontWeight.w600,
                             fontSize: 15.0,
                           ),
-                        )
-                      ]),
-                ),
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: const [
-                      BoxShadow(
-                        blurRadius: 10,
-                        spreadRadius: 2,
-                        offset: Offset(1, 1),
-                        color: Color.fromARGB(128, 170, 188, 192),
-                      )
-                    ]),
-                child: TextFormField(
-                  controller: titleController,
-                  validator: ((value) =>
-                      value!.isEmpty ? 'Judul harus diisi' : null),
-                  decoration: InputDecoration(
-                      hintText: 'Judul',
-                      focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                              color: Color.fromARGB(128, 170, 188, 192),
-                              width: 1.0),
-                          borderRadius: BorderRadius.circular(20)),
-                      enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
+                          children: <TextSpan>[
+                            TextSpan(
+                              text: '*',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 15.0,
+                              ),
+                            )
+                          ]),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const [
+                          BoxShadow(
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                            offset: Offset(1, 1),
                             color: Color.fromARGB(128, 170, 188, 192),
-                          ),
-                          borderRadius: BorderRadius.circular(20)),
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20))),
-                ),
+                          )
+                        ]),
+                    child: TextFormField(
+                      controller: titleController,
+                      validator: ((value) =>
+                          value!.isEmpty ? 'Judul harus diisi' : null),
+                      decoration: InputDecoration(
+                          hintText: 'Judul',
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Color.fromARGB(128, 170, 188, 192),
+                                  width: 1.0),
+                              borderRadius: BorderRadius.circular(20)),
+                          enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                color: Color.fromARGB(128, 170, 188, 192),
+                              ),
+                              borderRadius: BorderRadius.circular(20)),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20))),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  _buildFilePicker(),
+                  const SizedBox(height: 16),
+                  _buildTagsInput(),
+                ],
               ),
-              const SizedBox(
-                height: 16,
-              ),
-              _buildFilePicker(),
-              const SizedBox(height: 16),
-              _buildTagsInput(),
-            ],
+            ),
+          ),
+          bottomNavigationBar: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: FloatingActionButton.extended(
+              onPressed: () {
+                _submitFeed();
+              },
+              label: const Text('Submit'),
+              backgroundColor: Colors.grey, // Set the button color to grey
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            _submitFeed();
-          },
-          label: const Text('Submit'),
-          backgroundColor: Colors.grey, // Set the button color to grey
-        ),
-      ),
+        if (isLoading)
+          Container(
+            color: Colors.black.withOpacity(0.5),
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+      ],
     );
   }
 
@@ -319,8 +333,8 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
 
               return Center(
                 child: Text(fileTitle,
-                    style:
-                        const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
               );
             }
             return null;
@@ -388,6 +402,9 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
     }
 
     try {
+      setState(() {
+        isLoading = true;
+      });
       // Upload files to Firebase Storage
       List<Map<String, dynamic>> content =
           await FeedService().uploadFiles(title, files);
@@ -397,18 +414,28 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
           userService.currUser!.uid, username, title, content, updatedTags);
 
       if (context.mounted) {
-        showSnackBar(context, 'Upload Completed');
+        showSnackBar(context, 'Unggah Feed Berhasil');
+        setState(() {
+          titleController.clear();
+          tagsController.clear();
+          tags = [];
+          files = [];
+          NavigationUtils.pushRemoveTransition(
+              context,
+              const MainScreen(
+                page: 0,
+              ));
+          isLoading = false;
+        });
       }
-      setState(() {
-        titleController.clear();
-      tagsController.clear();
-      tags = [];
-      files = [];
-      }); 
     } catch (e) {
       if (context.mounted) {
         showSnackBar(context, e.toString());
       }
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 

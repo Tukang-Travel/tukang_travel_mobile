@@ -233,7 +233,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                   NavigationUtils.pushRemoveTransition(
                                       context, UpdatePedia(id: widget.id));
                                 },
-                                child: const Icon(Icons.edit),
+                                child: const Icon(Icons.edit, color: Colors.white,),
                               ),
                               const SizedBox(width: 10.0),
                               ElevatedButton(
@@ -257,7 +257,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                                 context, 'Cancel'),
                                             child: const Text('Batal'),
                                           ),
-                                          TextButton(
+                                          ElevatedButton(
                                             onPressed: () async {
                                               await pediaService.deletePedia(
                                                   widget.id, pedia['title']);
@@ -268,14 +268,20 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                                         const OwnerPediaScreen());
                                               }
                                             },
-                                            child: const Text('Hapus'),
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    const Color.fromRGBO(
+                                                        209, 26, 42, 1.0)),
+                                            child: const Text('Hapus',
+                                                style: TextStyle(
+                                                    color: Colors.white)),
                                           ),
                                         ],
                                       );
                                     },
                                   );
                                 },
-                                child: const Icon(Icons.delete),
+                                child: const Icon(Icons.delete, color: Colors.white,),
                               ),
                             ],
                           )

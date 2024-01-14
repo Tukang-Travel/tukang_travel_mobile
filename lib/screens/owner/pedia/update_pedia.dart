@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tuktraapp/screens/owner/pedia/owner_pedia_detail.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
+import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
@@ -17,24 +18,26 @@ class _UpdatePediaState extends State<UpdatePedia> {
 
   Map<String, dynamic> pedia = {};
 
-  final List<String> _types = [
-    'Sejarah',
-    'Cagar Alam',
-    'Pantai',
-    'Kuliner',
-    'Belanja',
-    'Religi',
-    'Petualangan',
-    'Seni & Budaya',
-    'Kesehatan & Kebugaran',
-    'Edukasi',
-    'Keluarga'
-  ];
+  List<String> _types = [];
   List<dynamic> _selectedTypes = [];
-  List<String> tags = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getTagsTemplate();
+  }
+
+  Future<void> getTagsTemplate() async {
+    final List<Map<String, dynamic>> temp =
+        await UserService().getPreferencesTemplate();
+    setState(() {
+      _types = temp.map((e) => e['name'].toString()).toList();
+    });
+  }
 
   TextEditingController titleTxt = TextEditingController();
   TextEditingController descTxt = TextEditingController();
+  TextEditingController typeTxt = TextEditingController();
   bool checked = false, isSet = false;
 
   @override
@@ -54,6 +57,15 @@ class _UpdatePediaState extends State<UpdatePedia> {
         titleTxt.text = pedia['title'];
         descTxt.text = pedia['description'];
         _selectedTypes = pedia['tags'];
+      });
+    }
+  }
+
+  void _addType(String type) {
+    if (type.isNotEmpty && !_selectedTypes.contains(type)) {
+      setState(() {
+        _selectedTypes.add(type);
+        typeTxt.clear();
       });
     }
   }
@@ -191,7 +203,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
                   maxLines: null,
                   controller: descTxt,
                   validator: ((value) =>
-                      value!.isEmpty ? 'Judul harus diisi' : null),
+                      value!.isEmpty ? 'Deskripsi harus diisi' : null),
                   decoration: InputDecoration(
                       hintText: 'Deskripsikan tempat wisatamu...',
                       focusedBorder: OutlineInputBorder(
@@ -211,57 +223,124 @@ class _UpdatePediaState extends State<UpdatePedia> {
               const SizedBox(
                 height: 10.0,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0),
-                child: RichText(
-                  text: const TextSpan(
-                      text: 'Tag (Min. 1 Tag dipilih)',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15.0,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: '*',
-                          style: TextStyle(
-                            color: Colors.red,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 15.0,
-                          ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Tags Terpilih',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16.0),
+                  // Code for selected tags remains the same
+                  _selectedTypes.isNotEmpty
+                      ? Wrap(
+                          spacing: 8.0,
+                          runSpacing: 8.0,
+                          children: _selectedTypes.map((type) {
+                            return Chip(
+                              label: Text(type),
+                              onDeleted: () {
+                                setState(() {
+                                  _selectedTypes.remove(type);
+                                });
+                              },
+                            );
+                          }).toList(),
                         )
-                      ]),
-                ),
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              SizedBox(
-                height: 200.0,
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                      childAspectRatio: 2.5),
-                  itemCount: _types.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return TagCheckbox(
-                      text: _types[index],
-                      checked:
-                          _selectedTypes.contains(_types[index]) ? true : false,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          if (value == true) {
-                            _selectedTypes.add(_types[index]);
-                          } else {
-                            _selectedTypes.remove(_types[index]);
-                          }
-                        });
+                      : const Text('Tidak ada Tag yang terpilih/dimasukkan'),
+                  const SizedBox(height: 16.0),
+                  const Text(
+                    'Rekomendasi Tags',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Container(
+                    decoration:
+                        BoxDecoration(border: Border.all(color: Colors.black)),
+                    padding: const EdgeInsets.all(10.0),
+                    height: 140.0,
+                    child: GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 8.0,
+                              mainAxisSpacing: 8.0,
+                              childAspectRatio: 2.5),
+                      itemCount: _types.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        final type = _types[index];
+                        return TagCheckbox(
+                          text: type,
+                          checked: false,
+                          onChanged: (bool? value) {
+                            _addType(type);
+                          },
+                        );
                       },
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                  const SizedBox(height: 8.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: RichText(
+                      text: const TextSpan(
+                        text: 'Tags',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15.0,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: const [
+                          BoxShadow(
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                            offset: Offset(1, 1),
+                            color: Color.fromARGB(128, 170, 188, 192),
+                          )
+                        ]),
+                    child: TextFormField(
+                      controller: typeTxt,
+                      decoration: InputDecoration(
+                        hintText: 'Tags',
+                        focusedBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                                color: Color.fromARGB(128, 170, 188, 192),
+                                width: 1.0),
+                            borderRadius: BorderRadius.circular(20)),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: const BorderSide(
+                              color: Color.fromARGB(128, 170, 188, 192),
+                            ),
+                            borderRadius: BorderRadius.circular(20)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        suffixIcon: IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () {
+                            setState(() {
+                              _addType(typeTxt.text.trim());
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 10.0,
@@ -287,6 +366,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
                       'Ubah',
                       style: TextStyle(
                         fontSize: 18.0,
+                        color: Colors.white
                       ),
                     ),
                   ),

@@ -23,7 +23,6 @@ class _FeedScreenState extends State<FeedScreen> {
   void initState() {
     super.initState();
     getPreference();
-    setState(() {});
   }
 
   Future<void> getPreference() async {
