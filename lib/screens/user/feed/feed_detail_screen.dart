@@ -8,7 +8,6 @@ import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/user/feed/edit_feed_screen.dart';
 import 'package:tuktraapp/services/feed_service.dart';
-import 'package:tuktraapp/utils/color.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/comment_card.dart';

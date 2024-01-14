@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
-import 'package:tuktraapp/screens/owner/pedia/owner_pedia_screen.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/constant.dart';

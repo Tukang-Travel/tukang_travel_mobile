@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:tuktraapp/screens/owner/pedia/insert_pedia.dart';
 import 'package:tuktraapp/screens/owner/pedia/owner_pedia_detail.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 

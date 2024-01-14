@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
-class InterestSelectionScreen extends StatefulWidget {
-  const InterestSelectionScreen({super.key});
+class InsertPreferenceScreen extends StatefulWidget {
+  const InsertPreferenceScreen({super.key});
 
   @override
-  State<InterestSelectionScreen> createState() =>
-      _InterestSelectionScreenState();
+  State<InsertPreferenceScreen> createState() =>
+      _InsertPreferenceScreenState();
 }
 
-class _InterestSelectionScreenState extends State<InterestSelectionScreen> {
+class _InsertPreferenceScreenState extends State<InsertPreferenceScreen> {
   List<Map<String, dynamic>> genres = [];
 
   List<String> selectedGenres = [];

@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
 class EditOwnerProfileScreen extends StatefulWidget {
@@ -30,7 +32,6 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
   TextEditingController emailTxt = TextEditingController();
 
   bool isLoading = false;
-  bool isGoogle = false;
 
   @override
   void dispose() {
@@ -72,7 +73,7 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
         .updateProfile(userService.currUser!.uid, updatedName, updatedUsername);
 
     // Close the screen
-    Navigator.pop(context);
+    NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 4));
   }
 
   @override
@@ -256,51 +257,51 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 10.0, horizontal: 15.0),
-                            child: SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.3,
-                              height: MediaQuery.of(context).size.height * 0.05,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
-                                    setState(() {
-                                      isLoading = true;
-                                      _updateProfile;
-                                    });
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 255, 180, 82),
-                                  elevation: 5,
-                                  shadowColor: Colors.black,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 15.0, horizontal: 20.0),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(20.0)),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const SizedBox(width: 8.0),
-                                    if (isLoading && !isGoogle)
-                                      const CircularProgressIndicator()
-                                    else
-                                      const Center(
-                                        child: Text(
-                                          'UBAH',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20.0,
-                                          ),
-                                        ),
-                                      ),
-                                  ],
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10.0,
+                            horizontal: 15.0,
+                          ),
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.3,
+                            height: MediaQuery.of(context).size.height * 0.05,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (formKey.currentState!.validate()) {
+                                  setState(() {
+                                    isLoading = true;
+                                    _updateProfile(); // Added the function call here
+                                  });
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    const Color.fromARGB(255, 255, 180, 82),
+                                elevation: 5,
+                                shadowColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
                                 ),
                               ),
-                            )),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const SizedBox(width: 8.0),
+                                  if (isLoading)
+                                    const CircularProgressIndicator()
+                                  else
+                                    const Center(
+                                      child: Text(
+                                        'UBAH',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ],

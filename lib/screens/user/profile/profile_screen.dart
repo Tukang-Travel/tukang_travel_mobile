@@ -1,10 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tuktraapp/screens/authentication/login_screen.dart';
+import 'package:tuktraapp/screens/user/feed/feed_detail_screen.dart';
 import 'package:tuktraapp/screens/user/profile/edit_profile_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
-import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:tuktraapp/widgets/profile_post_card.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -168,61 +168,98 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   thickness: 1.0,
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .collection('feeds')
-                          .snapshots(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
+                    stream: FirebaseFirestore.instance
+                        .collection('feeds')
+                        .where('userId', isEqualTo: userService.currUser!.uid)
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                        if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        }
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
 
-                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                          return const Text('No data available');
-                        }
+                      if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                        return const Text('Belum Ada Feed yang diupload');
+                      }
 
-                        return Align(
-                          alignment: Alignment.center,
-                          child: SizedBox(
-                            height: h,
-                            child: GridView.builder(
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 8.0,
-                                mainAxisSpacing: 8.0,
-                                childAspectRatio: 0.25,
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          // Number of columns in the grid
+                          crossAxisSpacing: 8.0,
+                          // Spacing between columns
+                          mainAxisSpacing: 8.0, // Spacing between rows
+                        ),
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var itemData = snapshot.data!.docs[index].data()
+                              as Map<String, dynamic>;
+
+                          return GestureDetector(
+                            onTap: () {
+                              NavigationUtils.pushTransition(
+                                context,
+                                FeedDetailScreen(
+                                    feedId: itemData["feedId"].toString()),
+                              );
+                            },
+                            child: Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              itemCount: snapshot.data!.docs.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                var itemData = snapshot.data!.docs[index].data()
-                                    as Map<String, dynamic>;
-                                if (userService.currUser!.uid ==
-                                    itemData['userId']) {
-                                  return !snapshot.hasData
-                                      ? const Center(child: Text('No Feed yet'))
-                                      : SizedBox.expand(
-                                          child: PostCard(
-                                            snap: snapshot.data!.docs[index]
-                                                .data(),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(10.0),
+                                      topRight: Radius.circular(10.0),
+                                    ),
+                                    child: Image.network(
+                                      _getFirstImage(itemData['content']),
+                                      height: 100,
+                                      width: 300,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8.0),
+                                  Center(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 5.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            itemData['title'],
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 17.0,
+                                            ),
                                           ),
-                                        );
-                                } else {
-                                  return const SizedBox.shrink();
-                                }
-                              },
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        );
-                      }),
+                          );
+                        },
+                      );
+                    },
+                  ),
                 )
               ],
             );
@@ -230,5 +267,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ],
     )));
+  }
+
+  String _getFirstImage(List<dynamic> content) {
+    // Filter 'content' to only get the items with 'type' equal to 'image'
+    List<Map<String, dynamic>> images = List<Map<String, dynamic>>.from(
+      content.where((item) => item['type'] == 'image'),
+    );
+
+    // Check if there are any images, if so, return the src of the first image
+    if (images.isNotEmpty) {
+      return images[0]['src'];
+    }
+
+    // If no images found, you can return a placeholder or an empty string
+    return 'https://static.vecteezy.com/system/resources/previews/020/765/399/non_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg'; // Replace with your placeholder or an empty string
   }
 }

@@ -615,7 +615,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                           padding: const EdgeInsets.only(left: 5.0),
                           child: RichText(
                             text: const TextSpan(
-                              text: 'Biaya Transportasi ',
+                              text: 'Biaya Perjalanan',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w600,
@@ -656,7 +656,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                                   });
                                 },
                               ),
-                              labelText: 'Biaya Transportasi',
+                              labelText: 'Biaya Perjalanan',
                               focusedBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(
                                       color: Color.fromARGB(128, 170, 188, 192),
@@ -740,6 +740,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                         'Ubah',
                         style: TextStyle(
                           fontSize: 18.0,
+                          color: Colors.white
                         ),
                       ),
                     ),

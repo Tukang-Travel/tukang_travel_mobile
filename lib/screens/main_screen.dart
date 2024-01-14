@@ -5,7 +5,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:tuktraapp/screens/owner/pedia/owner_pedia_screen.dart';
 import 'package:tuktraapp/screens/owner/profile/owner_profile.dart';
 import 'package:tuktraapp/screens/user/feed/feed_screen.dart';
-import 'package:tuktraapp/screens/user/interest_selection_screen.dart';
+import 'package:tuktraapp/screens/user/insert_preferences_screen.dart';
 import 'package:tuktraapp/screens/user/planner/planner_screen.dart';
 import 'package:tuktraapp/screens/user/upload/upload_feed_screen.dart';
 import 'package:tuktraapp/screens/user/pedia/pedia_screen.dart';
@@ -52,7 +52,7 @@ class _MainScreenState extends State<MainScreen> {
 
         if (interest == null && context.mounted) {
           NavigationUtils.pushTransition(
-              context, const InterestSelectionScreen());
+              context, const InsertPreferenceScreen());
         }
       }
     } on FirebaseAuthException catch (e) {
