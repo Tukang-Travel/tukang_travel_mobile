@@ -54,12 +54,10 @@ class CommentCard extends StatelessWidget {
                           height: 1.2,
                         ),
                       ),
-
                       const Divider(
                         height: 5,
                         color: Colors.transparent,
                       ),
-
                       RichText(
                         text: TextSpan(
                           children: [
@@ -71,7 +69,6 @@ class CommentCard extends StatelessWidget {
                           ],
                         ),
                       ),
-
                       const Divider(
                         height: 5,
                         color: Colors.transparent,

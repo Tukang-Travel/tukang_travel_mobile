@@ -105,9 +105,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 // Call the function to send password reset email
                                 String res = await UserService()
                                     .sendForgotEmail(emailTxt.text.trim());
-                        
+
                                 if (res == 'success' && context.mounted) {
-                                  showSnackBar(context, 'Email already sent, if your account existed');
+                                  showSnackBar(context,
+                                      'Email already sent, if your account existed');
                                   NavigationUtils.pushRemoveTransition(
                                       context, const LoginScreen());
                                 } else {

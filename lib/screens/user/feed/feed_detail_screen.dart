@@ -134,8 +134,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                 height: 1.2,
                                               ),
                                             ),
-                                            snapshot.data!["userId"] ==
-                                                    user.uid
+                                            snapshot.data!["userId"] == user.uid
                                                 ? Row(
                                                     children: [
                                                       Card(
@@ -157,16 +156,16 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                     0xffE9E9E9)),
                                                             child: IconButton(
                                                               onPressed: () {
-                                                                Navigator
-                                                                    .push(
+                                                                Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
-                                                                      builder: (context) =>
-                                                                          EditFeedScreen(
-                                                                            feedId: widget.feedId,
-                                                                            initialTitle: snapshot.data!["title"],
-                                                                            initialTags: (snapshot.data!["tags"] as List<dynamic>).cast<String>(),
-                                                                          )),
+                                                                      builder:
+                                                                          (context) =>
+                                                                              EditFeedScreen(
+                                                                                feedId: widget.feedId,
+                                                                                initialTitle: snapshot.data!["title"],
+                                                                                initialTags: (snapshot.data!["tags"] as List<dynamic>).cast<String>(),
+                                                                              )),
                                                                 );
                                                               },
                                                               icon: const Icon(
@@ -198,40 +197,48 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                     context:
                                                                         context,
                                                                     builder:
-                                                                        (BuildContext
-                                                                            context) {
+                                                                        (BuildContextcontext) {
                                                                       return AlertDialog(
                                                                         title:
                                                                             const Text(
                                                                           'Are you sure you want to delete this feed?',
                                                                           style:
                                                                               TextStyle(
-                                                                            fontFamily: 'PoppinsBold',
-                                                                            fontSize: 15,
-                                                                            color: Colors.black,
-                                                                            fontWeight: FontWeight.w600,
-                                                                            height: 1.2,
+                                                                            fontFamily:
+                                                                                'PoppinsBold',
+                                                                            fontSize:
+                                                                                15,
+                                                                            color:
+                                                                                Colors.black,
+                                                                            fontWeight:
+                                                                                FontWeight.w600,
+                                                                            height:
+                                                                                1.2,
                                                                           ),
                                                                         ),
                                                                         actions: <Widget>[
                                                                           TextButton(
-                                                                            style: TextButton.styleFrom(
+                                                                            style:
+                                                                                TextButton.styleFrom(
                                                                               textStyle: Theme.of(context).textTheme.labelLarge,
                                                                             ),
-                                                                            child: const Text('Cancel'),
-                                                                            onPressed: () {
+                                                                            child:
+                                                                                const Text('Cancel'),
+                                                                            onPressed:
+                                                                                () {
                                                                               Navigator.of(context).pop();
                                                                             },
                                                                           ),
                                                                           TextButton(
-                                                                            style: TextButton.styleFrom(
+                                                                            style:
+                                                                                TextButton.styleFrom(
                                                                               textStyle: Theme.of(context).textTheme.labelLarge,
                                                                             ),
-                                                                            child: const Text('Delete'),
-                                                                            onPressed: () {
-                                                                              deleteFeed(
-                                                                                widget.feedId, snapshot.data!["title"]
-                                                                              );
+                                                                            child:
+                                                                                const Text('Delete'),
+                                                                            onPressed:
+                                                                                () {
+                                                                              deleteFeed(widget.feedId, snapshot.data!["title"]);
                                                                               Navigator.of(context).pop();
                                                                               Navigator.of(context).pop();
                                                                             },
@@ -241,8 +248,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                     });
                                                               },
                                                               icon: const Icon(
-                                                                  Icons
-                                                                      .delete,
+                                                                  Icons.delete,
                                                                   color: Colors
                                                                       .red),
                                                             )),
@@ -278,8 +284,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                             ),
                                             const SizedBox(width: 15),
                                             Text(
-                                              snapshot
-                                                  .data!["comments"].length
+                                              snapshot.data!["comments"].length
                                                   .toString(),
                                               style: const TextStyle(
                                                 fontFamily: 'PoppinsBold',

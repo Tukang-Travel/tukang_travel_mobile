@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
@@ -76,7 +75,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       return;
     }
 
-    UserService().updateProfile(userService.currUser!.uid, updatedName, updatedUsername);
+    UserService()
+        .updateProfile(userService.currUser!.uid, updatedName, updatedUsername);
 
     // Close the screen
     Navigator.pop(context);
@@ -118,7 +118,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           const SizedBox(
                             height: 100,
                           ),
-                          
+
                           // email text field
                           Container(
                             decoration: BoxDecoration(

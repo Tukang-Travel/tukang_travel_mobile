@@ -3,7 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class TransportService {
   Future<List<Map<String, dynamic>>> getTransports() async {
     try {
-      CollectionReference transportations = FirebaseFirestore.instance.collection('transportations');
+      CollectionReference transportations =
+          FirebaseFirestore.instance.collection('transportations');
       QuerySnapshot querySnapshot = await transportations.get();
 
       List<Map<String, dynamic>> transports = [];

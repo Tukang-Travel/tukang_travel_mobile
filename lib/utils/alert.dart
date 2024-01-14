@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
 
 class Alert {
-  static Future<void> alertValidation (message, BuildContext context) async {
+  static Future<void> alertValidation(message, BuildContext context) async {
     Flushbar(
       message: message,
       icon: const Icon(

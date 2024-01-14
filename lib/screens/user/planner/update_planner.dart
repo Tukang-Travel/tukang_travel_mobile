@@ -42,7 +42,8 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
     if (picked != null && picked != _selectedStartDate) {
       setState(() {
         _selectedStartDate = picked;
-        _dateStartController.text = _selectedStartDate!.toLocal().toString().split(' ')[0];
+        _dateStartController.text =
+            _selectedStartDate!.toLocal().toString().split(' ')[0];
       });
     }
   }
@@ -58,24 +59,23 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
     if (picked != null && picked != _selectedEndDate) {
       setState(() {
         _selectedEndDate = picked;
-        _dateEndController.text = _selectedEndDate!.toLocal().toString().split(' ')[0];
+        _dateEndController.text =
+            _selectedEndDate!.toLocal().toString().split(' ')[0];
       });
     }
   }
-  
+
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    List<dynamic> results = await Future.wait([
-      planService.getPlan(widget.id)
-    ]);
+    List<dynamic> results = await Future.wait([planService.getPlan(widget.id)]);
 
     setState(() {
       plan = results[0];
     });
 
-    if(!isSet) {
+    if (!isSet) {
       setState(() {
         isSet = true;
         titleTxt.text = plan?['title'];
@@ -96,7 +96,8 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+            padding:
+                const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -115,526 +116,534 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                   child: Text(
                     'Rancanglah rencana perjalananmu disini, sesuai dengan keinginan kamu!',
                     style: TextStyle(
-                      fontSize: 15.0,
-                      color: Color.fromARGB(255, 81, 81, 81)
-                    ),
+                        fontSize: 15.0, color: Color.fromARGB(255, 81, 81, 81)),
                   ),
                 ),
                 Form(
-                  key: formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: RichText(
-                          text: const TextSpan(
-                            text: 'Judul ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan> [
-                              TextSpan(
-                                text: '*',
+                    key: formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: RichText(
+                            text: const TextSpan(
+                                text: 'Judul ',
                                 style: TextStyle(
-                                  color: Colors.red,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15.0,
                                 ),
-                              )
-                            ]
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: '*',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.0,
+                                    ),
+                                  )
+                                ]),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10.0,),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                              offset: Offset(1, 1),
-                              color: Color.fromARGB(128, 170, 188, 192),
-                            )
-                          ]
+                        const SizedBox(
+                          height: 10.0,
                         ),
-                        child: TextFormField(
-                          controller: titleTxt,
-                          validator: ((value) => value!.isEmpty ? 'Judul harus diisi' : null),
-                          decoration: InputDecoration(
-                            hintText: 'Judul',
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                                width: 1.0
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                            )
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: const [
+                                BoxShadow(
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                  offset: Offset(1, 1),
+                                  color: Color.fromARGB(128, 170, 188, 192),
+                                )
+                              ]),
+                          child: TextFormField(
+                            controller: titleTxt,
+                            validator: ((value) =>
+                                value!.isEmpty ? 'Judul harus diisi' : null),
+                            decoration: InputDecoration(
+                                hintText: 'Judul',
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                        color:
+                                            Color.fromARGB(128, 170, 188, 192),
+                                        width: 1.0),
+                                    borderRadius: BorderRadius.circular(20)),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: Color.fromARGB(128, 170, 188, 192),
+                                    ),
+                                    borderRadius: BorderRadius.circular(20)),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20))),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10.0,),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: RichText(
-                          text: const TextSpan(
-                            text: 'Lokasi Awal ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan> [
-                              TextSpan(
-                                text: '*',
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: RichText(
+                            text: const TextSpan(
+                                text: 'Lokasi Awal ',
                                 style: TextStyle(
-                                  color: Colors.red,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15.0,
                                 ),
-                              )
-                            ]
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: '*',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.0,
+                                    ),
+                                  )
+                                ]),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10.0,),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                              offset: Offset(1, 1),
-                              color: Color.fromARGB(128, 170, 188, 192),
-                            )
-                          ]
+                        const SizedBox(
+                          height: 10.0,
                         ),
-                        child: TextFormField(
-                          controller: sourceTxt,
-                          validator: ((value) => value!.isEmpty ? 'Lokasi awal harus diisi' : null),
-                          decoration: InputDecoration(
-                            hintText: 'Lokasi Awal',
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                                width: 1.0
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                            )
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: const [
+                                BoxShadow(
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                  offset: Offset(1, 1),
+                                  color: Color.fromARGB(128, 170, 188, 192),
+                                )
+                              ]),
+                          child: TextFormField(
+                            controller: sourceTxt,
+                            validator: ((value) => value!.isEmpty
+                                ? 'Lokasi awal harus diisi'
+                                : null),
+                            decoration: InputDecoration(
+                                hintText: 'Lokasi Awal',
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                        color:
+                                            Color.fromARGB(128, 170, 188, 192),
+                                        width: 1.0),
+                                    borderRadius: BorderRadius.circular(20)),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: Color.fromARGB(128, 170, 188, 192),
+                                    ),
+                                    borderRadius: BorderRadius.circular(20)),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20))),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10.0,),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: RichText(
-                          text: const TextSpan(
-                            text: 'Lokasi Destinasi ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan> [
-                              TextSpan(
-                                text: '*',
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: RichText(
+                            text: const TextSpan(
+                                text: 'Lokasi Destinasi ',
                                 style: TextStyle(
-                                  color: Colors.red,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15.0,
                                 ),
-                              )
-                            ]
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: '*',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.0,
+                                    ),
+                                  )
+                                ]),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10.0,),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                              offset: Offset(1, 1),
-                              color: Color.fromARGB(128, 170, 188, 192),
-                            )
-                          ]
+                        const SizedBox(
+                          height: 10.0,
                         ),
-                        child: TextFormField(
-                          controller: destinationTxt,
-                          validator: ((value) => value!.isEmpty ? 'Lokasi destinasi harus diisi' : null),
-                          decoration: InputDecoration(                 hintText: 'Lokasi Destinasi',
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                                width: 1.0
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                            )
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: const [
+                                BoxShadow(
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                  offset: Offset(1, 1),
+                                  color: Color.fromARGB(128, 170, 188, 192),
+                                )
+                              ]),
+                          child: TextFormField(
+                            controller: destinationTxt,
+                            validator: ((value) => value!.isEmpty
+                                ? 'Lokasi destinasi harus diisi'
+                                : null),
+                            decoration: InputDecoration(
+                                hintText: 'Lokasi Destinasi',
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                        color:
+                                            Color.fromARGB(128, 170, 188, 192),
+                                        width: 1.0),
+                                    borderRadius: BorderRadius.circular(20)),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                      color: Color.fromARGB(128, 170, 188, 192),
+                                    ),
+                                    borderRadius: BorderRadius.circular(20)),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20))),
                           ),
                         ),
-                      ),
-
-                      const SizedBox(height: 10.0,),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: RichText(
-                          text: const TextSpan(
-                            text: 'Dari Tanggal ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan> [
-                              TextSpan(
-                                text: '*',
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: RichText(
+                            text: const TextSpan(
+                                text: 'Dari Tanggal ',
                                 style: TextStyle(
-                                  color: Colors.red,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15.0,
                                 ),
-                              )
-                            ]
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: '*',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.0,
+                                    ),
+                                  )
+                                ]),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10.0,),
-                      
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                              offset: Offset(1, 1),
-                              color: Color.fromARGB(128, 170, 188, 192),
-                            )
-                          ]
+                        const SizedBox(
+                          height: 10.0,
                         ),
-                        child: TextFormField(
-                          controller: _dateStartController,
-                          validator: ((value) => value!.isEmpty ? 'Tanggal Awal harus diisi' : null),
-                          readOnly: true,
-                          onTap: () => _selectStartDate(context),
-                          decoration: InputDecoration(
-                            labelText: 'Pilih Tanggal',
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                                width: 1.0
-                              ),
-                              borderRadius: BorderRadius.circular(20)
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: const [
+                                BoxShadow(
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                  offset: Offset(1, 1),
+                                  color: Color.fromARGB(128, 170, 188, 192),
+                                )
+                              ]),
+                          child: TextFormField(
+                            controller: _dateStartController,
+                            validator: ((value) => value!.isEmpty
+                                ? 'Tanggal Awal harus diisi'
+                                : null),
+                            readOnly: true,
+                            onTap: () => _selectStartDate(context),
+                            decoration: InputDecoration(
+                              labelText: 'Pilih Tanggal',
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color.fromARGB(128, 170, 188, 192),
+                                      width: 1.0),
+                                  borderRadius: BorderRadius.circular(20)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Color.fromARGB(128, 170, 188, 192),
+                                  ),
+                                  borderRadius: BorderRadius.circular(20)),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              suffixIcon:
+                                  const Icon(Icons.calendar_today_rounded),
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            suffixIcon: const Icon(Icons.calendar_today_rounded),
                           ),
                         ),
-                      ),
-                      
-                      const SizedBox(height: 10.0,),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: RichText(
-                          text: const TextSpan(
-                            text: 'Sampai Tanggal ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan> [
-                              TextSpan(
-                                text: '*',
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: RichText(
+                            text: const TextSpan(
+                                text: 'Sampai Tanggal ',
                                 style: TextStyle(
-                                  color: Colors.red,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15.0,
                                 ),
-                              )
-                            ]
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: '*',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.0,
+                                    ),
+                                  )
+                                ]),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10.0,),
-                      
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                              offset: Offset(1, 1),
-                              color: Color.fromARGB(128, 170, 188, 192),
-                            )
-                          ]
+                        const SizedBox(
+                          height: 10.0,
                         ),
-                        child: TextFormField(
-                          controller: _dateEndController,
-                          validator: ((value) => value!.isEmpty ? 'Tanggal Akhir harus diisi' : null),
-                          readOnly: true,
-                          onTap: () => _selectEndDate(context),
-                          decoration: InputDecoration(
-                            labelText: 'Pilih Tanggal',
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                                width: 1.0
-                              ),
-                              borderRadius: BorderRadius.circular(20)
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: const [
+                                BoxShadow(
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                  offset: Offset(1, 1),
+                                  color: Color.fromARGB(128, 170, 188, 192),
+                                )
+                              ]),
+                          child: TextFormField(
+                            controller: _dateEndController,
+                            validator: ((value) => value!.isEmpty
+                                ? 'Tanggal Akhir harus diisi'
+                                : null),
+                            readOnly: true,
+                            onTap: () => _selectEndDate(context),
+                            decoration: InputDecoration(
+                              labelText: 'Pilih Tanggal',
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color.fromARGB(128, 170, 188, 192),
+                                      width: 1.0),
+                                  borderRadius: BorderRadius.circular(20)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Color.fromARGB(128, 170, 188, 192),
+                                  ),
+                                  borderRadius: BorderRadius.circular(20)),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              suffixIcon:
+                                  const Icon(Icons.calendar_today_rounded),
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                              ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            suffixIcon: const Icon(Icons.calendar_today_rounded),
                           ),
                         ),
-                      ),
-
-                      const SizedBox(height: 10.0,),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: RichText(
-                          text: const TextSpan(
-                            text: 'Anggaran ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan> [
-                              TextSpan(
-                                text: '*',
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: RichText(
+                            text: const TextSpan(
+                                text: 'Anggaran ',
                                 style: TextStyle(
-                                  color: Colors.red,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15.0,
                                 ),
-                              )
-                            ]
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: '*',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.0,
+                                    ),
+                                  )
+                                ]),
                           ),
                         ),
-                      ),
-              
-                      const SizedBox(height: 10.0,),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                              offset: Offset(1, 1),
-                              color: Color.fromARGB(128, 170, 188, 192),
-                            )
-                          ]
+                        const SizedBox(
+                          height: 10.0,
                         ),
-                        child: TextFormField(
-                          controller: TextEditingController(text: budget.toString()),
-                          validator: ((value) => value == '0' ? 'Anggaran harus lebih dari 0' : null),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          decoration: InputDecoration(
-                            prefixIcon: IconButton(
-                              icon: const Icon(Icons.remove_circle_outline_rounded),
-                              onPressed: () {
-                                setState(() {
-                                  budget = (budget > 0) ? budget - 100000 : 0;
-                                });
-                              },
-                            ),
-                            labelText: 'Anggaran Perjalanan',
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                                width: 1.0
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: const [
+                                BoxShadow(
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                  offset: Offset(1, 1),
+                                  color: Color.fromARGB(128, 170, 188, 192),
+                                )
+                              ]),
+                          child: TextFormField(
+                            controller:
+                                TextEditingController(text: budget.toString()),
+                            validator: ((value) => value == '0'
+                                ? 'Anggaran harus lebih dari 0'
+                                : null),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: InputDecoration(
+                              prefixIcon: IconButton(
+                                icon: const Icon(
+                                    Icons.remove_circle_outline_rounded),
+                                onPressed: () {
+                                  setState(() {
+                                    budget = (budget > 0) ? budget - 100000 : 0;
+                                  });
+                                },
                               ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
+                              labelText: 'Anggaran Perjalanan',
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color.fromARGB(128, 170, 188, 192),
+                                      width: 1.0),
+                                  borderRadius: BorderRadius.circular(20)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Color.fromARGB(128, 170, 188, 192),
+                                  ),
+                                  borderRadius: BorderRadius.circular(20)),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              suffixIcon: IconButton(
+                                icon: const Icon(
+                                    Icons.add_circle_outline_rounded),
+                                onPressed: () {
+                                  setState(() {
+                                    budget = budget + 100000;
+                                  });
+                                },
                               ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.add_circle_outline_rounded),
-                              onPressed: () {
-                                setState(() {
-                                  budget = budget + 100000;
-                                });
-                              },
                             ),
                           ),
                         ),
-                      ),
-
-                      const SizedBox(height: 10.0,),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5.0),
-                        child: RichText(
-                          text: const TextSpan(
-                            text: 'Banyak Orang ',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 15.0,
-                            ),
-                            children: <TextSpan> [
-                              TextSpan(
-                                text: '*',
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: RichText(
+                            text: const TextSpan(
+                                text: 'Banyak Orang ',
                                 style: TextStyle(
-                                  color: Colors.red,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.w600,
                                   fontSize: 15.0,
                                 ),
-                              )
-                            ]
+                                children: <TextSpan>[
+                                  TextSpan(
+                                    text: '*',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 15.0,
+                                    ),
+                                  )
+                                ]),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 10.0,),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: const [
-                            BoxShadow(
-                              blurRadius: 10,
-                              spreadRadius: 2,
-                              offset: Offset(1, 1),
-                              color: Color.fromARGB(128, 170, 188, 192),
-                            )
-                          ]
+                        const SizedBox(
+                          height: 10.0,
                         ),
-                        child: TextFormField(
-                          controller: TextEditingController(text: numOfPeople.toString()),
-                          validator: ((value) => value == '0' ? 'Jumlah orang harus lebih dari 0' : null),
-                          keyboardType: TextInputType.number,
-                          inputFormatters: <TextInputFormatter>[
-                            FilteringTextInputFormatter.digitsOnly
-                          ],
-                          decoration: InputDecoration(
-                            prefixIcon: IconButton(
-                              icon: const Icon(Icons.remove_circle_outline_rounded),
-                              onPressed: () {
-                                setState(() {
-                                  numOfPeople = (numOfPeople > 0) ? numOfPeople - 1 : 0;
-                                });
-                              },
-                            ),
-                            labelText: 'Banyak orang',
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
-                                width: 1.0
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: const [
+                                BoxShadow(
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                  offset: Offset(1, 1),
+                                  color: Color.fromARGB(128, 170, 188, 192),
+                                )
+                              ]),
+                          child: TextFormField(
+                            controller: TextEditingController(
+                                text: numOfPeople.toString()),
+                            validator: ((value) => value == '0'
+                                ? 'Jumlah orang harus lebih dari 0'
+                                : null),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: <TextInputFormatter>[
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
+                            decoration: InputDecoration(
+                              prefixIcon: IconButton(
+                                icon: const Icon(
+                                    Icons.remove_circle_outline_rounded),
+                                onPressed: () {
+                                  setState(() {
+                                    numOfPeople =
+                                        (numOfPeople > 0) ? numOfPeople - 1 : 0;
+                                  });
+                                },
                               ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: const BorderSide(
-                                color: Color.fromARGB(128, 170, 188, 192),
+                              labelText: 'Banyak orang',
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color.fromARGB(128, 170, 188, 192),
+                                      width: 1.0),
+                                  borderRadius: BorderRadius.circular(20)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                    color: Color.fromARGB(128, 170, 188, 192),
+                                  ),
+                                  borderRadius: BorderRadius.circular(20)),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              suffixIcon: IconButton(
+                                icon: const Icon(
+                                    Icons.add_circle_outline_rounded),
+                                onPressed: () {
+                                  setState(() {
+                                    numOfPeople = numOfPeople + 1;
+                                  });
+                                },
                               ),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            suffixIcon: IconButton(
-                              icon: const Icon(Icons.add_circle_outline_rounded),
-                              onPressed: () {
-                                setState(() {
-                                  numOfPeople = numOfPeople + 1;
-                                });
-                              },
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  )
+                      ],
+                    )),
+                const SizedBox(
+                  height: 10.0,
                 ),
-                const SizedBox(height: 10.0,),
-
                 Align(
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
                     onPressed: () {
-                      if(formKey.currentState!.validate()) {
+                      if (formKey.currentState!.validate()) {
                         setState(() {
                           isLoading = true;
-                          planService.updatePlanner(widget.id, titleTxt.text, sourceTxt.text, destinationTxt.text, _dateStartController.text, _dateEndController.text, budget, numOfPeople);
-                          NavigationUtils.pushRemoveTransition(context, const PlannerScreen());
+                          planService.updatePlanner(
+                              widget.id,
+                              titleTxt.text,
+                              sourceTxt.text,
+                              destinationTxt.text,
+                              _dateStartController.text,
+                              _dateEndController.text,
+                              budget,
+                              numOfPeople);
+                          NavigationUtils.pushRemoveTransition(
+                              context, const PlannerScreen());
                         });
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15.0),
-                      ),
-                      backgroundColor: const Color.fromARGB(255, 82, 114, 255)
-                    ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15.0),
+                        ),
+                        backgroundColor:
+                            const Color.fromARGB(255, 82, 114, 255)),
                     child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 20.0, vertical: 15.0),
                       child: Text(
                         'Ubah',
                         style: TextStyle(
@@ -657,7 +666,8 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             onPressed: () {
-              NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 2));
+              NavigationUtils.pushRemoveTransition(
+                  context, const MainScreen(page: 2));
             },
             child: const Padding(
               padding: EdgeInsets.only(left: 6.0),

@@ -18,7 +18,7 @@ class WelcomeScreen extends StatefulWidget {
 
 class _WelcomeScreenState extends State<WelcomeScreen>
     with SingleTickerProviderStateMixin {
-    UserService userService = UserService();
+  UserService userService = UserService();
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
@@ -66,7 +66,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           if (snapshot.connectionState == ConnectionState.done) {
             // Animation has completed, show the rest of the content
             return _buildContent();
-            
           } else {
             return _buildLoadingIndicator();
           }
@@ -103,47 +102,43 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color.fromARGB(255, 82, 114, 255),
+                  backgroundColor: const Color.fromARGB(255, 82, 114, 255),
                   elevation: 5,
                   shadowColor: Colors.black,
                   padding: const EdgeInsets.symmetric(
                       vertical: 15.0, horizontal: 20.0),
                   shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(20.0)),
+                      borderRadius: BorderRadius.circular(20.0)),
                 ),
                 onPressed: () {
-                  NavigationUtils.pushRemoveTransition(context, const LoginOwnerScreen());
+                  NavigationUtils.pushRemoveTransition(
+                      context, const LoginOwnerScreen());
                 },
                 child: const Text(
                   "Masuk sebagai Owner",
-                  style: TextStyle(
-                    color: Colors.white
-                  ),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
-              const SizedBox(width: 20.0,),
+              const SizedBox(
+                width: 20.0,
+              ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Colors.black,
+                  backgroundColor: Colors.black,
                   elevation: 5,
                   shadowColor: Colors.black,
                   padding: const EdgeInsets.symmetric(
                       vertical: 15.0, horizontal: 20.0),
                   shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(20.0)),
+                      borderRadius: BorderRadius.circular(20.0)),
                 ),
                 onPressed: () {
-                  NavigationUtils.pushRemoveTransition(context, const LoginScreen());
+                  NavigationUtils.pushRemoveTransition(
+                      context, const LoginScreen());
                 },
                 child: const Text(
                   "Masuk sebagai User",
-                  style: TextStyle(
-                    color: Colors.white
-                  ),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],
@@ -156,47 +151,43 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      const Color.fromARGB(255, 82, 114, 255),
+                  backgroundColor: const Color.fromARGB(255, 82, 114, 255),
                   elevation: 5,
                   shadowColor: Colors.black,
                   padding: const EdgeInsets.symmetric(
                       vertical: 15.0, horizontal: 20.0),
                   shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(20.0)),
+                      borderRadius: BorderRadius.circular(20.0)),
                 ),
                 onPressed: () {
-                  NavigationUtils.pushRemoveTransition(context, const RegisterOwnerScreen());
+                  NavigationUtils.pushRemoveTransition(
+                      context, const RegisterOwnerScreen());
                 },
                 child: const Text(
                   "Daftar sebagai Owner",
-                  style: TextStyle(
-                    color: Colors.white
-                  ),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
-              const SizedBox(width: 25.0,),
+              const SizedBox(
+                width: 25.0,
+              ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      Colors.black,
+                  backgroundColor: Colors.black,
                   elevation: 5,
                   shadowColor: Colors.black,
                   padding: const EdgeInsets.symmetric(
                       vertical: 15.0, horizontal: 20.0),
                   shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(20.0)),
+                      borderRadius: BorderRadius.circular(20.0)),
                 ),
                 onPressed: () {
-                  NavigationUtils.pushRemoveTransition(context, const RegisterScreen());
+                  NavigationUtils.pushRemoveTransition(
+                      context, const RegisterScreen());
                 },
                 child: const Text(
                   "Daftar sebagai User",
-                  style: TextStyle(
-                    color: Colors.white
-                  ),
+                  style: TextStyle(color: Colors.white),
                 ),
               ),
             ],
@@ -204,8 +195,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         ),
       ],
     );
-
-
   }
 
   Widget _buildLoadingIndicator() {

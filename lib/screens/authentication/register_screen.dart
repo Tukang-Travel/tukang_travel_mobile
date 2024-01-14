@@ -136,24 +136,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   child: Column(
                                     children: [
                                       Container(
-                                        width: w,
-                                        height: 100.0, // one third of the page
-                                        decoration: const BoxDecoration(
-                                          image: DecorationImage(
-                                              image: AssetImage('asset/images/tuktra_logo.png'),
-                                              fit: BoxFit.cover),
-                                        )
-                                      ),
+                                          width: w,
+                                          height:
+                                              100.0, // one third of the page
+                                          decoration: const BoxDecoration(
+                                            image: DecorationImage(
+                                                image: AssetImage(
+                                                    'asset/images/tuktra_logo.png'),
+                                                fit: BoxFit.cover),
+                                          )),
                                       Container(
                                         decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                             boxShadow: const [
                                               BoxShadow(
                                                 blurRadius: 10,
                                                 spreadRadius: 2,
                                                 offset: Offset(1, 1),
-                                                color: Color.fromARGB(128, 170, 188, 192),
+                                                color: Color.fromARGB(
+                                                    128, 170, 188, 192),
                                               )
                                             ]),
                                         child: TextFormField(
@@ -164,7 +167,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           decoration: InputDecoration(
                                               prefixIcon: const Icon(
                                                 Icons.abc_rounded,
-                                                color: Color.fromARGB(255, 82, 114, 255),
+                                                color: Color.fromARGB(
+                                                    255, 82, 114, 255),
                                               ),
                                               hintText: 'Name',
                                               focusedBorder: OutlineInputBorder(
@@ -172,33 +176,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                       color: Color.fromARGB(
                                                           128, 170, 188, 192),
                                                       width: 1.0),
-                                                  borderRadius: BorderRadius.circular(20)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               enabledBorder: OutlineInputBorder(
                                                   borderSide: const BorderSide(
-                                                    color:
-                                                        Color.fromARGB(128, 170, 188, 192),
+                                                    color: Color.fromARGB(
+                                                        128, 170, 188, 192),
                                                   ),
-                                                  borderRadius: BorderRadius.circular(20)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(20))),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20))),
                                         ),
                                       ),
-                                      
+
                                       const SizedBox(
                                         height: 10,
                                       ),
-                                      
+
                                       // username text field
                                       Container(
                                         decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                             boxShadow: const [
                                               BoxShadow(
                                                 blurRadius: 10,
                                                 spreadRadius: 2,
                                                 offset: Offset(1, 1),
-                                                color: Color.fromARGB(128, 170, 188, 192),
+                                                color: Color.fromARGB(
+                                                    128, 170, 188, 192),
                                               )
                                             ]),
                                         child: TextFormField(
@@ -209,7 +221,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           decoration: InputDecoration(
                                               prefixIcon: const Icon(
                                                 Icons.person_rounded,
-                                                color: Color.fromARGB(255, 82, 114, 255),
+                                                color: Color.fromARGB(
+                                                    255, 82, 114, 255),
                                               ),
                                               hintText: 'Username',
                                               focusedBorder: OutlineInputBorder(
@@ -217,33 +230,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                       color: Color.fromARGB(
                                                           128, 170, 188, 192),
                                                       width: 1.0),
-                                                  borderRadius: BorderRadius.circular(20)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               enabledBorder: OutlineInputBorder(
                                                   borderSide: const BorderSide(
-                                                    color:
-                                                        Color.fromARGB(128, 170, 188, 192),
+                                                    color: Color.fromARGB(
+                                                        128, 170, 188, 192),
                                                   ),
-                                                  borderRadius: BorderRadius.circular(20)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(20))),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20))),
                                         ),
                                       ),
-                                      
+
                                       const SizedBox(
                                         height: 10,
                                       ),
-                                      
+
                                       // email text field
                                       Container(
                                         decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                             boxShadow: const [
                                               BoxShadow(
                                                 blurRadius: 10,
                                                 spreadRadius: 2,
                                                 offset: Offset(1, 1),
-                                                color: Color.fromARGB(128, 170, 188, 192),
+                                                color: Color.fromARGB(
+                                                    128, 170, 188, 192),
                                               )
                                             ]),
                                         child: TextFormField(
@@ -254,7 +275,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           decoration: InputDecoration(
                                               prefixIcon: const Icon(
                                                 Icons.email_rounded,
-                                                color: Color.fromARGB(255, 82, 114, 255),
+                                                color: Color.fromARGB(
+                                                    255, 82, 114, 255),
                                               ),
                                               hintText: 'Email',
                                               focusedBorder: OutlineInputBorder(
@@ -262,18 +284,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                       color: Color.fromARGB(
                                                           128, 170, 188, 192),
                                                       width: 1.0),
-                                                  borderRadius: BorderRadius.circular(20)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               enabledBorder: OutlineInputBorder(
                                                   borderSide: const BorderSide(
-                                                    color:
-                                                        Color.fromARGB(128, 170, 188, 192),
+                                                    color: Color.fromARGB(
+                                                        128, 170, 188, 192),
                                                   ),
-                                                  borderRadius: BorderRadius.circular(20)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(20))),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20))),
                                         ),
                                       ),
-                                      
+
                                       const SizedBox(
                                         height: 10,
                                       ),
@@ -281,13 +309,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       Container(
                                         decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                             boxShadow: const [
                                               BoxShadow(
                                                 blurRadius: 10,
                                                 spreadRadius: 2,
                                                 offset: Offset(1, 1),
-                                                color: Color.fromARGB(128, 170, 188, 192),
+                                                color: Color.fromARGB(
+                                                    128, 170, 188, 192),
                                               )
                                             ]),
                                         child: TextFormField(
@@ -301,7 +331,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           decoration: InputDecoration(
                                               prefixIcon: const Icon(
                                                 Icons.password_rounded,
-                                                color: Color.fromARGB(255, 82, 114, 255),
+                                                color: Color.fromARGB(
+                                                    255, 82, 114, 255),
                                               ),
                                               hintText: 'Password',
                                               focusedBorder: OutlineInputBorder(
@@ -309,18 +340,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                       color: Color.fromARGB(
                                                           128, 170, 188, 192),
                                                       width: 1.0),
-                                                  borderRadius: BorderRadius.circular(20)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               enabledBorder: OutlineInputBorder(
                                                   borderSide: const BorderSide(
                                                       color: Color.fromARGB(
                                                           128, 170, 188, 192),
                                                       width: 1.5),
-                                                  borderRadius: BorderRadius.circular(20)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(20))),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20))),
                                         ),
                                       ),
-                                      
+
                                       const SizedBox(
                                         height: 10,
                                       ),
@@ -328,13 +365,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       Container(
                                         decoration: BoxDecoration(
                                             color: Colors.white,
-                                            borderRadius: BorderRadius.circular(20),
+                                            borderRadius:
+                                                BorderRadius.circular(20),
                                             boxShadow: const [
                                               BoxShadow(
                                                 blurRadius: 10,
                                                 spreadRadius: 2,
                                                 offset: Offset(1, 1),
-                                                color: Color.fromARGB(128, 170, 188, 192),
+                                                color: Color.fromARGB(
+                                                    128, 170, 188, 192),
                                               )
                                             ]),
                                         child: TextFormField(
@@ -354,7 +393,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           decoration: InputDecoration(
                                               prefixIcon: const Icon(
                                                 Icons.password_rounded,
-                                                color: Color.fromARGB(255, 82, 114, 255),
+                                                color: Color.fromARGB(
+                                                    255, 82, 114, 255),
                                               ),
                                               hintText: 'Confirm Password',
                                               focusedBorder: OutlineInputBorder(
@@ -362,27 +402,44 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                       color: Color.fromARGB(
                                                           128, 170, 188, 192),
                                                       width: 1.0),
-                                                  borderRadius: BorderRadius.circular(20)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               enabledBorder: OutlineInputBorder(
                                                   borderSide: const BorderSide(
                                                       color: Color.fromARGB(
                                                           128, 170, 188, 192),
                                                       width: 1.5),
-                                                  borderRadius: BorderRadius.circular(20)),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(20))),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20))),
                                         ),
                                       ),
-                                      const SizedBox(height: 20.0,),
+                                      const SizedBox(
+                                        height: 20.0,
+                                      ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
                                         children: [
                                           Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  vertical: 10.0, horizontal: 5.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10.0,
+                                                      horizontal: 5.0),
                                               child: SizedBox(
-                                                width: MediaQuery.of(context).size.width * 0.4,
-                                                height: MediaQuery.of(context).size.height * 0.07,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.4,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.07,
                                                 child: ElevatedButton(
                                                   onPressed: () {
                                                     setState(() {
@@ -391,83 +448,116 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                       _loginGoogleAuth('user');
                                                     });
                                                   },
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor: Colors.white,
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.white,
                                                     elevation: 5,
                                                     shadowColor: Colors.black,
-                                                    padding: const EdgeInsets.symmetric(
-                                                        vertical: 15.0, horizontal: 30.0),
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(20.0)),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 15.0,
+                                                        horizontal: 30.0),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20.0)),
                                                   ),
                                                   child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       if (isLoading && isGoogle)
                                                         const CircularProgressIndicator()
                                                       else
                                                         Row(
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment.center,
-                                                          children: [
-                                                            Image.asset(
-                                                              'asset/images/google_logo.webp',
-                                                              width: 20.0,
-                                                              height: 20.0,
-                                                            ),
-                                                            const SizedBox(width: 8.0),
-                                                            const Text(
-                                                              'Google',
-                                                              style: TextStyle(
-                                                                color: Colors.black,
-                                                                fontSize: 18.0,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Image.asset(
+                                                                'asset/images/google_logo.webp',
+                                                                width: 20.0,
+                                                                height: 20.0,
                                                               ),
-                                                            ),
-                                                          ]
-                                                        )
+                                                              const SizedBox(
+                                                                  width: 8.0),
+                                                              const Text(
+                                                                'Google',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize:
+                                                                      18.0,
+                                                                ),
+                                                              ),
+                                                            ])
                                                     ],
                                                   ),
                                                 ),
                                               )),
                                           Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  vertical: 10.0, horizontal: 5.0),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 10.0,
+                                                      horizontal: 5.0),
                                               child: SizedBox(
-                                                width: MediaQuery.of(context).size.width * 0.35,
-                                                height: MediaQuery.of(context).size.height * 0.07,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.35,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.07,
                                                 child: ElevatedButton(
                                                   onPressed: () {
-                                                    if (formKey.currentState!.validate()) {
+                                                    if (formKey.currentState!
+                                                        .validate()) {
                                                       setState(() {
                                                         isLoading = true;
                                                         _regisAuth();
                                                       });
                                                     }
                                                   },
-                                                  style: ElevatedButton.styleFrom(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
                                                     backgroundColor:
-                                                        const Color.fromARGB(255, 82, 114, 255),
+                                                        const Color.fromARGB(
+                                                            255, 82, 114, 255),
                                                     elevation: 5,
                                                     shadowColor: Colors.black,
-                                                    padding: const EdgeInsets.symmetric(
-                                                        vertical: 15.0, horizontal: 20.0),
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius.circular(20.0)),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 15.0,
+                                                        horizontal: 20.0),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20.0)),
                                                   ),
                                                   child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .center,
                                                     children: [
                                                       //const SizedBox(width: 8.0),
-                                                      if (isLoading && !isGoogle)
+                                                      if (isLoading &&
+                                                          !isGoogle)
                                                         const CircularProgressIndicator()
                                                       else
                                                         const Center(
                                                           child: Text(
                                                             'DAFTAR',
                                                             style: TextStyle(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 18.0,
                                                             ),
                                                           ),
@@ -478,13 +568,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                               )),
                                         ],
                                       ),
-                                      const SizedBox(height: 10.0,)
+                                      const SizedBox(
+                                        height: 10.0,
+                                      )
                                     ],
                                   ),
                                 ),
                               ),
                             ),
-                          )                          
+                          )
                         ],
                       ),
                     ),

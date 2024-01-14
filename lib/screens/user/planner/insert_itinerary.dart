@@ -668,20 +668,25 @@ class _InsertItineraryState extends State<InsertItinerary> {
                       } else if (formKey.currentState!.validate()) {
                         if (widget.type == "full") {
                           setState(() {
-                            itinerary = [{
-                              'title': titleTxt.text,
-                              'source': sourceTxt.text,
-                              'destination': destinationTxt.text,
-                              'startTime': convertToWib(startTimeController.text),
-                              'endTime': convertToWib(endTimeController.text),
-                              'transportation': transportationController.text,
-                              'transportation_cost': budget,
-                            },];
-                            
-                            days = [{
-                              'day': widget.day, 
-                              'itineraries': itinerary,
-                            },];
+                            itinerary = [
+                              {
+                                'title': titleTxt.text,
+                                'source': sourceTxt.text,
+                                'destination': destinationTxt.text,
+                                'startTime':
+                                    convertToWib(startTimeController.text),
+                                'endTime': convertToWib(endTimeController.text),
+                                'transportation': transportationController.text,
+                                'transportation_cost': budget,
+                              },
+                            ];
+
+                            days = [
+                              {
+                                'day': widget.day,
+                                'itineraries': itinerary,
+                              },
+                            ];
                             itinerary = [
                               {
                                 'title': titleTxt.text,

@@ -43,92 +43,92 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
     setState(() {
       user = results[0];
     });
-
   }
 
   @override
-Widget build(BuildContext context) {
-  double h = MediaQuery.of(context).size.height;
-  double w = MediaQuery.of(context).size.width;
-  return Scaffold(
-    body: SingleChildScrollView(
-      child: Column(
-        children: [
-          StreamBuilder(
-            stream: FirebaseFirestore.instance
+  Widget build(BuildContext context) {
+    double h = MediaQuery.of(context).size.height;
+    double w = MediaQuery.of(context).size.width;
+    return Scaffold(
+        body: SingleChildScrollView(
+            child: Column(
+      children: [
+        StreamBuilder(
+          stream: FirebaseFirestore.instance
               .collection('users')
               .doc(userService.currUser!.uid)
               .snapshots(),
-            builder: (context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+          builder: (context,
+              AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-              return Column(
-                children: [
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                        left: 80.0,
-                        top: 80.0,
-                        right: 80.0,
-                        bottom: 20.0,
-                      ),
-                      child: Image.asset(
-                        'asset/images/default_profile.png',
-                        width: 100,
-                        height: 100,
-                      ),
+            return Column(
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 80.0,
+                      top: 80.0,
+                      right: 80.0,
+                      bottom: 20.0,
+                    ),
+                    child: Image.asset(
+                      'asset/images/default_profile.png',
+                      width: 100,
+                      height: 100,
                     ),
                   ),
-                  Text(
-                    '${user?['name']}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 25.0,
-                    ),
+                ),
+                Text(
+                  '${user?['name']}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 25.0,
                   ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Text(
-                    '@${user?['username']}',
-                  ),
-                  const SizedBox(
-                    height: 15.0,
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EditOwnerProfileScreen(
-                            userId: userService.currUser!.uid,
-                            initialName: snapshot.data!["name"],
-                            initialUsername: snapshot.data!["username"],
-                            initialEmail: snapshot.data!["email"],
-                          ),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Text(
+                  '@${user?['username']}',
+                ),
+                const SizedBox(
+                  height: 15.0,
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditOwnerProfileScreen(
+                          userId: userService.currUser!.uid,
+                          initialName: snapshot.data!["name"],
+                          initialUsername: snapshot.data!["username"],
+                          initialEmail: snapshot.data!["email"],
                         ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 82, 114, 255),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 55.0,
-                        vertical: 15.0,
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(255, 82, 114, 255),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 55.0,
+                      vertical: 15.0,
                     ),
-                    child: const Text(
-                      'Ubah Profil',
-                      style: TextStyle(color: Colors.white),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
                     ),
                   ),
+                  child: const Text(
+                    'Ubah Profil',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
                 const SizedBox(
                   height: 15.0,
                 ),
@@ -164,63 +164,71 @@ Widget build(BuildContext context) {
                   height: 10.0,
                 ),
                 const Divider(
-              color: Colors.black,
-              thickness: 1.0,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5.0),
-              child: StreamBuilder(
-                stream: FirebaseFirestore.instance.collection('feeds').snapshots(), 
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator()); 
-                  }
+                  color: Colors.black,
+                  thickness: 1.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 5.0),
+                  child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .collection('feeds')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
 
-                  if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  }
+                        if (snapshot.hasError) {
+                          return Text('Error: ${snapshot.error}');
+                        }
 
-                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                    return const Text('No data available'); 
-                  }
+                        if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                          return const Text('No data available');
+                        }
 
-                  return Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      height: h,
-                      child: GridView.builder(
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 8.0,
-                          mainAxisSpacing: 8.0,
-                          childAspectRatio: 0.25,
-                        ),
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          var itemData = snapshot.data!.docs[index].data() as Map<String, dynamic>;
-                          if(userService.currUser!.uid == itemData['userId']){
-                              return !snapshot.hasData
-                                ? const Center(child: Text('No Feed yet'))
-                                : SizedBox.expand(
-                                  child: PostCard(
-                                    snap: snapshot.data!.docs[index].data(),
-                                  ),
-                                );
-                          }
-                          else {
-                            return SizedBox.shrink();
-                          }
-                        },
-                      ),
-                    ),
-                  );
-                }),
-            )],
+                        return Align(
+                          alignment: Alignment.center,
+                          child: SizedBox(
+                            height: h,
+                            child: GridView.builder(
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 8.0,
+                                mainAxisSpacing: 8.0,
+                                childAspectRatio: 0.25,
+                              ),
+                              itemCount: snapshot.data!.docs.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                var itemData = snapshot.data!.docs[index].data()
+                                    as Map<String, dynamic>;
+                                if (userService.currUser!.uid ==
+                                    itemData['userId']) {
+                                  return !snapshot.hasData
+                                      ? const Center(child: Text('No Feed yet'))
+                                      : SizedBox.expand(
+                                          child: PostCard(
+                                            snap: snapshot.data!.docs[index]
+                                                .data(),
+                                          ),
+                                        );
+                                } else {
+                                  return SizedBox.shrink();
+                                }
+                              },
+                            ),
+                          ),
+                        );
+                      }),
+                )
+              ],
             );
           },
         ),
       ],
-      )
-    ));
+    )));
   }
 }

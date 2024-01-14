@@ -27,7 +27,6 @@ class ImageVideoSlider {
         ///Android only option to use cached video between app sessions
         key: "feedVideoCache",
       ),
-
     );
 
     BetterPlayerController betterPlayerController = BetterPlayerController(
@@ -45,12 +44,10 @@ class ImageVideoSlider {
         looping: true,
       ),
       betterPlayerDataSource: betterPlayerDataSource,
-
     );
 
     betterPlayerController.addEventsListener((BetterPlayerEvent event) {
       if (event.betterPlayerEventType == BetterPlayerEventType.initialized) {
-
         betterPlayerController.setOverriddenAspectRatio(
             betterPlayerController.videoPlayerController!.value.aspectRatio);
       }

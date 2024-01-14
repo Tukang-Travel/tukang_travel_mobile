@@ -475,8 +475,9 @@ class _PediaDetailState extends State<PediaDetail> {
                                     rates = null;
                                     comments = null;
                                     avgRate = 0;
-                                    
-                                    NavigationUtils.pushRemoveTransition(context, PediaDetail(id: widget.id));
+
+                                    NavigationUtils.pushRemoveTransition(
+                                        context, PediaDetail(id: widget.id));
                                   },
                                   child: Container(
                                     width: 50.0,

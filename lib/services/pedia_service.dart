@@ -97,10 +97,10 @@ class PediaService {
 
       await pediaRef.update({'rates': rates});
 
-      if(rate > 3) {
+      if (rate > 3) {
         await rateAnalytics(id);
       }
-      
+
       res = 'success';
     } catch (err) {
       res = err.toString();

@@ -48,7 +48,7 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const AutoSizeText(
-          'Upload Feed',
+          'Unggah Feed',
           maxLines: 10,
           style: TextStyle(
             fontFamily: 'PoppinsBold',
@@ -65,22 +65,70 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Text(
-                'Title',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+              // Title text field
+              Padding(
+                padding: const EdgeInsets.only(left: 5.0),
+                child: RichText(
+                  text: const TextSpan(
+                      text: 'Judul ',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15.0,
+                      ),
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: '*',
+                          style: TextStyle(
+                            color: Colors.red,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 15.0,
+                          ),
+                        )
+                      ]),
                 ),
               ),
-              TextFormField(
-                controller: titleController,
-                decoration: const InputDecoration(labelText: 'Title'),
-                maxLines: null,
+              const SizedBox(
+                height: 10.0,
               ),
+              Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: const [
+                      BoxShadow(
+                        blurRadius: 10,
+                        spreadRadius: 2,
+                        offset: Offset(1, 1),
+                        color: Color.fromARGB(128, 170, 188, 192),
+                      )
+                    ]),
+                child: TextFormField(
+                  controller: titleController,
+                  validator: ((value) =>
+                      value!.isEmpty ? 'Judul harus diisi' : null),
+                  decoration: InputDecoration(
+                      hintText: 'Judul',
+                      focusedBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                              color: Color.fromARGB(128, 170, 188, 192),
+                              width: 1.0),
+                          borderRadius: BorderRadius.circular(20)),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            color: Color.fromARGB(128, 170, 188, 192),
+                          ),
+                          borderRadius: BorderRadius.circular(20)),
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20))),
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              _buildFilePicker(),
               const SizedBox(height: 16),
               _buildTagsInput(),
-              const SizedBox(height: 16),
-              _buildFilePicker(),
             ],
           ),
         ),
@@ -103,7 +151,7 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const Text(
-          'Selected Tags',
+          'Tags Terpilih',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -124,10 +172,10 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
                   );
                 }).toList(),
               )
-            : const Text('No selected Tags'),
+            : const Text('Tidak ada Tag yang terpilih/dimasukkan'),
         const SizedBox(height: 16.0),
         const Text(
-          'Recommended Tags',
+          'Rekomendasi Tags',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -157,21 +205,58 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
           ),
         ),
         const SizedBox(height: 8.0),
-        TextField(
-          controller: tagsController,
-          decoration: InputDecoration(
-            labelText: 'Input Tag',
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.add),
-              onPressed: () {
-                _addTag(tagsController.text.trim());
-              },
+        Padding(
+          padding: const EdgeInsets.only(left: 5.0),
+          child: RichText(
+            text: const TextSpan(
+              text: 'Tags',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 15.0,
+              ),
             ),
           ),
-          onSubmitted: (value) {
-            _addTag(value.trim());
-          },
-          maxLines: null,
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: const [
+                BoxShadow(
+                  blurRadius: 10,
+                  spreadRadius: 2,
+                  offset: Offset(1, 1),
+                  color: Color.fromARGB(128, 170, 188, 192),
+                )
+              ]),
+          child: TextFormField(
+            controller: tagsController,
+            validator: ((value) => value!.isEmpty ? 'Tags harus diisi' : null),
+            decoration: InputDecoration(
+              hintText: 'Tags',
+              focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                      color: Color.fromARGB(128, 170, 188, 192), width: 1.0),
+                  borderRadius: BorderRadius.circular(20)),
+              enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                    color: Color.fromARGB(128, 170, 188, 192),
+                  ),
+                  borderRadius: BorderRadius.circular(20)),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.add),
+                onPressed: () {
+                  _addTag(tagsController.text.trim());
+                },
+              ),
+            ),
+          ),
         ),
       ],
     );
@@ -181,33 +266,64 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Selected File: ',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+        RichText(
+          text: const TextSpan(
+              text: 'Foto/Video ',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 15.0,
+              ),
+              children: <TextSpan>[
+                TextSpan(
+                  text: '*',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15.0,
+                  ),
+                )
+              ]),
         ),
         const SizedBox(height: 16.0),
-        if (files.isNotEmpty)
-          Column(
-            children: files.map((file) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('File: ${file.path.split('/').last}'),
-                  ],
-                ),
-              );
-            }).toList(),
+        SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 0.05,
+          child: ElevatedButton(
+            onPressed: () {
+              _pickFile();
+            },
+            child: const Text('Pilih Foto/Video'),
           ),
-        ElevatedButton(
-          onPressed: () {
-            _pickFile();
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 8.0,
+            mainAxisSpacing: 8.0,
+            childAspectRatio: 1.0,
+          ),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: files.length,
+          itemBuilder: (BuildContext context, int index) {
+            String fileExtension =
+                files[index].path.split('.').last.toLowerCase();
+            if (['jpg', 'jpeg', 'png', 'gif'].contains(fileExtension)) {
+              return Image.file(files[index], height: 100, width: 100);
+            } else if (['mp4', 'avi', 'mkv', 'mov'].contains(fileExtension)) {
+              String fileTitle = files[index].path.split('/').last;
+
+              return Center(
+                child: Text(fileTitle,
+                    style:
+                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              );
+            }
           },
-          child: const Text('Pick Files'),
         ),
       ],
     );

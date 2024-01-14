@@ -219,64 +219,67 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                             fontWeight: FontWeight.w700, fontSize: 22.0),
                       ),
                     ),
-                    pedia["userid"] ==
-                                                    userService.currUser!.uid
-                                                ?
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(100.0)),
-                              backgroundColor:
-                                  const Color.fromARGB(255, 82, 114, 255)),
-                          onPressed: () {
-                            NavigationUtils.pushRemoveTransition(
-                                context, UpdatePedia(id: widget.id));
-                          },
-                          child: const Icon(Icons.edit),
-                        ),
-                        const SizedBox(width: 10.0),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(100.0)),
-                              backgroundColor: Colors.red),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Hapus Rencana Keseharian'),
-                                  content: Text(
-                                      'Apakah anda yakin untuk menghapus pedia "${pedia['title']}"?'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      onPressed: () =>
-                                          Navigator.pop(context, 'Cancel'),
-                                      child: const Text('Batal'),
-                                    ),
-                                    TextButton(
-                                      onPressed: () async {
-                                        await pediaService
-                                            .deletePedia(widget.id, pedia['title']);
-                                        if (context.mounted) {
-                                          NavigationUtils.pushRemoveTransition(
-                                              context,
-                                              const OwnerPediaScreen());
-                                        }
-                                      },
-                                      child: const Text('Hapus'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          },
-                          child: const Icon(Icons.delete),
-                        ),
-                      ],
-                    ) : const Row()
+                    pedia["userid"] == userService.currUser!.uid
+                        ? Row(
+                            children: [
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(100.0)),
+                                    backgroundColor: const Color.fromARGB(
+                                        255, 82, 114, 255)),
+                                onPressed: () {
+                                  NavigationUtils.pushRemoveTransition(
+                                      context, UpdatePedia(id: widget.id));
+                                },
+                                child: const Icon(Icons.edit),
+                              ),
+                              const SizedBox(width: 10.0),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(100.0)),
+                                    backgroundColor: Colors.red),
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text(
+                                            'Hapus Rencana Keseharian'),
+                                        content: Text(
+                                            'Apakah anda yakin untuk menghapus pedia "${pedia['title']}"?'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(
+                                                context, 'Cancel'),
+                                            child: const Text('Batal'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () async {
+                                              await pediaService.deletePedia(
+                                                  widget.id, pedia['title']);
+                                              if (context.mounted) {
+                                                NavigationUtils
+                                                    .pushRemoveTransition(
+                                                        context,
+                                                        const OwnerPediaScreen());
+                                              }
+                                            },
+                                            child: const Text('Hapus'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: const Icon(Icons.delete),
+                              ),
+                            ],
+                          )
+                        : const Row()
                   ],
                 ),
               ),
@@ -546,7 +549,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                       pediaService.insertPediaComment(widget.id,
                                           comment, userService.currUser!.uid);
                                       commentTxt.text = "";
-                                      
+
                                       rating = 0;
                                       pedia = {};
                                       medias = [];
@@ -554,7 +557,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                       rates = [];
                                       comments = [];
                                       avgRate = 0;
-                                      
+
                                       NavigationUtils.pushRemoveTransition(
                                           context, PediaDetail(id: widget.id));
                                     }

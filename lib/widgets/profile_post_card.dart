@@ -124,7 +124,9 @@ class _PostCardState extends State<PostCard> {
                         Icons.comment_outlined,
                       ),
                       onPressed: () => NavigationUtils.pushTransition(
-                          context, FeedDetailScreen(feedId: widget.snap['feedId'].toString()))),
+                          context,
+                          FeedDetailScreen(
+                              feedId: widget.snap['feedId'].toString()))),
                 ],
               ),
               //DESCRIPTION AND NUMBER OF COMMENTS
@@ -177,7 +179,9 @@ class _PostCardState extends State<PostCard> {
                           ),
                         ),
                         onTap: () => NavigationUtils.pushTransition(
-                            context, FeedDetailScreen(feedId: widget.snap['feedId'].toString()))),
+                            context,
+                            FeedDetailScreen(
+                                feedId: widget.snap['feedId'].toString()))),
                     Container(
                       padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Text(

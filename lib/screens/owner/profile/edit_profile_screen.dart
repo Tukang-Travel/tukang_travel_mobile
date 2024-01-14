@@ -76,7 +76,8 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
       return;
     }
 
-    UserService().updateProfile(userService.currUser!.uid, updatedName, updatedUsername);
+    UserService()
+        .updateProfile(userService.currUser!.uid, updatedName, updatedUsername);
 
     // Close the screen
     Navigator.pop(context);
@@ -118,7 +119,7 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
                           const SizedBox(
                             height: 100,
                           ),
-                          
+
                           // email text field
                           Container(
                             decoration: BoxDecoration(

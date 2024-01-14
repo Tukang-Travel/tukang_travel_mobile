@@ -3,7 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class PlanService {
   Future<Map<String, dynamic>?> getPlan(String id) async {
     try {
-      CollectionReference plans = FirebaseFirestore.instance.collection('planners');
+      CollectionReference plans =
+          FirebaseFirestore.instance.collection('planners');
       DocumentSnapshot planDocument = await plans.doc(id).get();
 
       if (planDocument.exists) {
@@ -18,15 +19,20 @@ class PlanService {
     }
   }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>?> getPlans(String userId) async {
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>?> getPlans(
+      String userId) async {
     try {
-      Query<Map<String, dynamic>> plansQuery = FirebaseFirestore.instance.collection('planners').where('userid', isEqualTo: userId);
+      Query<Map<String, dynamic>> plansQuery = FirebaseFirestore.instance
+          .collection('planners')
+          .where('userid', isEqualTo: userId);
 
-      QuerySnapshot<Map<String, dynamic>> querySnapshot = await plansQuery.get();
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await plansQuery.get();
 
       List<QueryDocumentSnapshot<Map<String, dynamic>>> planList = [];
 
-      querySnapshot.docs.forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) {
+      querySnapshot.docs
+          .forEach((QueryDocumentSnapshot<Map<String, dynamic>> document) {
         planList.add(document);
       });
 
@@ -37,8 +43,8 @@ class PlanService {
     }
   }
 
-
-  Future<void> insertPlanner(String title, String source, String destination, String startDate, String endDate, int budget, int people) async {
+  Future<void> insertPlanner(String title, String source, String destination,
+      String startDate, String endDate, int budget, int people) async {
     Map<String, dynamic> plan = {
       'title': title,
       'source': source,
@@ -63,7 +69,15 @@ class PlanService {
     }
   }
 
-  Future<void> updatePlanner(String id, String title, String source, String destination, String startDate, String endDate, int budget, int people) async {
+  Future<void> updatePlanner(
+      String id,
+      String title,
+      String source,
+      String destination,
+      String startDate,
+      String endDate,
+      int budget,
+      int people) async {
     Map<String, dynamic> plan = {
       'title': title,
       'source': source,
@@ -74,13 +88,17 @@ class PlanService {
       'people': people,
     };
     try {
-      await FirebaseFirestore.instance.collection('planners').doc(id).update(plan);
+      await FirebaseFirestore.instance
+          .collection('planners')
+          .doc(id)
+          .update(plan);
     } catch (e) {
       print('Error updating plan: $e');
     }
   }
 
-  Future<void> insertItinerary(String id, List<Map<String, dynamic>>? days) async {
+  Future<void> insertItinerary(
+      String id, List<Map<String, dynamic>>? days) async {
     try {
       if (days != null) {
         List<dynamic> convertedDays = days.cast<dynamic>();
@@ -93,8 +111,10 @@ class PlanService {
     }
   }
 
-  Future<void> insertSubItinerary(String id, String dayNum, Map<String, dynamic> itinerary) async {
-    CollectionReference plans = FirebaseFirestore.instance.collection('planners');
+  Future<void> insertSubItinerary(
+      String id, String dayNum, Map<String, dynamic> itinerary) async {
+    CollectionReference plans =
+        FirebaseFirestore.instance.collection('planners');
 
     // Get the document reference
     DocumentReference docRef = plans.doc(id);
@@ -104,7 +124,8 @@ class PlanService {
     Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
 
     // Find the day with the specified dayNumber
-    var day = data['days']?.firstWhere((day) => day['day'] == dayNum, orElse: () => {});
+    var day = data['days']
+        ?.firstWhere((day) => day['day'] == dayNum, orElse: () => {});
 
     // If the day is found, append the new itinerary
     if (day.isNotEmpty) {
@@ -115,16 +136,19 @@ class PlanService {
     await docRef.update({'days': data['days']});
   }
 
-  Future<void> updateSubItinerary(String id, int dayIdx, int itineraryIdx, Map<String, dynamic> itinerary) async {
+  Future<void> updateSubItinerary(String id, int dayIdx, int itineraryIdx,
+      Map<String, dynamic> itinerary) async {
     try {
       print('Updating...');
 
       // Get the current document data
-      var documentSnapshot = await FirebaseFirestore.instance.collection('planners').doc(id).get();
+      var documentSnapshot =
+          await FirebaseFirestore.instance.collection('planners').doc(id).get();
       var data = documentSnapshot.data();
 
       // Get the current itineraries
-      List<Map<String, dynamic>> currentItineraries = List.from(data?['days'][dayIdx]['itineraries']);
+      List<Map<String, dynamic>> currentItineraries =
+          List.from(data?['days'][dayIdx]['itineraries']);
 
       // Update the specific itinerary at the given index
       currentItineraries[itineraryIdx] = itinerary;
@@ -143,14 +167,17 @@ class PlanService {
     }
   }
 
-  Future<void> deleteSubItinerary(String id, int dayIdx, int itineraryIdx) async {
+  Future<void> deleteSubItinerary(
+      String id, int dayIdx, int itineraryIdx) async {
     try {
       // Get the current document data
-      var documentSnapshot = await FirebaseFirestore.instance.collection('planners').doc(id).get();
+      var documentSnapshot =
+          await FirebaseFirestore.instance.collection('planners').doc(id).get();
       var data = documentSnapshot.data();
 
       // Get the current itineraries
-      List<Map<String, dynamic>> currentItineraries = List.from(data?['days'][dayIdx]['itineraries']);
+      List<Map<String, dynamic>> currentItineraries =
+          List.from(data?['days'][dayIdx]['itineraries']);
 
       // Ensure the itineraryIdx is within bounds
       if (itineraryIdx >= 0 && itineraryIdx < currentItineraries.length) {

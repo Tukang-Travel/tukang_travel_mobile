@@ -46,7 +46,7 @@ class FeedModel {
         "username": username,
         'content': content,
         "likes": likes,
-        "comments" : comments,
+        "comments": comments,
         "tags": tags,
         "datePublished": datePublished,
       };

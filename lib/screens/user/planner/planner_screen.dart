@@ -20,12 +20,14 @@ class _PlannerScreenState extends State<PlannerScreen> {
   UserService userService = UserService();
   int idx = 0;
 
-  Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>?> getPlansStream() async* {
+  Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>?>
+      getPlansStream() async* {
     while (true) {
       await Future.delayed(Duration(seconds: 1));
       yield await planService.getPlans(userService.currUser!.uid);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
@@ -33,49 +35,49 @@ class _PlannerScreenState extends State<PlannerScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
-                child: Row(
-                  children: [
-                    const Text(
-                      'Rencana Perjalanan',
-                      style: TextStyle(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ), 
-                    const SizedBox(width: 8.0,),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(100.0)
-                        ),
-                        backgroundColor: const Color.fromARGB(255, 82, 114, 255)
-                      ),
-                      onPressed: () {
-                        NavigationUtils.pushRemoveTransition(context, const InsertPlanner());
-                      }, 
-                      child: const Icon(Icons.add)
-                    )
-                  ],
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
-                child: Text(
-                  'Berikut adalah rencana perjalanan yang sudah pernah kamu buat sebelumnya',
-                  style: TextStyle(
-                    fontSize: 15.0,
-                    color: Color.fromARGB(255, 81, 81, 81)
+          child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 20.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding:
+                  const EdgeInsets.only(top: 50.0, bottom: 10.0, left: 5.0),
+              child: Row(
+                children: [
+                  const Text(
+                    'Rencana Perjalanan',
+                    style: TextStyle(
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.w900,
+                    ),
                   ),
-                ),
+                  const SizedBox(
+                    width: 8.0,
+                  ),
+                  ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(100.0)),
+                          backgroundColor:
+                              const Color.fromARGB(255, 82, 114, 255)),
+                      onPressed: () {
+                        NavigationUtils.pushRemoveTransition(
+                            context, const InsertPlanner());
+                      },
+                      child: const Icon(Icons.add))
+                ],
               ),
-              StreamBuilder(
+            ),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
+              child: Text(
+                'Berikut adalah rencana perjalanan yang sudah pernah kamu buat sebelumnya',
+                style: TextStyle(
+                    fontSize: 15.0, color: Color.fromARGB(255, 81, 81, 81)),
+              ),
+            ),
+            StreamBuilder(
                 stream: getPlansStream(),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
@@ -92,7 +94,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
 
                   var planners = snapshot.data!;
 
-                  if(planners.isEmpty) {
+                  if (planners.isEmpty) {
                     return const Padding(
                       padding: EdgeInsets.only(top: 150.0),
                       child: Center(
@@ -111,148 +113,186 @@ class _PlannerScreenState extends State<PlannerScreen> {
                   return SizedBox(
                     height: h * 0.55,
                     child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: planners.length,
-                      itemBuilder: (context, index) {
-                        QueryDocumentSnapshot<Map<String, dynamic>> planner = planners[index];
-                        var plannerId = planner.id;
-                        DateTime startDate = DateTime.parse(planner['startDate']);
-                        DateTime endDate = DateTime.parse(planner['endDate']);
+                        scrollDirection: Axis.horizontal,
+                        itemCount: planners.length,
+                        itemBuilder: (context, index) {
+                          QueryDocumentSnapshot<Map<String, dynamic>> planner =
+                              planners[index];
+                          var plannerId = planner.id;
+                          DateTime startDate =
+                              DateTime.parse(planner['startDate']);
+                          DateTime endDate = DateTime.parse(planner['endDate']);
 
-                        String formatStart = DateFormat('d MMMM yyyy').format(startDate);
-                        String formatEnd = DateFormat('d MMMM yyyy').format(endDate);
+                          String formatStart =
+                              DateFormat('d MMMM yyyy').format(startDate);
+                          String formatEnd =
+                              DateFormat('d MMMM yyyy').format(endDate);
 
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 30.0),
-                          child: Center(
-                            child: Card(
-                              elevation: 10,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              child: SizedBox(
-                                width: w * 0.8,
-                                height: h * 0.48,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 10.0),
-                                        child: Text(
-                                          planner['title'],
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 22.0,
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 30.0),
+                            child: Center(
+                              child: Card(
+                                elevation: 10,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                child: SizedBox(
+                                  width: w * 0.8,
+                                  height: h * 0.48,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 20.0, horizontal: 20.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 10.0),
+                                          child: Text(
+                                            planner['title'],
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: 22.0,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 10.0),
-                                      Text(
-                                        '$formatStart - $formatEnd',
-                                      ),
-                                      const SizedBox(height: 8.0),
-                                      Text(
-                                        '${planner['source']} - ${planner['destination']}',
-                                      ),
-                                      const SizedBox(height: 8.0),
-                                      Text(
-                                        'Jumlah Orang: ${planner['people']}',
-                                      ),
-                                      const SizedBox(height: 8.0),
-                                      Text(
-                                        'Anggaran: ${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', ).format(planner['budget'])}',
-                                      ),
-                                      const SizedBox(height: 30.0),
-                                      Center(
-                                        child: SizedBox(
-                                          width: 350,
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: const Color.fromARGB(255, 82, 114, 255),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10.0),
-                                              )
-                                            ),
-                                            onPressed: () {
-                                              NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: plannerId,));
-                                            }, 
-                                            child: const Text('Rencana Keseharian')
+                                        const SizedBox(height: 10.0),
+                                        Text(
+                                          '$formatStart - $formatEnd',
+                                        ),
+                                        const SizedBox(height: 8.0),
+                                        Text(
+                                          '${planner['source']} - ${planner['destination']}',
+                                        ),
+                                        const SizedBox(height: 8.0),
+                                        Text(
+                                          'Jumlah Orang: ${planner['people']}',
+                                        ),
+                                        const SizedBox(height: 8.0),
+                                        Text(
+                                          'Anggaran: ${NumberFormat.currency(
+                                            locale: 'id_ID',
+                                            symbol: 'Rp',
+                                          ).format(planner['budget'])}',
+                                        ),
+                                        const SizedBox(height: 30.0),
+                                        Center(
+                                          child: SizedBox(
+                                            width: 350,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        const Color.fromARGB(
+                                                            255, 82, 114, 255),
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0),
+                                                    )),
+                                                onPressed: () {
+                                                  NavigationUtils
+                                                      .pushRemoveTransition(
+                                                          context,
+                                                          DetailPlanner(
+                                                            id: plannerId,
+                                                          ));
+                                                },
+                                                child: const Text(
+                                                    'Rencana Keseharian')),
                                           ),
                                         ),
-                                      ),
-                                      Center(
-                                        child: SizedBox(
-                                          width: 350,
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.green,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10.0),
-                                              )
-                                            ),
-                                            onPressed: () {
-                                              NavigationUtils.pushRemoveTransition(context, UpdatePlanner(id: plannerId,));
-                                            }, 
-                                            child: const Text('Ubah Rencana')
+                                        Center(
+                                          child: SizedBox(
+                                            width: 350,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0),
+                                                    )),
+                                                onPressed: () {
+                                                  NavigationUtils
+                                                      .pushRemoveTransition(
+                                                          context,
+                                                          UpdatePlanner(
+                                                            id: plannerId,
+                                                          ));
+                                                },
+                                                child:
+                                                    const Text('Ubah Rencana')),
                                           ),
                                         ),
-                                      ),
-                                      Center(
-                                        child: SizedBox(
-                                          width: 350,
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.red,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(10.0),
-                                              )
-                                            ),
-                                            onPressed: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: const Text('Hapus Rencana'),
-                                                    content: Text('Apakah anda yakin untuk menghapus rencana "${planner['title']}"?'),
-                                                    actions: <Widget>[
-                                                      TextButton(
-                                                        onPressed: () => Navigator.pop(context, 'Cancel'),
-                                                        child: const Text('Batal'),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          planService.deletePlanner(plannerId);
-                                                          Navigator.pop(context, 'Delete');
-                                                        },
-                                                        child: const Text('Hapus'),
-                                                      ),
-                                                    ],
+                                        Center(
+                                          child: SizedBox(
+                                            width: 350,
+                                            child: ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    backgroundColor: Colors.red,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0),
+                                                    )),
+                                                onPressed: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return AlertDialog(
+                                                        title: const Text(
+                                                            'Hapus Rencana'),
+                                                        content: Text(
+                                                            'Apakah anda yakin untuk menghapus rencana "${planner['title']}"?'),
+                                                        actions: <Widget>[
+                                                          TextButton(
+                                                            onPressed: () =>
+                                                                Navigator.pop(
+                                                                    context,
+                                                                    'Cancel'),
+                                                            child: const Text(
+                                                                'Batal'),
+                                                          ),
+                                                          TextButton(
+                                                            onPressed: () {
+                                                              planService
+                                                                  .deletePlanner(
+                                                                      plannerId);
+                                                              Navigator.pop(
+                                                                  context,
+                                                                  'Delete');
+                                                            },
+                                                            child: const Text(
+                                                                'Hapus'),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    },
                                                   );
                                                 },
-                                              );
-                                            }, 
-                                            child: const Text('Hapus Rencana')
+                                                child: const Text(
+                                                    'Hapus Rencana')),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      }
-                    ),
+                          );
+                        }),
                   );
-                }
-              ),
-            ],
-          ),
-        )
-      ),
+                }),
+          ],
+        ),
+      )),
     );
   }
 }
