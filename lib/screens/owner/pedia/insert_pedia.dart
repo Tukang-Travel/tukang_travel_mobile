@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
@@ -112,7 +113,7 @@ class _InsertPediaState extends State<InsertPedia> {
 
       if (context.mounted) {
         NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0,));
-        showSnackBar(context, 'Unggah Pedia Berhasil');
+        Alert.successMessage("Unggah Pedia berhasil", context);
       }
     } catch (error) {
       if (context.mounted) {
@@ -212,8 +213,6 @@ class _InsertPediaState extends State<InsertPedia> {
                                 ]),
                             child: TextFormField(
                               controller: titleTxt,
-                              validator: ((value) =>
-                                  value!.isEmpty ? 'Judul harus diisi' : null),
                               decoration: InputDecoration(
                                   hintText: 'Judul',
                                   focusedBorder: OutlineInputBorder(
@@ -274,11 +273,8 @@ class _InsertPediaState extends State<InsertPedia> {
                                   )
                                 ]),
                             child: TextFormField(
-                              maxLines: null,
                               controller: descTxt,
-                              validator: ((value) => value!.isEmpty
-                                  ? 'Deskripsi harus diisi'
-                                  : null),
+                              maxLines: null,
                               decoration: InputDecoration(
                                   hintText: 'Deskripsikan tempat wisatamu...',
                                   focusedBorder: OutlineInputBorder(
@@ -369,8 +365,8 @@ class _InsertPediaState extends State<InsertPedia> {
                                       'Pilih Foto',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
-                                        fontSize: 18.0,
-                                        color: Colors.white,
+                                        fontSize: 15.0,
+                                        color: Colors.black,
                                       ),
                                     ),
                                   ),
@@ -413,7 +409,6 @@ class _InsertPediaState extends State<InsertPedia> {
                                 ),
                               ),
                               const SizedBox(height: 16.0),
-                              // Code for selected tags remains the same
                               _selectedTypes.isNotEmpty
                                   ? Wrap(
                                       spacing: 8.0,
@@ -440,10 +435,8 @@ class _InsertPediaState extends State<InsertPedia> {
                                 ),
                               ),
                               Container(
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.black)),
                                 padding: const EdgeInsets.all(10.0),
-                                height: 140.0,
+                                height: 250.0,
                                 child: GridView.builder(
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
@@ -539,7 +532,21 @@ class _InsertPediaState extends State<InsertPedia> {
                     child: ElevatedButton(
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
-                          _insertPedia();
+                          if(titleTxt.text.isEmpty) {
+                            Alert.alertValidation("Judul harus diisi!", context);
+                          }
+                          else if(descTxt.text.isEmpty) {
+                            Alert.alertValidation("Deskripsi harus diisi!", context);
+                          }
+                          else if(_selectedTypes.isEmpty) {
+                            Alert.alertValidation("Tag harus dipilih!", context);
+                          }
+                          else if(_pickedImages.isEmpty) {
+                            Alert.alertValidation("Foto harus dipilih!", context);
+                          } 
+                          else {
+                            _insertPedia();
+                          }
                         }
                       },
                       style: ElevatedButton.styleFrom(

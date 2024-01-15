@@ -29,7 +29,7 @@ class _PediaDetailState extends State<PediaDetail> {
   List<dynamic> medias = [];
   List<dynamic> tags = [];
   List<Map<String, dynamic>> rates = [], comments = [];
-  int avgRate = 0;
+  double avgRate = 0;
   bool done = false;
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -77,7 +77,7 @@ class _PediaDetailState extends State<PediaDetail> {
           avgRate += int.parse(rates[i]['rate'].toString());
         }
 
-        avgRate = (avgRate / rates.length).round();
+        avgRate = (avgRate / rates.length);
 
         for (int i = 0; i < rates.length; i++) {
           if (rates[i]['userid'] == userService.currUser!.uid) {
@@ -127,7 +127,7 @@ class _PediaDetailState extends State<PediaDetail> {
           avgRate += int.parse(rates[i]['rate'].toString());
         }
 
-        avgRate = (avgRate / rates.length).round();
+        avgRate = (avgRate / rates.length);
 
         for (int i = 0; i < rates.length; i++) {
           if (rates[i]['userid'] == userService.currUser!.uid) {

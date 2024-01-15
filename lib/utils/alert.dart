@@ -34,7 +34,7 @@ class Alert {
       textDirection: Directionality.of(context),
       borderRadius: BorderRadius.circular(12),
       duration: const Duration(seconds: 3),
-      leftBarIndicatorColor: Colors.red,
+      leftBarIndicatorColor: Colors.green,
     ).show(context);
   }
 }

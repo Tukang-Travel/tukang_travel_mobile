@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tuktraapp/screens/owner/pedia/owner_pedia_detail.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
@@ -141,8 +142,6 @@ class _UpdatePediaState extends State<UpdatePedia> {
                     ]),
                 child: TextFormField(
                   controller: titleTxt,
-                  validator: ((value) =>
-                      value!.isEmpty ? 'Judul harus diisi' : null),
                   decoration: InputDecoration(
                       hintText: 'Judul',
                       focusedBorder: OutlineInputBorder(
@@ -202,8 +201,6 @@ class _UpdatePediaState extends State<UpdatePedia> {
                 child: TextFormField(
                   maxLines: null,
                   controller: descTxt,
-                  validator: ((value) =>
-                      value!.isEmpty ? 'Deskripsi harus diisi' : null),
                   decoration: InputDecoration(
                       hintText: 'Deskripsikan tempat wisatamu...',
                       focusedBorder: OutlineInputBorder(
@@ -260,10 +257,8 @@ class _UpdatePediaState extends State<UpdatePedia> {
                     ),
                   ),
                   Container(
-                    decoration:
-                        BoxDecoration(border: Border.all(color: Colors.black)),
                     padding: const EdgeInsets.all(10.0),
-                    height: 140.0,
+                    height: 250.0,
                     child: GridView.builder(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
@@ -349,10 +344,21 @@ class _UpdatePediaState extends State<UpdatePedia> {
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
                   onPressed: () async {
-                    pediaService.updatePedia(
+                    if(titleTxt.text.isEmpty) {
+                      Alert.alertValidation("Judul harus diisi!", context);
+                    }
+                    else if(descTxt.text.isEmpty) {
+                      Alert.alertValidation("Deskripsi harus diisi!", context);
+                    }
+                    else if(_selectedTypes.isEmpty) {
+                      Alert.alertValidation("Tag harus dipilih!", context);
+                    }
+                    else {
+                      pediaService.updatePedia(
                         widget.id, titleTxt.text, descTxt.text, _selectedTypes);
-                    NavigationUtils.pushRemoveTransition(
+                      NavigationUtils.pushRemoveTransition(
                         context, OwnerPediaDetail(id: widget.id));
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(

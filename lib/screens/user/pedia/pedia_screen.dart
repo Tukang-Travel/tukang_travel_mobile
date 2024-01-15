@@ -113,7 +113,7 @@ class _PediaScreenState extends State<PediaScreen> {
                                             topRight: Radius.circular(10.0)),
                                         child: Image.network(
                                           itemData['medias'][0],
-                                          height: 100,
+                                          height: 90,
                                           width: 300,
                                         )),
                                     const SizedBox(

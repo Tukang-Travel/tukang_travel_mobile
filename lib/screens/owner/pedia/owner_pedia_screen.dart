@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tuktraapp/screens/owner/pedia/insert_pedia.dart';
 import 'package:tuktraapp/screens/owner/pedia/owner_pedia_detail.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
@@ -19,12 +20,33 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
-        title: const Text(
-          'Pedia Perjalanan',
-          style: TextStyle(
-            fontSize: 25.0,
-            fontWeight: FontWeight.w900,
-          ),
+        title: Row(
+          children: [
+            const Text(
+              'Pedia Perjalanan',
+              style: TextStyle(
+                fontSize: 25.0,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(
+              width: 8.0,
+            ),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100.0)),
+                    backgroundColor:
+                        const Color.fromARGB(255, 82, 114, 255)),
+                onPressed: () {
+                  NavigationUtils.pushRemoveTransition(
+                      context, const InsertPedia());
+                },
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ))
+          ],
         ),
       ),
       body: SafeArea(
@@ -67,9 +89,9 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
               //     ],
               //   ),
               // ),
-              // const SizedBox(
-              //   width: 8.0,
-              // ),
+              const SizedBox(
+                width: 8.0,
+              ),
               const Padding(
                 padding: EdgeInsets.only(bottom: 20.0, left: 5.0),
                 child: Text(
@@ -121,6 +143,7 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
                                     context, OwnerPediaDetail(id: itemId));
                               },
                               child: Card(
+                                color: Colors.white,
                                 elevation: 5,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),

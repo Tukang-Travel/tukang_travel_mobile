@@ -161,10 +161,23 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 10.0,
+                  height: 25.0,
                 ),
                 const Divider(
-                  color: Colors.black,
+                  color: Colors.grey,
+                  thickness: 1.0,
+                ),
+                const Center(
+                  child: Text(
+                    "Pedia",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Colors.grey,
                   thickness: 1.0,
                 ),
                 Padding(

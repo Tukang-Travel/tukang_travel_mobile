@@ -436,7 +436,6 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
           userService.currUser!.uid, username, title, content, updatedTags);
 
       if (context.mounted) {
-        Alert.successMessage("Feed berhasil ditambahkan.", context);
         setState(() {
           titleController.clear();
           tagsController.clear();
@@ -447,6 +446,7 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
               const MainScreen(
                 page: 0,
               ));
+          Alert.successMessage("Feed berhasil ditambahkan.", context);
           isLoading = false;
         });
       }

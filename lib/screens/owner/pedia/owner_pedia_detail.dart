@@ -263,6 +263,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                           context: context,
                                           builder: (BuildContext context) {
                                             return AlertDialog(
+                                              backgroundColor: Colors.white,
                                               title: const Text(
                                                   'Hapus Rencana Keseharian'),
                                               content: Text(
@@ -272,7 +273,12 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                                   onPressed: () =>
                                                       Navigator.pop(
                                                           context, 'Cancel'),
-                                                  child: const Text('Batal'),
+                                                  child: const Text(
+                                                    'Batal',
+                                                    style: TextStyle(
+                                                      color: Colors.black
+                                                    )
+                                                  ),
                                                 ),
                                                 ElevatedButton(
                                                   onPressed: () async {

@@ -290,6 +290,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                     builder:
                                                         (BuildContext context) {
                                                       return AlertDialog(
+                                                        backgroundColor: Colors.white,
                                                         title: const Text(
                                                             'Hapus Rencana'),
                                                         content: Text(
@@ -301,7 +302,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                                     context,
                                                                     'Cancel'),
                                                             child: const Text(
-                                                                'Batal'),
+                                                                'Batal',
+                                                                style: TextStyle(color: Colors.black),),
                                                           ),
                                                           ElevatedButton(
                                                               style: ElevatedButton.styleFrom(
