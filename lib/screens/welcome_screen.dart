@@ -102,7 +102,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 82, 114, 255),
+                  backgroundColor: Colors.black,
                   elevation: 5,
                   shadowColor: Colors.black,
                   padding: const EdgeInsets.symmetric(
@@ -124,7 +124,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
+                  backgroundColor: const Color.fromARGB(255, 82, 114, 255),
                   elevation: 5,
                   shadowColor: Colors.black,
                   padding: const EdgeInsets.symmetric(
@@ -151,7 +151,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
             children: [
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 82, 114, 255),
+                  backgroundColor: Colors.black,
                   elevation: 5,
                   shadowColor: Colors.black,
                   padding: const EdgeInsets.symmetric(
@@ -173,7 +173,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
+                  backgroundColor: const Color.fromARGB(255, 82, 114, 255),
                   elevation: 5,
                   shadowColor: Colors.black,
                   padding: const EdgeInsets.symmetric(

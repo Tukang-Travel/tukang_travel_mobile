@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
 class EditPreferencesScreen extends StatefulWidget {
@@ -106,6 +107,8 @@ class _EditPreferencesScreenState extends State<EditPreferencesScreen> {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: FloatingActionButton.extended(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
               onPressed: () async {
                 String res = await UserService()
                     .createUpdateUserPreferences(selectedGenres);
@@ -115,11 +118,11 @@ class _EditPreferencesScreenState extends State<EditPreferencesScreen> {
                   }
                 } else {
                   if (context.mounted) {
-                    showSnackBar(context, res);
+                    Alert.alertValidation(res, context);
                   }
                 }
               },
-              label: const Text('Save'),
+              label: const Text('Simpan'),
             ),
           ),
         ),

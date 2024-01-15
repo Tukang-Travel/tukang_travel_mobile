@@ -167,6 +167,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                             padding: const EdgeInsets.only(top: 30.0),
                             child: Center(
                               child: Card(
+                                color: Colors.white,
                                 elevation: 10,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(20.0),

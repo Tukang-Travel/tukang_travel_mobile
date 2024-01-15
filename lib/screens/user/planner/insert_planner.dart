@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tuktraapp/services/plan_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 
 class InsertPlanner extends StatefulWidget {
   const InsertPlanner({super.key});
@@ -75,7 +76,7 @@ class _InsertPlannerState extends State<InsertPlanner> {
                   children: [
                     const Padding(
                       padding:
-                          EdgeInsets.only(top: 70.0, bottom: 10.0, left: 5.0),
+                          EdgeInsets.only(top: 100.0, bottom: 10.0, left: 5.0),
                       child: Text(
                         'Buat Rencana Baru',
                         style: TextStyle(
@@ -137,9 +138,6 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                   ]),
                               child: TextFormField(
                                 controller: titleTxt,
-                                validator: ((value) => value!.isEmpty
-                                    ? 'Judul harus diisi'
-                                    : null),
                                 decoration: InputDecoration(
                                     hintText: 'Judul',
                                     focusedBorder: OutlineInputBorder(
@@ -203,9 +201,6 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                   ]),
                               child: TextFormField(
                                 controller: sourceTxt,
-                                validator: ((value) => value!.isEmpty
-                                    ? 'Lokasi awal harus diisi'
-                                    : null),
                                 decoration: InputDecoration(
                                     hintText: 'Lokasi Awal',
                                     focusedBorder: OutlineInputBorder(
@@ -269,9 +264,6 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                   ]),
                               child: TextFormField(
                                 controller: destinationTxt,
-                                validator: ((value) => value!.isEmpty
-                                    ? 'Lokasi destinasi harus diisi'
-                                    : null),
                                 decoration: InputDecoration(
                                     hintText: 'Lokasi Destinasi',
                                     focusedBorder: OutlineInputBorder(
@@ -335,9 +327,6 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                   ]),
                               child: TextFormField(
                                 controller: _dateStartController,
-                                validator: ((value) => value!.isEmpty
-                                    ? 'Tanggal Awal harus diisi'
-                                    : null),
                                 readOnly: true,
                                 onTap: () => _selectStartDate(context),
                                 decoration: InputDecoration(
@@ -403,9 +392,6 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                   ]),
                               child: TextFormField(
                                 controller: _dateEndController,
-                                validator: ((value) => value!.isEmpty
-                                    ? 'Tanggal Akhir harus diisi'
-                                    : null),
                                 readOnly: true,
                                 onTap: () => _selectEndDate(context),
                                 decoration: InputDecoration(
@@ -472,9 +458,6 @@ class _InsertPlannerState extends State<InsertPlanner> {
                               child: TextFormField(
                                 controller: TextEditingController(
                                     text: budget.toString()),
-                                validator: ((value) => value == '0'
-                                    ? 'Anggaran harus lebih dari 0'
-                                    : null),
                                 keyboardType: TextInputType.number,
                                 inputFormatters: <TextInputFormatter>[
                                   FilteringTextInputFormatter.digitsOnly
@@ -560,9 +543,6 @@ class _InsertPlannerState extends State<InsertPlanner> {
                               child: TextFormField(
                                 controller: TextEditingController(
                                     text: numOfPeople.toString()),
-                                validator: ((value) => value == '0'
-                                    ? 'Jumlah Orang harus lebih dari 0'
-                                    : null),
                                 keyboardType: TextInputType.number,
                                 inputFormatters: <TextInputFormatter>[
                                   FilteringTextInputFormatter.digitsOnly
@@ -616,19 +596,42 @@ class _InsertPlannerState extends State<InsertPlanner> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
-                            setState(() {
-                              isLoading = true;
-                              planService.insertPlanner(
-                                  titleTxt.text,
-                                  sourceTxt.text,
-                                  destinationTxt.text,
-                                  _dateStartController.text,
-                                  _dateEndController.text,
-                                  budget,
-                                  numOfPeople,
-                                  UserService().currUser!.uid);
-                              Navigator.of(context).pop();
-                            });
+                            if(titleTxt.text.isEmpty) {
+                              Alert.alertValidation('Judul harus diisi!', context);
+                            }
+                            else if(sourceTxt.text.isEmpty) {
+                              Alert.alertValidation('Lokasi awal harus diisi!', context);
+                            }
+                            else if(destinationTxt.text.isEmpty) {
+                              Alert.alertValidation('Lokasi destinasi harus diisi!', context);
+                            }
+                            else if(_dateStartController.text.isEmpty) {
+                              Alert.alertValidation('Tanggal Awal harus diisi!', context);
+                            }
+                            else if(_dateEndController.text.isEmpty) {
+                              Alert.alertValidation('Tanggal Akhir harus diisi!', context);
+                            }
+                            else if(budget == 0) {
+                              Alert.alertValidation('Anggaran harus lebih dari 0!', context);
+                            }
+                            else if(numOfPeople == 0) {
+                              Alert.alertValidation('Banyak orang harus lebih dari 0!', context);
+                            }
+                            else {
+                              setState(() {
+                                isLoading = true;
+                                planService.insertPlanner(
+                                    titleTxt.text,
+                                    sourceTxt.text,
+                                    destinationTxt.text,
+                                    _dateStartController.text,
+                                    _dateEndController.text,
+                                    budget,
+                                    numOfPeople,
+                                    UserService().currUser!.uid);
+                                Navigator.of(context).pop();
+                              });
+                            }
                           }
                         },
                         style: ElevatedButton.styleFrom(

@@ -4,6 +4,7 @@ import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/welcome_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
@@ -49,16 +50,54 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
   }
 
   void _regisAuth() async {
-    String apiResponse = await userService.register(
-        nameTxt.text, usernameTxt.text, emailTxt.text, passTxt.text, 'owner');
-    if (apiResponse == 'Success') {
-      _successfulLogin();
-    } else {
+    if(nameTxt.text.isEmpty) {
+      Alert.alertValidation('Nama harus diisi!', context);
       setState(() {
-        isLoading = !isLoading;
+        isLoading = false;
       });
-      if (context.mounted) {
-        showSnackBar(context, apiResponse);
+    } 
+    else if(usernameTxt.text.isEmpty) {
+      Alert.alertValidation('Username harus diisi!', context);
+      setState(() {
+        isLoading = false;
+      });
+    }
+    else if(emailTxt.text.isEmpty) {
+      Alert.alertValidation('Email harus diisi!', context);
+      setState(() {
+        isLoading = false;
+      });
+    }
+    else if(passTxt.text.isEmpty) {
+      Alert.alertValidation('Kata sandi harus diisi!', context);
+      setState(() {
+        isLoading = false;
+      });
+    }
+    else if(conTxt.text.isEmpty) {
+      Alert.alertValidation('Konfirmasi kata sandi harus diisi!', context);
+      setState(() {
+        isLoading = false;
+      });
+    } 
+    else if(passTxt.text != conTxt.text) {
+      Alert.alertValidation('Konfirmasi kata sandi tidak sesuai!', context);
+      setState(() {
+        isLoading = false;
+      });
+    }
+    else {
+      String apiResponse = await userService.register(
+        nameTxt.text, usernameTxt.text, emailTxt.text, passTxt.text, 'owner');
+      if (apiResponse == 'Success') {
+        _successfulLogin();
+      } else {
+        setState(() {
+          isLoading = !isLoading;
+        });
+        if (context.mounted) {
+          Alert.alertValidation(apiResponse, context);
+        }
       }
     }
   }
@@ -172,10 +211,6 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
                                                 ]),
                                             child: TextFormField(
                                               controller: nameTxt,
-                                              validator: ((value) =>
-                                                  value!.isEmpty
-                                                      ? 'Name must be filled'
-                                                      : null),
                                               decoration: InputDecoration(
                                                   prefixIcon: const Icon(
                                                     Icons.abc_rounded,
@@ -238,10 +273,6 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
                                                 ]),
                                             child: TextFormField(
                                               controller: usernameTxt,
-                                              validator: ((value) => value!
-                                                      .isEmpty
-                                                  ? 'Username must be filled'
-                                                  : null),
                                               decoration: InputDecoration(
                                                   prefixIcon: const Icon(
                                                     Icons.person_rounded,
@@ -304,10 +335,6 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
                                                 ]),
                                             child: TextFormField(
                                               controller: emailTxt,
-                                              validator: ((value) =>
-                                                  value!.isEmpty
-                                                      ? 'Email must be filled'
-                                                      : null),
                                               decoration: InputDecoration(
                                                   prefixIcon: const Icon(
                                                     Icons.email_rounded,
@@ -369,10 +396,6 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
                                                 ]),
                                             child: TextFormField(
                                               controller: passTxt,
-                                              validator: ((value) => value!
-                                                      .isEmpty
-                                                  ? 'Password must be filled'
-                                                  : null),
                                               obscureText: true,
                                               enableSuggestions: false,
                                               autocorrect: false,
@@ -428,16 +451,6 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
                                                 ]),
                                             child: TextFormField(
                                               controller: conTxt,
-                                              validator: ((value) {
-                                                if (value!.isEmpty) {
-                                                  return 'Confirmation must be filled';
-                                                } else if (value !=
-                                                    passTxt.text) {
-                                                  return 'Password do not match';
-                                                } else {
-                                                  return null;
-                                                }
-                                              }),
                                               obscureText: true,
                                               enableSuggestions: false,
                                               autocorrect: false,

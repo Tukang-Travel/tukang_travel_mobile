@@ -35,6 +35,7 @@ class _PostCardState extends State<PostCard> {
     final UserModel user = Provider.of<UserProvider>(context).user;
 
     return Card(
+        color: Colors.white,
         elevation: 10,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),

@@ -161,10 +161,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 10.0,
+                  height: 25.0,
                 ),
                 const Divider(
-                  color: Colors.black,
+                  color: Colors.grey,
+                  thickness: 1.0,
+                ),
+                const Center(
+                  child: Text(
+                    "Feed",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Colors.grey,
                   thickness: 1.0,
                 ),
                 Padding(
@@ -213,6 +226,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               );
                             },
                             child: Card(
+                              color: Colors.white,
                               elevation: 5,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),

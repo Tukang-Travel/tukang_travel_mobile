@@ -6,6 +6,7 @@ import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/welcome_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/screens/authentication/forgot_pass_screen.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
@@ -34,17 +35,31 @@ class _LoginOwnerScreenState extends State<LoginOwnerScreen> {
   }
 
   void _loginAuth() async {
-    String apiResponse =
-        await userService.login(usernameTxt.text, passTxt.text);
-    if (apiResponse == 'Success') {
-      // save user info and redirect to home
-      _successfulLogin();
-    } else {
+    if(usernameTxt.text.isEmpty) {
+      Alert.alertValidation('Username harus diisi!', context);
       setState(() {
-        isLoading = !isLoading;
+        isLoading = false;
       });
-      if (context.mounted) {
-        showSnackBar(context, apiResponse);
+    }
+    else if(passTxt.text.isEmpty) {
+      Alert.alertValidation('Kata sandi harus diisi!', context);
+      setState(() {
+        isLoading = false;
+      });
+    }
+    else {
+      String apiResponse =
+        await userService.login(usernameTxt.text, passTxt.text);
+      if (apiResponse == 'Success') {
+        // save user info and redirect to home
+        _successfulLogin();
+      } else {
+        setState(() {
+          isLoading = !isLoading;
+        });
+        if (context.mounted) {
+          Alert.alertValidation(apiResponse, context);
+        }
       }
     }
   }
@@ -175,10 +190,6 @@ class _LoginOwnerScreenState extends State<LoginOwnerScreen> {
                                               ]),
                                           child: TextFormField(
                                             controller: usernameTxt,
-                                            validator: ((value) =>
-                                                value!.isEmpty
-                                                    ? 'Username must be filled'
-                                                    : null),
                                             decoration: InputDecoration(
                                                 prefixIcon: const Icon(
                                                   Icons.person_rounded,
@@ -239,10 +250,6 @@ class _LoginOwnerScreenState extends State<LoginOwnerScreen> {
                                               ]),
                                           child: TextFormField(
                                             controller: passTxt,
-                                            validator: ((value) =>
-                                                value!.isEmpty
-                                                    ? 'Password must be filled'
-                                                    : null),
                                             obscureText: true,
                                             enableSuggestions: false,
                                             autocorrect: false,

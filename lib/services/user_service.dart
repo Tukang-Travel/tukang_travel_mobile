@@ -66,9 +66,9 @@ class UserService {
       return 'Success';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        return 'The password provided is too weak.';
+        return 'Kata sandi terlalu lemah!';
       } else if (e.code == 'email-already-in-use') {
-        return 'The account already exists for that email.';
+        return 'Email sudah terdaftar!';
       }
       return e.code;
     } catch (e) {
@@ -91,12 +91,12 @@ class UserService {
           return 'Success';
         }
       }
-      return 'Account not found';
+      return 'Akun tidak ditemukan!';
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        return 'No user found for that email.';
+        return 'Email tidak terdaftar!';
       } else if (e.code == 'wrong-password') {
-        return 'Wrong password provided.';
+        return 'Kata sandi salah!';
       }
     } catch (e) {
       return e.toString();
@@ -242,7 +242,7 @@ class UserService {
   }
 
   Future<String> createUpdateUserPreferences(List<String> data) async {
-    String res = "Some error occurred";
+    String res = "Terjadi kesalahan, silahkan coba kembali.";
     try {
       FirebaseFirestore.instance
           .collection('users')

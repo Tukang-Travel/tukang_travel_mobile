@@ -9,9 +9,11 @@ import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/feed_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class UploadFeedScreen extends StatefulWidget {
   const UploadFeedScreen({super.key});
@@ -110,8 +112,6 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
                         ]),
                     child: TextFormField(
                       controller: titleController,
-                      validator: ((value) =>
-                          value!.isEmpty ? 'Judul harus diisi' : null),
                       decoration: InputDecoration(
                           hintText: 'Judul',
                           focusedBorder: OutlineInputBorder(
@@ -141,11 +141,12 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
           bottomNavigationBar: Padding(
             padding: const EdgeInsets.all(16.0),
             child: FloatingActionButton.extended(
+              foregroundColor: Colors.white,
               onPressed: () {
-                _submitFeed();
+                insertFeed();
               },
-              label: const Text('Submit'),
-              backgroundColor: Colors.grey, // Set the button color to grey
+              label: const Text('Buat'),
+              backgroundColor: const Color.fromARGB(255, 82, 114, 255)
             ),
           ),
         ),
@@ -196,9 +197,8 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
           ),
         ),
         Container(
-          decoration: BoxDecoration(border: Border.all(color: Colors.black)),
           padding: const EdgeInsets.all(10.0),
-          height: 140.0,
+          height: 250.0,
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
@@ -304,8 +304,12 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * 0.05,
           child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+            ),
             onPressed: () {
-              _pickFile();
+              _checkPermissionAndPickFile();
             },
             child: const Text('Pilih Foto/Video'),
           ),
@@ -344,6 +348,26 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
     );
   }
 
+  Future<void> _checkPermissionAndPickFile() async {
+    var status = await Permission.storage.status;
+    if (status.isGranted) {
+      // Permission is already granted, proceed to pick file
+      _pickFile();
+    } else {
+      // Permission is not granted, request it
+      await Permission.storage.request();
+      // Check the permission status again
+      status = await Permission.storage.status;
+      if (status.isGranted) {
+        // Permission granted, proceed to pick file
+        _pickFile();
+      } else {
+        // Handle the case where the user denied the permission
+        print('User denied storage permission.');
+      }
+    }
+  }
+
   void _pickFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
@@ -375,7 +399,7 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
     });
   }
 
-  Future<void> _submitFeed() async {
+  Future<void> insertFeed() async {
     // Implement your logic to submit the feed with title and tags
     // You can use the titleController.text and tags list
     // For example, you can print them for now:
@@ -385,19 +409,17 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
     List<String> updatedTags = tags;
 
     if (title.isEmpty) {
-      // Show an error message for the empty title
-      showSnackBar(context, "Title cannot be empty");
+      Alert.alertValidation("Judul feed harus diisi!", context);
       return;
     }
 
     if (files.isEmpty) {
-      showSnackBar(context, "Files cannot be empty");
+      Alert.alertValidation("Harus memilih foto/ video!", context);
       return;
     }
 
     if (tags.isEmpty) {
-      // Show an error message for the empty tags
-      showSnackBar(context, "Tags cannot be empty");
+      Alert.alertValidation("Setidaknya terdapat 1 tag yang dipilih!", context);
       return;
     }
 
@@ -414,7 +436,7 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
           userService.currUser!.uid, username, title, content, updatedTags);
 
       if (context.mounted) {
-        showSnackBar(context, 'Unggah Feed Berhasil');
+        Alert.successMessage("Feed berhasil ditambahkan.", context);
         setState(() {
           titleController.clear();
           tagsController.clear();
@@ -430,7 +452,7 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
       }
     } catch (e) {
       if (context.mounted) {
-        showSnackBar(context, e.toString());
+        Alert.alertValidation(e.toString(), context);
       }
     } finally {
       setState(() {
