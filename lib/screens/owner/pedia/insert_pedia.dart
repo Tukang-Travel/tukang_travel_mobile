@@ -55,7 +55,7 @@ class _InsertPediaState extends State<InsertPedia> {
             imageFiles.add(File(imagePath));
           } else {
             if (context.mounted) {
-              showSnackBar(context, 'All files must be images!');
+              Alert.alertValidation('File harus merupakan gambar!', context);
             }
             return;
           }
@@ -66,12 +66,12 @@ class _InsertPediaState extends State<InsertPedia> {
         });
       } catch (e) {
         if (context.mounted) {
-          showSnackBar(context, 'Error picking images: $e');
+          Alert.alertValidation('Terjadi kesalahan saat memilih gambar: $e', context);
         }
       }
     } else {
       if (context.mounted) {
-        showSnackBar(context, 'No images selected.');
+        Alert.alertValidation('Tidak ada gambar yang dipilih.', context);
       }
     }
   }
@@ -117,7 +117,7 @@ class _InsertPediaState extends State<InsertPedia> {
       }
     } catch (error) {
       if (context.mounted) {
-        showSnackBar(context, error as String);
+        Alert.alertValidation(error as String, context);
       }
     } finally {
       setState(() {

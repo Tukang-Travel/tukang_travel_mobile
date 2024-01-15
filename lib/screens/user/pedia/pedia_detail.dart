@@ -368,8 +368,7 @@ class _PediaDetailState extends State<PediaDetail> {
 
                                 setState(() {});
                               } else {
-                                showSnackBar(
-                                    context, "Komentar tidak boleh kosong!");
+                                Alert.alertValidation('Komentar harus diisi!', context);
                               }
                             },
                             child: Container(
@@ -441,6 +440,7 @@ class _PediaDetailState extends State<PediaDetail> {
                                     final user = snapshot.data!;
 
                                     return Card(
+                                        color: Colors.white,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(20.0),

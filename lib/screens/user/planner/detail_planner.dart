@@ -136,6 +136,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
               padding: const EdgeInsets.only(top: 5.0),
               child: Center(
                 child: Card(
+                  color: Colors.white,
                   elevation: 10,
                   shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(

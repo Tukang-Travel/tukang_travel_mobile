@@ -10,6 +10,7 @@ class CommentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+        color: Colors.white,
         elevation: 10.0,
         margin: const EdgeInsets.all(20.0),
         shape: RoundedRectangleBorder(

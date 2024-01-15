@@ -146,9 +146,9 @@ class UserService {
         return 'Success';
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
-          return 'The account already exists with a different credential.';
+          return 'Akun sudah terdaftar dengan kredensial yang berbeda!';
         } else if (e.code == 'invalid-credential') {
-          return 'Error occurred while accessing credentials. Try again.';
+          return 'Terjadi kesalahan saat mengakses akun. Silahkan coba lagi.';
         }
       } catch (e) {
         return e.toString();
@@ -317,7 +317,7 @@ class UserService {
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         // Email address not found
-        return 'The account does not exist for the provided email.';
+        return 'Tidak ada akun dengan alamat email tersebut!';
       } else {
         // Handle other FirebaseAuthException errors
         return e.code;

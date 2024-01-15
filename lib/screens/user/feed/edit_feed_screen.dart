@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:tuktraapp/services/feed_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
@@ -289,13 +290,13 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
 
     if (updatedTitle.isEmpty) {
       // Show an error message for the empty title
-      showSnackBar(context, "Title cannot be empty");
+      Alert.alertValidation('Judul harus diisi!', context);
       return;
     }
 
     if (updatedTags.isEmpty) {
       // Show an error message for the empty tags
-      showSnackBar(context, "Tags cannot be empty");
+      Alert.alertValidation('Tag harus dipilih!', context);
       return;
     }
 

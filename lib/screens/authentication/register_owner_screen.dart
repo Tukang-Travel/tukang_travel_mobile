@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
+import 'package:tuktraapp/screens/authentication/login_owner_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/welcome_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
@@ -113,7 +114,7 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
         isLoading = !isLoading;
       });
       if (context.mounted) {
-        showSnackBar(context, apiResponse);
+        Alert.alertValidation(apiResponse, context);
       }
     }
   }
@@ -138,7 +139,7 @@ class _RegisterOwnerScreenState extends State<RegisterOwnerScreen> {
               foregroundColor: Colors.black,
               onPressed: () {
                 NavigationUtils.pushRemoveTransition(
-                    context, const WelcomeScreen());
+                    context, const LoginOwnerScreen());
               },
               child: const Padding(
                 padding: EdgeInsets.only(left: 6.0),

@@ -8,6 +8,7 @@ import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/user/feed/edit_feed_screen.dart';
 import 'package:tuktraapp/services/feed_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/comment_card.dart';
@@ -54,10 +55,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
       await FeedService().deleteFeed(feedId);
       await FeedService().deleteFiles(title);
       if (context.mounted) {
-        showSnackBar(
-          context,
-          'Feed Deleted',
-        );
+        Alert.successMessage('Berhasil menghapus feed.', context);
       }
     } catch (err) {
       if (context.mounted) {
@@ -140,6 +138,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                 ? Row(
                                                     children: [
                                                       Card(
+                                                        color: Colors.white,
                                                         elevation: 10.0,
                                                         shape:
                                                             RoundedRectangleBorder(
@@ -177,6 +176,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                             )),
                                                       ),
                                                       Card(
+                                                        color: Colors.white,
                                                         elevation: 10.0,
                                                         shape:
                                                             RoundedRectangleBorder(

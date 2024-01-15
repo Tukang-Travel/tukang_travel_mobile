@@ -12,7 +12,7 @@ class TagsCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
-      color: const Color(0xFFD9D9D9),
+      color: Colors.white,
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(10.0),

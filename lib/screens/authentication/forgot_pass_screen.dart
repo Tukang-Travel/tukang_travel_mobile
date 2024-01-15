@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
@@ -106,13 +107,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                     .sendForgotEmail(emailTxt.text.trim());
 
                                 if (res == 'success' && context.mounted) {
-                                  showSnackBar(context,
-                                      'Email already sent, if your account existed');
                                   NavigationUtils.pushRemoveTransition(
                                       context, const LoginScreen());
+                                  Alert.alertValidation('Email sudah terkirim!', context);
                                 } else {
                                   if (context.mounted) {
-                                    showSnackBar(context, res);
+                                    Alert.alertValidation(res, context);
                                   }
                                 }
                               }

@@ -9,6 +9,7 @@ import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/owner/pedia/update_pedia.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/tags_card.dart';
@@ -62,10 +63,10 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
               avgRate += rateMap['rate'];
             } else {
               showSnackBar(
-                  context, 'Invalid rate structure at index $i: $rateMap');
+                  context, 'Data struktur rate salah $i: $rateMap');
             }
           } catch (e) {
-            showSnackBar(context, 'Error in rates[$i]: $e');
+            showSnackBar(context, 'Error pada data rate ke [$i]: $e');
           }
         }
 
@@ -126,10 +127,10 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
               avgRate += rateMap['rate'];
             } else {
               showSnackBar(
-                  context, 'Invalid rate structure at index $i: $rateMap');
+                  context, 'Data struktur rate salah $i: $rateMap');
             }
           } catch (e) {
-            showSnackBar(context, 'Error in rates[$i]: $e');
+            showSnackBar(context, 'Error pada data rate ke [$i]: $e');
           }
         }
 
@@ -228,6 +229,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                         ? Row(
                             children: [
                               Card(
+                                color: Colors.white,
                                 elevation: 10.0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15.0),
@@ -248,6 +250,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                     )),
                               ),
                               Card(
+                                color: Colors.white,
                                 elevation: 10.0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(15.0),
@@ -477,8 +480,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
 
                                 setState(() {});
                               } else {
-                                showSnackBar(
-                                    context, "Komentar tidak boleh kosong!");
+                                Alert.alertValidation('Komentar harus diisi!', context);
                               }
                             },
                             child: Container(
@@ -550,6 +552,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                     final user = snapshot.data!;
 
                                     return Card(
+                                        color: Colors.white,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
                                               BorderRadius.circular(20.0),

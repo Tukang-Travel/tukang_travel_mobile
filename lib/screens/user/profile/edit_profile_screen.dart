@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/user/edit_preferences_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 
@@ -60,13 +61,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     if (updatedName.isEmpty) {
       // Show an error message for the empty name
-      showSnackBar(context, "Name cannot be empty");
+      Alert.alertValidation('Nama harus diisi!', context);
       return;
     }
 
     if (updatedUsername.isEmpty) {
       // Show an error message for the empty username
-      showSnackBar(context, "Username cannot be empty");
+      Alert.alertValidation('Username harus diisi!', context);
       return;
     }
 

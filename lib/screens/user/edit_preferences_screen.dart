@@ -38,7 +38,7 @@ class _EditPreferencesScreenState extends State<EditPreferencesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Your Preferences'),
+        title: const Text('Ubah Preferensi Perjalananmu'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

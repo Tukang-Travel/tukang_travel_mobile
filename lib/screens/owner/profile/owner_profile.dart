@@ -223,6 +223,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                               );
                             },
                             child: Card(
+                              color: Colors.white,
                               elevation: 5,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
