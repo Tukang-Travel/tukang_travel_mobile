@@ -68,6 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
             return Column(
               children: [
+                user?['profile'] == null ?
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
@@ -79,8 +80,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     child: Image.asset(
                       'asset/images/default_profile.png',
-                      width: 100,
-                      height: 100,
+                      width: 150,
+                      height: 150,
+                    ),
+                  ),
+                )
+                :
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 80.0,
+                      top: 80.0,
+                      right: 80.0,
+                      bottom: 20.0,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100.0),
+                      child: Image.network(
+                        user?['profile'],
+                        width: 100,
+                        height: 100,
+                      ),
                     ),
                   ),
                 ),
@@ -102,10 +123,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    String profile = "";
+                    if(user?['profile'] != null) {
+                      setState(() {
+                        profile = user?['profile'];
+                      });
+                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => EditProfileScreen(
+                          profile: profile,
                           userId: userService.currUser!.uid,
                           initialName: snapshot.data!["name"],
                           initialUsername: snapshot.data!["username"],

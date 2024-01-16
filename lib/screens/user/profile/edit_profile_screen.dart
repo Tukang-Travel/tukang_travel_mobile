@@ -10,12 +10,14 @@ import 'package:tuktraapp/utils/utils.dart';
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({
     super.key,
+    required this.profile,
     required this.userId,
     required this.initialName,
     required this.initialUsername,
     required this.initialEmail,
   });
 
+  final String profile;
   final String userId;
   final String initialName;
   final String initialUsername;
@@ -62,12 +64,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (updatedName.isEmpty) {
       // Show an error message for the empty name
       Alert.alertValidation('Nama harus diisi!', context);
+      isLoading = false;
       return;
     }
 
     if (updatedUsername.isEmpty) {
       // Show an error message for the empty username
       Alert.alertValidation('Username harus diisi!', context);
+      isLoading = false;
       return;
     }
 
@@ -84,8 +88,26 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     double h = MediaQuery.of(context).size.height;
 
     return Scaffold(
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.only(top: 150.0, left: 40.0),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: FloatingActionButton(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Padding(
+                padding: EdgeInsets.only(left: 6.0),
+                child: Icon(Icons.arrow_back_ios),
+              ),
+            ),
+          ),
+        ),
         backgroundColor: const Color(0xFFFFFFFF),
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: const AutoSizeText(
             'Ubah Profil',
             maxLines: 10,
@@ -110,8 +132,45 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          widget.profile == "" ?
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 80.0,
+                                top: 80.0,
+                                right: 80.0,
+                                bottom: 20.0,
+                              ),
+                              child: Image.asset(
+                                'asset/images/default_profile.png',
+                                width: 150,
+                                height: 150,
+                              ),
+                            ),
+                          )
+                          :
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 80.0,
+                                top: 80.0,
+                                right: 80.0,
+                                bottom: 20.0,
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(100.0),
+                                child: Image.network(
+                                  widget.profile,
+                                  width: 100,
+                                  height: 100,
+                                ),
+                              ),
+                            ),
+                          ),
                           const SizedBox(
-                            height: 100,
+                            height: 20,
                           ),
 
                           // email text field
@@ -129,9 +188,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ]),
                             child: TextFormField(
                               controller: emailTxt,
-                              validator: ((value) => value!.isEmpty
-                                  ? 'Email must be filled'
-                                  : null),
                               enabled: false,
                               decoration: InputDecoration(
                                   prefixIcon: const Icon(
@@ -174,15 +230,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ]),
                             child: TextFormField(
                               controller: nameTxt,
-                              validator: ((value) => value!.isEmpty
-                                  ? 'Name must be filled'
-                                  : null),
                               decoration: InputDecoration(
                                   prefixIcon: const Icon(
                                     Icons.person_rounded,
                                     color: Color.fromARGB(255, 82, 114, 255),
                                   ),
-                                  hintText: 'Name',
+                                  hintText: 'Nama',
                                   focusedBorder: OutlineInputBorder(
                                       borderSide: const BorderSide(
                                           color: Color.fromARGB(
@@ -219,9 +272,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ]),
                             child: TextFormField(
                               controller: usernameTxt,
-                              validator: ((value) => value!.isEmpty
-                                  ? 'Username must be filled'
-                                  : null),
                               decoration: InputDecoration(
                                   prefixIcon: const Icon(
                                     Icons.person_rounded,
@@ -250,8 +300,15 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.05,
+                            height: MediaQuery.of(context).size.height * 0.07,
                             child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                              ),
                               onPressed: () {
                                 NavigationUtils.pushTransition(context, const EditPreferencesScreen());
                               },
@@ -262,7 +319,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       ),
                     ),
                     const SizedBox(
-                      height: 50,
+                      height: 15,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -273,42 +330,43 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             horizontal: 15.0,
                           ),
                           child: SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            height: MediaQuery.of(context).size.height * 0.05,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {
-                                  setState(() {
-                                    isLoading = true;
-                                    _updateProfile(); // Added the function call here
-                                  });
-                                }
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color.fromARGB(255, 255, 180, 82),
-                                elevation: 5,
-                                shadowColor: Colors.black,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            height: MediaQuery.of(context).size.height * 0.07,
+                            child: Align(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                    setState(() {
+                                      isLoading = true;
+                                      _updateProfile(); // Added the function call here
+                                    });
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  backgroundColor: const Color.fromARGB(255, 82, 114, 255),
+                                  foregroundColor: Colors.white,
+                                  elevation: 5,
+                                  shadowColor: Colors.black,
                                 ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const SizedBox(width: 8.0),
-                                  if (isLoading)
-                                    const CircularProgressIndicator()
-                                  else
-                                    const Center(
-                                      child: Text(
-                                        'UBAH',
-                                        style: TextStyle(
-                                          color: Colors.white,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    if (isLoading)
+                                      const CircularProgressIndicator()
+                                    else
+                                      const Center(
+                                        child: Text(
+                                          'UBAH',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
