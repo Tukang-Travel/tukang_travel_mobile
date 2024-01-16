@@ -165,6 +165,9 @@ class _PediaDetailState extends State<PediaDetail> {
 
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+        ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
@@ -278,7 +281,6 @@ class _PediaDetailState extends State<PediaDetail> {
                     const Text(
                       'Tags',
                       style: TextStyle(
-                        fontFamily: 'PoppinsBold',
                         fontSize: 15,
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -316,7 +318,6 @@ class _PediaDetailState extends State<PediaDetail> {
                     const Text(
                       'Komentar',
                       style: TextStyle(
-                        fontFamily: 'PoppinsBold',
                         fontSize: 15,
                         color: Colors.black,
                         fontWeight: FontWeight.w600,

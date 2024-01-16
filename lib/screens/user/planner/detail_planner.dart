@@ -368,8 +368,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                             builder:
                                                                                 (BuildContext context) {
                                                                               return AlertDialog(
-                                                                                title: const Text('Hapus Rencana Keseharian'),
-                                                                                content: Text('Apakah anda yakin untuk menghapus rencana "${day?['itineraries'][i]['title']}"?'),
+                                                                                content: Text('Apakah anda yakin untuk menghapus rencana "${day?['itineraries'][i]['title']}"?', style: const TextStyle(fontWeight: FontWeight.w500),),
                                                                                 actions: <Widget>[
                                                                                   TextButton(
                                                                                     onPressed: () {
@@ -377,7 +376,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                         Navigator.of(context).pop();
                                                                                       }
                                                                                     },
-                                                                                    child: const Text('Batal'),
+                                                                                    child: const Text('Batal', style: TextStyle(color: Colors.black),),
                                                                                   ),
                                                                                   ElevatedButton(
                                                                                     style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(209, 26, 42, 1.0)),

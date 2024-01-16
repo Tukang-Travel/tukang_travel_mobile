@@ -127,7 +127,6 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                               snapshot.data!["title"],
                                               maxLines: 10,
                                               style: const TextStyle(
-                                                fontFamily: 'PoppinsBold',
                                                 fontSize: 25,
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.w600,
@@ -201,13 +200,12 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                     builder:
                                                                         (BuildContextcontext) {
                                                                       return AlertDialog(
+                                                                        backgroundColor: Colors.white,
                                                                         title:
                                                                             const Text(
                                                                           'Apakah anda yakin ingin menghapus feed ini?',
                                                                           style:
                                                                               TextStyle(
-                                                                            fontFamily:
-                                                                                'PoppinsBold',
                                                                             fontSize:
                                                                                 15,
                                                                             color:
@@ -225,7 +223,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                               textStyle: Theme.of(context).textTheme.labelLarge,
                                                                             ),
                                                                             child:
-                                                                                const Text('Batal'),
+                                                                                const Text('Batal', style: TextStyle(color: Colors.black)),
                                                                             onPressed:
                                                                                 () {
                                                                               Navigator.of(context).pop();
@@ -276,7 +274,6 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                               snapshot.data!["likes"].length
                                                   .toString(),
                                               style: const TextStyle(
-                                                fontFamily: 'PoppinsBold',
                                                 fontSize: 15,
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.w600,
@@ -293,7 +290,6 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                               snapshot.data!["comments"].length
                                                   .toString(),
                                               style: const TextStyle(
-                                                fontFamily: 'PoppinsBold',
                                                 fontSize: 15,
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.w600,
@@ -318,7 +314,6 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                         const Text(
                                           'Tags',
                                           style: TextStyle(
-                                            fontFamily: 'PoppinsBold',
                                             fontSize: 15,
                                             color: Colors.black,
                                             fontWeight: FontWeight.w600,
@@ -354,7 +349,6 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                     const Text(
                                       'Komentar',
                                       style: TextStyle(
-                                        fontFamily: 'PoppinsBold',
                                         fontSize: 15,
                                         color: Colors.black,
                                         fontWeight: FontWeight.w600,

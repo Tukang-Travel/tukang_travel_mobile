@@ -90,7 +90,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             'Ubah Profil',
             maxLines: 10,
             style: TextStyle(
-              fontFamily: 'PoppinsBold',
               fontSize: 25,
               color: Colors.black,
               fontWeight: FontWeight.w600,

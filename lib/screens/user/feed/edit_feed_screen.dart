@@ -55,7 +55,6 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
           'Ubah Feed',
           maxLines: 10,
           style: TextStyle(
-            fontFamily: 'PoppinsBold',
             fontSize: 25,
             color: Colors.black,
             fontWeight: FontWeight.w600,
@@ -109,8 +108,6 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
                     ]),
                 child: TextFormField(
                   controller: titleController,
-                  validator: ((value) =>
-                      value!.isEmpty ? 'Judul harus diisi' : null),
                   decoration: InputDecoration(
                       hintText: 'Judul',
                       focusedBorder: OutlineInputBorder(
@@ -143,8 +140,8 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
             // For example, you might want to show a confirmation dialog.
             _updateFeed();
           },
-          label: const Text('Ubah'),
-          backgroundColor: Colors.grey,
+          label: const Text('Ubah', style: TextStyle(color: Colors.white),),
+          backgroundColor: const Color.fromARGB(255, 82, 114, 255),
           elevation: 8.0, // Add shadow
         ),
       ),
@@ -191,9 +188,8 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
           ),
         ),
         Container(
-          decoration: BoxDecoration(border: Border.all(color: Colors.black)),
           padding: const EdgeInsets.all(10.0),
-          height: 140.0,
+          height: 250.0,
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
@@ -246,7 +242,6 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
               ]),
           child: TextFormField(
             controller: tagsController,
-            validator: ((value) => value!.isEmpty ? 'Tags harus diisi' : null),
             decoration: InputDecoration(
               hintText: 'Tags',
               focusedBorder: OutlineInputBorder(

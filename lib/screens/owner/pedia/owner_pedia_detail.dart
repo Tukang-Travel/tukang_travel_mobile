@@ -390,7 +390,6 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                     const Text(
                       'Tags',
                       style: TextStyle(
-                        fontFamily: 'PoppinsBold',
                         fontSize: 15,
                         color: Colors.black,
                         fontWeight: FontWeight.w600,
@@ -428,7 +427,6 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                     const Text(
                       'Komentar',
                       style: TextStyle(
-                        fontFamily: 'PoppinsBold',
                         fontSize: 15,
                         color: Colors.black,
                         fontWeight: FontWeight.w600,

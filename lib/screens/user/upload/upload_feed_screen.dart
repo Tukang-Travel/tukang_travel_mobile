@@ -58,7 +58,6 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
               'Unggah Feed',
               maxLines: 10,
               style: TextStyle(
-                fontFamily: 'PoppinsBold',
                 fontSize: 25,
                 color: Colors.black,
                 fontWeight: FontWeight.w600,

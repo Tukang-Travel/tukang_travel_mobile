@@ -58,17 +58,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         margin: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: TextFormField(
                           controller: emailTxt,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Email must be filled';
-                            } else if (!RegExp(
-                                    r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-                                .hasMatch(value)) {
-                              return 'Enter a valid email address';
-                            } else {
-                              return null;
-                            }
-                          },
                           decoration: InputDecoration(
                             prefixIcon: const Icon(
                               Icons.email_rounded,
@@ -102,17 +91,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           child: ElevatedButton(
                             onPressed: () async {
                               if (formKey.currentState!.validate()) {
-                                // Call the function to send password reset email
-                                String res = await UserService()
-                                    .sendForgotEmail(emailTxt.text.trim());
-
-                                if (res == 'success' && context.mounted) {
-                                  NavigationUtils.pushRemoveTransition(
-                                      context, const LoginScreen());
-                                  Alert.alertValidation('Email sudah terkirim!', context);
+                                if (emailTxt.text.isEmpty) {
+                                  Alert.alertValidation('Email harus diisi!', context);
+                                } else if (!RegExp(
+                                        r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                                    .hasMatch(emailTxt.text)) {
+                                  Alert.alertValidation('Email tidak valid!', context);
                                 } else {
-                                  if (context.mounted) {
-                                    Alert.alertValidation(res, context);
+                                  // Call the function to send password reset email
+                                  String res = await UserService()
+                                      .sendForgotEmail(emailTxt.text.trim());
+
+                                  if (res == 'success' && context.mounted) {
+                                    NavigationUtils.pushRemoveTransition(
+                                        context, const LoginScreen());
+                                    Alert.alertValidation('Email sudah terkirim!', context);
+                                  } else {
+                                    if (context.mounted) {
+                                      Alert.alertValidation(res, context);
+                                    }
                                   }
                                 }
                               }
@@ -128,7 +125,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               ),
                             ),
                             child: const Text(
-                              'SEND RESET EMAIL',
+                              'KIRIM EMAIL RESET',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18.0,

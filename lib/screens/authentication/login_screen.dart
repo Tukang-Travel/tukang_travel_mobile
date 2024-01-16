@@ -38,9 +38,15 @@ class _LoginScreenState extends State<LoginScreen> {
   void _loginAuth() async {
     if(usernameTxt.text.isEmpty) {
       Alert.alertValidation('Username harus diisi!', context);
+      setState(() {
+        isLoading = !isLoading;
+      });
     }
     else if(passTxt.text.isEmpty) {
       Alert.alertValidation('Kata sandi harus diisi!', context);
+      setState(() {
+        isLoading = !isLoading;
+      });
     }
     else {
       String apiResponse =

@@ -291,10 +291,9 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                         (BuildContext context) {
                                                       return AlertDialog(
                                                         backgroundColor: Colors.white,
-                                                        title: const Text(
-                                                            'Hapus Rencana'),
                                                         content: Text(
-                                                            'Apakah anda yakin untuk menghapus rencana "${planner['title']}"?'),
+                                                            'Apakah anda yakin untuk menghapus rencana "${planner['title']}"?',
+                                                            style: const TextStyle(fontWeight: FontWeight.w500),),
                                                         actions: <Widget>[
                                                           TextButton(
                                                             onPressed: () =>

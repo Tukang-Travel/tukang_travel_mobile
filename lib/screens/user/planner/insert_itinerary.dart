@@ -179,8 +179,6 @@ class _InsertItineraryState extends State<InsertItinerary> {
                               ]),
                           child: TextFormField(
                             controller: titleTxt,
-                            validator: ((value) =>
-                                value!.isEmpty ? 'Judul harus diisi' : null),
                             decoration: InputDecoration(
                                 hintText: 'Judul',
                                 focusedBorder: OutlineInputBorder(
@@ -241,9 +239,6 @@ class _InsertItineraryState extends State<InsertItinerary> {
                               ]),
                           child: TextFormField(
                             controller: sourceTxt,
-                            validator: ((value) => value!.isEmpty
-                                ? 'Lokasi awal harus diisi'
-                                : null),
                             decoration: InputDecoration(
                                 hintText: 'Lokasi Awal',
                                 focusedBorder: OutlineInputBorder(
@@ -303,9 +298,6 @@ class _InsertItineraryState extends State<InsertItinerary> {
                               ]),
                           child: TextFormField(
                             controller: destinationTxt,
-                            validator: ((value) => value!.isEmpty
-                                ? 'Lokasi destinasi harus diisi'
-                                : null),
                             decoration: InputDecoration(
                                 hintText: 'Lokasi Destinasi',
                                 focusedBorder: OutlineInputBorder(
@@ -669,7 +661,16 @@ class _InsertItineraryState extends State<InsertItinerary> {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
                     onPressed: () async {
-                      if (startTimeController.text.isEmpty ||
+                      if(titleTxt.text.isEmpty) {
+                        Alert.alertValidation('Judul harus diisi!', context);
+                      }
+                      else if(sourceTxt.text.isEmpty) {
+                        Alert.alertValidation('Lokasi Awal harus diisi!', context);
+                      }
+                      else if(destinationTxt.text.isEmpty) {
+                        Alert.alertValidation('Lokasi Destinasi harus diisi!', context);
+                      }
+                      else if (startTimeController.text.isEmpty ||
                           endTimeController.text.isEmpty) {
                         Alert.alertValidation('Waktu harus dipilih!', context);
                       } else if (selectEndTime < selectStartTime) {
@@ -679,7 +680,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
                       } else if (selectTransportation == 0) {
                         Alert.alertValidation(
                             'Transportasi harus dipilih!', context);
-                      } else if (formKey.currentState!.validate()) {
+                      } else {
                         if (widget.type == "full") {
                           setState(() {
                             itinerary = [

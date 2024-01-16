@@ -49,7 +49,6 @@ class CommentCard extends StatelessWidget {
                       Text(
                         snap['username'],
                         style: const TextStyle(
-                          fontFamily: 'PoppinsBold',
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
                           height: 1.2,

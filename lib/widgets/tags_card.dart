@@ -19,10 +19,9 @@ class TagsCard extends StatelessWidget {
           child: Text(
             snap,
             style: const TextStyle(
-              fontFamily: 'Poppins',
               fontSize: 14,
               color: Colors.black,
-              fontWeight: FontWeight.w100,
+              fontWeight: FontWeight.w500,
               height: 1.2,
             ),
           ),

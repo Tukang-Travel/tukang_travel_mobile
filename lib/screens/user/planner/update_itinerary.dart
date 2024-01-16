@@ -198,8 +198,6 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                               ]),
                           child: TextFormField(
                             controller: titleTxt,
-                            validator: ((value) =>
-                                value!.isEmpty ? 'Judul harus diisi' : null),
                             decoration: InputDecoration(
                                 hintText: 'Judul',
                                 focusedBorder: OutlineInputBorder(
@@ -259,9 +257,6 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                               ]),
                           child: TextFormField(
                             controller: sourceTxt,
-                            validator: ((value) => value!.isEmpty
-                                ? 'Lokasi awal harus diisi'
-                                : null),
                             decoration: InputDecoration(
                                 hintText: 'Lokasi Awal',
                                 focusedBorder: OutlineInputBorder(
@@ -321,9 +316,6 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                               ]),
                           child: TextFormField(
                             controller: destinationTxt,
-                            validator: ((value) => value!.isEmpty
-                                ? 'Lokasi destinasi harus diisi'
-                                : null),
                             decoration: InputDecoration(
                                 hintText: 'Lokasi Destinasi',
                                 focusedBorder: OutlineInputBorder(
@@ -690,7 +682,16 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (startTimeController.text.isEmpty ||
+                      if(titleTxt.text.isEmpty) {
+                        Alert.alertValidation('Judul harus diisi!', context);
+                      }
+                      else if(sourceTxt.text.isEmpty) {
+                        Alert.alertValidation('Lokasi Awal harus diisi!', context);
+                      }
+                      else if(destinationTxt.text.isEmpty) {
+                        Alert.alertValidation('Lokasi Destinasi harus diisi!', context);
+                      }
+                      else if (startTimeController.text.isEmpty ||
                           endTimeController.text.isEmpty) {
                         Alert.alertValidation('Waktu harus dipilih!', context);
                       } else if (selectEndTime < selectStartTime) {
@@ -700,7 +701,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                       } else if (selectTransportation == 0) {
                         Alert.alertValidation(
                             'Transportasi harus dipilih!', context);
-                      } else if (formKey.currentState!.validate()) {
+                      } else {
                         setState(() async {
                           Map<String, dynamic> itinerary = {
                             'title': titleTxt.text,
