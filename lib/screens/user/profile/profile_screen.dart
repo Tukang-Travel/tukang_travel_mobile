@@ -5,6 +5,7 @@ import 'package:tuktraapp/screens/user/feed/feed_detail_screen.dart';
 import 'package:tuktraapp/screens/user/profile/edit_profile_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
+import 'package:tuktraapp/widgets/tags_card.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -49,6 +50,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
     double w = MediaQuery.of(context).size.width;
+    bool isTapped = false;
     return Scaffold(
         body: SingleChildScrollView(
             child: Column(
@@ -189,25 +191,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 25.0,
+                  height: 40.0,
                 ),
-                const Divider(
-                  color: Colors.grey,
-                  thickness: 1.0,
-                ),
-                const Center(
-                  child: Text(
-                    "Feed",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                ),
-                const Divider(
-                  color: Colors.grey,
-                  thickness: 1.0,
-                ),
+
+                
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: StreamBuilder(
@@ -234,11 +221,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
+                          crossAxisCount: 3,
                           // Number of columns in the grid
                           crossAxisSpacing: 8.0,
                           // Spacing between columns
-                          mainAxisSpacing: 8.0, // Spacing between rows
+                          mainAxisSpacing: 6.0, // Spacing between rows
                         ),
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -263,35 +250,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(10.0),
-                                      topRight: Radius.circular(10.0),
-                                    ),
                                     child: Image.network(
                                       _getFirstImage(itemData['content']),
-                                      height: 100,
-                                      width: 300,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8.0),
-                                  Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 5.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            itemData['title'],
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 17.0,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                      height: 220,
+                                      width: 220,
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ],
