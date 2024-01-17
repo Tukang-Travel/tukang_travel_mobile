@@ -267,10 +267,8 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                           builder: (BuildContext context) {
                                             return AlertDialog(
                                               backgroundColor: Colors.white,
-                                              title: const Text(
-                                                  'Hapus Rencana Keseharian'),
                                               content: Text(
-                                                  'Apakah anda yakin untuk menghapus pedia "${pedia['title']}"?'),
+                                                  'Apakah anda yakin untuk menghapus pedia "${pedia['title']}"?',style: const TextStyle(fontWeight: FontWeight.w500),),
                                               actions: <Widget>[
                                                 TextButton(
                                                   onPressed: () =>

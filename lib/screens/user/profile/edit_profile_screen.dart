@@ -312,7 +312,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               onPressed: () {
                                 NavigationUtils.pushTransition(context, const EditPreferencesScreen());
                               },
-                              child: const Text('Edit Preferensi'),
+                              child: const Text('Ubah Preferensi'),
                             ),
                           ),
                         ],

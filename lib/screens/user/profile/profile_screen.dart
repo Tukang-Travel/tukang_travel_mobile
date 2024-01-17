@@ -191,10 +191,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 40.0,
+                  height: 25.0,
                 ),
 
-                
+                const Divider(
+                  color: Colors.grey,
+                  thickness: 1.0,
+                ),
+                const Center(
+                  child: Text(
+                    "Feed",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Colors.grey,
+                  thickness: 1.0,
+                ),
+
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: StreamBuilder(

@@ -299,6 +299,8 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
 
     // Close the screen
     Navigator.pop(context);
+
+    Alert.successMessage('Feed berhasil diperbaharui.', context);
   }
 
   @override
