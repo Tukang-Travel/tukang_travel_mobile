@@ -291,6 +291,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                                           .pushRemoveTransition(
                                                               context,
                                                               const MainScreen(page: 0));
+                                                      Alert.successMessage("Pedia berhasil dihapus.", context);
                                                     }
                                                   },
                                                   style:

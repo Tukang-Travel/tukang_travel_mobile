@@ -4,6 +4,7 @@ import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/user/planner/insert_itinerary.dart';
 import 'package:tuktraapp/screens/user/planner/update_itinerary.dart';
 import 'package:tuktraapp/services/plan_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class DetailPlanner extends StatefulWidget {
@@ -387,6 +388,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                     onPressed: () async {
                                                                                       // print('${widget.id}, ${(int.parse(day['day']) - 1)}, $i');
                                                                                       await planService.deleteSubItinerary(widget.id, (int.parse(day?['day']) - 1), i);
+                                                                                      Alert.successMessage("Kegiatan berhasil dihapus.", context);
                                                                                       setState(() {
                                                                                         _getPlan();
                                                                                       });

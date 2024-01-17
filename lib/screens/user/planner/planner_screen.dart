@@ -5,6 +5,7 @@ import 'package:tuktraapp/screens/user/planner/insert_planner.dart';
 import 'package:tuktraapp/screens/user/planner/update_planner.dart';
 import 'package:tuktraapp/services/plan_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:intl/intl.dart';
 
@@ -324,6 +325,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                                     .deletePlanner(
                                                                         plannerId);
                                                                 Navigator.of(context).pop();
+                                                                Alert.successMessage("Kegiatan berhasil dihapus.", context);
                                                               }),
                                                         ],
                                                       );

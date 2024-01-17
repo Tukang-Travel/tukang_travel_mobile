@@ -712,9 +712,9 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                             'transportation': transportationController.text,
                             'transportation_cost': budget,
                           };
-
+        
                           isLoading = true;
-
+                          
                           await planService.updateSubItinerary(widget.planId,
                               widget.dayId, widget.id, itinerary);
                           if (context.mounted) {
