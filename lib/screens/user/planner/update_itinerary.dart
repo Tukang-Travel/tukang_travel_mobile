@@ -720,6 +720,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                           if (context.mounted) {
                             NavigationUtils.pushRemoveTransition(
                                 context, DetailPlanner(id: widget.planId));
+                            Alert.successMessage('Kegiatan berhasil diperbaharui.', context);
                           }
 
                           // print('startTimeController.text: ${startTimeController.text}');

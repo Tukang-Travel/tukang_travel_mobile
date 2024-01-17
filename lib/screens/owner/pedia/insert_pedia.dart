@@ -113,7 +113,7 @@ class _InsertPediaState extends State<InsertPedia> {
 
       if (context.mounted) {
         NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0,));
-        Alert.successMessage("Unggah Pedia berhasil", context);
+        Alert.successMessage("Pedia berhasil ditambahkan.", context);
       }
     } catch (error) {
       if (context.mounted) {

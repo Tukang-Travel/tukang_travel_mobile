@@ -123,14 +123,17 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            AutoSizeText(
-                                              snapshot.data!["title"],
-                                              maxLines: 10,
-                                              style: const TextStyle(
-                                                fontSize: 25,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w600,
-                                                height: 1.2,
+                                            Container (
+                                              width: 200,
+                                              child: AutoSizeText(
+                                                snapshot.data!["title"],
+                                                maxLines: 10,
+                                                style: const TextStyle(
+                                                  fontSize: 25,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.2,
+                                                ),
                                               ),
                                             ),
                                             snapshot.data!["userId"] == user.uid

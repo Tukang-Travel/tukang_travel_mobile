@@ -115,6 +115,7 @@ class _EditPreferencesScreenState extends State<EditPreferencesScreen> {
                 if (res == 'success') {
                   if (context.mounted) {
                     Navigator.of(context).pop();
+                    Alert.successMessage('Preferensi berhasil diperbaharui!', context);
                   }
                 } else {
                   if (context.mounted) {

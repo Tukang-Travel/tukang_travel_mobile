@@ -80,6 +80,7 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
 
     // Close the screen
     NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 4));
+    Alert.successMessage('Profil berhasil diperbaharui.', context);
   }
 
   @override

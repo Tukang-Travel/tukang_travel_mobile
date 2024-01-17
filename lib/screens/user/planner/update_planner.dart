@@ -632,6 +632,7 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                                 budget,
                                 numOfPeople);
                             Navigator.of(context).pop();
+                            Alert.successMessage('Rencana berhasil diperbaharui.', context);
                           });
                         }
                       }
