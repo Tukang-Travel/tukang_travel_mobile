@@ -287,10 +287,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                                         .deletePedia(widget.id,
                                                             pedia['title']);
                                                     if (context.mounted) {
-                                                      NavigationUtils
-                                                          .pushRemoveTransition(
-                                                              context,
-                                                              const MainScreen(page: 0));
+                                                      Navigator.of(context).pop();
                                                       Alert.successMessage("Pedia berhasil dihapus.", context);
                                                     }
                                                   },

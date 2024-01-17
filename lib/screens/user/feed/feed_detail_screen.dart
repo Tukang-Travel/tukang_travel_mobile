@@ -55,6 +55,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
       await FeedService().deleteFeed(feedId);
       await FeedService().deleteFiles(title);
       if (context.mounted) {
+        NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 4));
         Alert.successMessage('Berhasil menghapus feed.', context);
       }
     } catch (err) {
@@ -243,11 +244,6 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                             onPressed:
                                                                                 () {
                                                                               deleteFeed(widget.feedId, snapshot.data!["title"]);
-                                                                              NavigationUtils.pushRemoveTransition(
-                                                                                  context,
-                                                                                  const MainScreen(
-                                                                                    page: 0,
-                                                                                  ));
                                                                             },
                                                                           ),
                                                                         ],

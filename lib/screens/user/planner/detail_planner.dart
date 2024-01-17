@@ -326,7 +326,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                 255)),
                                                                         onPressed:
                                                                             () {
-                                                                          NavigationUtils.pushTransition(
+                                                                          NavigationUtils.pushRemoveTransition(
                                                                               context,
                                                                               UpdateItinerary(
                                                                                 dayId: (int.parse(day?['day']) - 1),
@@ -388,13 +388,13 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                     onPressed: () async {
                                                                                       // print('${widget.id}, ${(int.parse(day['day']) - 1)}, $i');
                                                                                       await planService.deleteSubItinerary(widget.id, (int.parse(day?['day']) - 1), i);
-                                                                                      Alert.successMessage("Kegiatan berhasil dihapus.", context);
                                                                                       setState(() {
                                                                                         _getPlan();
                                                                                       });
 
                                                                                       if (context.mounted) {
                                                                                         Navigator.of(context).pop();
+                                                                                        Alert.successMessage("Kegiatan berhasil dihapus.", context);
                                                                                       }
                                                                                     },
                                                                                   ),

@@ -74,6 +74,12 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
 
   String convertToWib(String time) {
     List<String> parts = time.split(" ");
+
+    if (parts.length != 2) {
+      // Handle invalid input format
+      return ''; // or throw an exception
+    }
+    
     List<String> timeParts = parts[0].split(":");
 
     int hour = int.parse(timeParts[0]);
@@ -110,6 +116,8 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
   @override
   void initState() {
     super.initState();
+
+    print('plan id: ${widget.planId}');
     _getAllData();
   }
 
@@ -555,7 +563,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                           height: 10.0,
                         ),
                         DropdownButtonFormField<int>(
-                          value: _transportations[0].keys.first,
+                          value: _transportations[transportIdx].keys.first,
                           onChanged: (int? selectedTransportation) {
                             if (selectedTransportation != null) {
                               setState(() {
@@ -699,8 +707,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                             'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
                             context);
                       } else if (selectTransportation == 0) {
-                        Alert.alertValidation(
-                            'Transportasi harus dipilih!', context);
+                        Alert.alertValidation('Transportasi harus dipilih!', context);
                       } else {
                         setState(() async {
                           Map<String, dynamic> itinerary = {
@@ -712,7 +719,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                             'transportation': transportationController.text,
                             'transportation_cost': budget,
                           };
-        
+
                           isLoading = true;
                           
                           await planService.updateSubItinerary(widget.planId,
@@ -761,7 +768,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             onPressed: () {
-              Navigator.of(context).pop();
+              NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: widget.planId));
             },
             child: const Padding(
               padding: EdgeInsets.only(left: 6.0),

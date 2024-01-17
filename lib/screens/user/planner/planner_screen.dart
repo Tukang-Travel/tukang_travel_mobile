@@ -154,6 +154,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                           QueryDocumentSnapshot<Map<String, dynamic>> planner =
                               planners[index];
                           var plannerId = planner.id;
+                          print('Plan id from planner screen: $plannerId');
                           DateTime startDate =
                               DateTime.parse(planner['startDate']);
                           DateTime endDate = DateTime.parse(planner['endDate']);
@@ -325,7 +326,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                                     .deletePlanner(
                                                                         plannerId);
                                                                 Navigator.of(context).pop();
-                                                                Alert.successMessage("Kegiatan berhasil dihapus.", context);
+                                                                Alert.successMessage("Rencana berhasil dihapus.", context);
                                                               }),
                                                         ],
                                                       );
