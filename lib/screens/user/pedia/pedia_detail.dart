@@ -65,40 +65,61 @@ class _PediaDetailState extends State<PediaDetail> {
     List<dynamic> results =
         await Future.wait([pediaService.getPedia(widget.id)]);
 
-    setState(() {
-      pedia = results[0];
-      medias = pedia['medias'];
-      tags = pedia['tags'];
+    pedia = results[0];
+    medias = pedia['medias'];
+    tags = pedia['tags'];
 
-      if (pedia.containsKey('rates')) {
-        rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
+    if (pedia.containsKey('rates')) {
+      rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
 
-        for (int i = 0; i < rates.length; i++) {
-          avgRate += int.parse(rates[i]['rate'].toString());
-        }
-
-        avgRate = (avgRate / rates.length);
-
-        for (int i = 0; i < rates.length; i++) {
-          if (rates[i]['userid'] == userService.currUser!.uid) {
-            setState(() {
-              rating = rates[i]['rate'];
-            });
-            break;
+      for (int i = 0; i < rates.length; i++) {
+        try {
+          final rateMap = rates[i];
+          if (rateMap.containsKey('rate')) {
+            avgRate += rateMap['rate'];
+          } else {
+            showSnackBar(
+                context, 'Data struktur rate salah $i: $rateMap');
           }
+        } catch (e) {
+          showSnackBar(context, 'Error pada data rate ke [$i]: $e');
         }
       }
 
-      if (pedia.containsKey('comments')) {
+      if (rates.isNotEmpty) {
+        avgRate = (avgRate / rates.length);
+      }
+
+      for (int i = 0; i < rates.length; i++) {
+        if (rates[i]['userid'] == userService.currUser!.uid) {
+          setState(() {
+            rating = rates[i]['rate'];
+          });
+          break;
+        }
+      }
+    }
+
+    if (pedia.containsKey('comments')) {
+      if (pedia['comments'] != null) {
         comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
       }
+    }
+
+    setState(() {
+      done = true;
     });
   }
 
   @override
   void initState() {
+    fetch();
+    
     super.initState();
+  }
 
+  @override
+  void dispose() {
     rating = 0;
     pedia = {};
     medias = [];
@@ -106,47 +127,7 @@ class _PediaDetailState extends State<PediaDetail> {
     rates = [];
     comments = [];
     avgRate = 0;
-  }
-
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-
-    List<dynamic> results =
-        await Future.wait([pediaService.getPedia(widget.id)]);
-
-    setState(() {
-      pedia = results[0];
-      medias = pedia['medias'];
-      tags = pedia['tags'];
-
-      if (pedia.containsKey('rates')) {
-        rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
-
-        for (int i = 0; i < rates.length; i++) {
-          avgRate += int.parse(rates[i]['rate'].toString());
-        }
-
-        avgRate = (avgRate / rates.length);
-
-        for (int i = 0; i < rates.length; i++) {
-          if (rates[i]['userid'] == userService.currUser!.uid) {
-            setState(() {
-              rating = rates[i]['rate'];
-            });
-            break;
-          }
-        }
-      }
-
-      if (pedia.containsKey('comments')) {
-        comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
-      }
-    });
-
-    setState(() {
-      done = true;
-    });
+    super.dispose();
   }
 
   @override
@@ -205,10 +186,13 @@ class _PediaDetailState extends State<PediaDetail> {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 15.0, left: 25.0),
-                child: Text(
-                  pedia['title'],
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w700, fontSize: 22.0),
+                child: SizedBox(
+                  width: 200,
+                  child: Text(
+                    pedia['title'],
+                    style: const TextStyle(
+                        fontWeight: FontWeight.w700, fontSize: 22.0),
+                  ),
                 ),
               ),
               Padding(

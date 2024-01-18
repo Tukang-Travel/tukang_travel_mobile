@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tuktraapp/screens/authentication/login_owner_screen.dart';
 import 'package:tuktraapp/screens/owner/pedia/owner_pedia_detail.dart';
 import 'package:tuktraapp/screens/owner/profile/edit_owner_profile_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
-import 'package:tuktraapp/screens/authentication/login_screen.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -68,6 +68,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
 
             return Column(
               children: [
+                user?['profile'] == null ?
                 Align(
                   alignment: Alignment.topCenter,
                   child: Padding(
@@ -79,8 +80,28 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                     ),
                     child: Image.asset(
                       'asset/images/default_profile.png',
-                      width: 100,
-                      height: 100,
+                      width: 150,
+                      height: 150,
+                    ),
+                  ),
+                )
+                :
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 80.0,
+                      top: 80.0,
+                      right: 80.0,
+                      bottom: 20.0,
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100.0),
+                      child: Image.network(
+                        user?['profile'],
+                        width: 100,
+                        height: 100,
+                      ),
                     ),
                   ),
                 ),
@@ -102,10 +123,17 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
+                    String profile = "";
+                    if(user?['profile'] != null) {
+                      setState(() {
+                        profile = user?['profile'];
+                      });
+                    }
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => EditOwnerProfileScreen(
+                          profile: profile,
                           userId: userService.currUser!.uid,
                           initialName: snapshot.data!["name"],
                           initialUsername: snapshot.data!["username"],
@@ -137,7 +165,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                     await userService.logout();
                     if (context.mounted) {
                       NavigationUtils.pushRemoveTransition(
-                          context, const LoginScreen());
+                          context, const LoginOwnerScreen());
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -201,73 +229,79 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                         return const Text('Belum Ada Pedia yang diupload');
                       }
 
-                      return GridView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, // Number of columns in the grid
-                          crossAxisSpacing: 8.0, // Spacing between columns
-                          mainAxisSpacing: 8.0, // Spacing between rows
-                        ),
-                        itemCount: snapshot.data!.docs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          var itemData = snapshot.data!.docs[index].data()
-                              as Map<String, dynamic>;
-                          var itemId = snapshot.data!.docs[index].id;
-                          return GestureDetector(
-                            onTap: () {
-                              NavigationUtils.pushTransition(
-                                context,
-                                OwnerPediaDetail(id: itemId.toString()),
+                      return Align(
+                        alignment: Alignment.center,
+                        child: SizedBox(
+                          height: h,
+                          child: GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 8.0,
+                              mainAxisSpacing: 8.0,
+                              childAspectRatio: 0.85,
+                            ),
+                            itemCount: snapshot.data!.docs.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              var itemData = snapshot.data!.docs[index].data()
+                                  as Map<String, dynamic>;
+                              var itemId = snapshot.data!.docs[index].id;
+                              return GestureDetector(
+                                onTap: () {
+                                  NavigationUtils.pushRemoveTransition(
+                                      context, OwnerPediaDetail(id: itemId));
+                                },
+                                child: Card(
+                                  color: Colors.white,
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ClipRRect(
+                                          borderRadius: const BorderRadius.only(
+                                              topLeft: Radius.circular(10.0),
+                                              topRight: Radius.circular(10.0)),
+                                          child: Image.network(
+                                            itemData['medias'][0],
+                                            height: 90,
+                                            width: 300,
+                                          )),
+                                      const SizedBox(
+                                        height: 8.0,
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5.0, vertical: 5.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(itemData['title'],
+                                                overflow: TextOverflow.ellipsis,
+                                                style: const TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 17.0)),
+                                            const SizedBox(
+                                              height: 5.0,
+                                            ),
+                                            Text(
+                                              itemData['description'],
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               );
                             },
-                            child: Card(
-                              color: Colors.white,
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.only(
-                                      topLeft: Radius.circular(10.0),
-                                      topRight: Radius.circular(10.0),
-                                    ),
-                                    child: Image.network(
-                                      itemData['medias'][0],
-                                      height: 100,
-                                      width: 300,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8.0),
-                                  Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 5.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            itemData['title'],
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 17.0,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                          ),
+                        ),
                       );
                     },
                   ),

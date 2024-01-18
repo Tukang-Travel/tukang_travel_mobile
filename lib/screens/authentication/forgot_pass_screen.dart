@@ -28,6 +28,23 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     double h = MediaQuery.of(context).size.height;
 
     return Scaffold(
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(top: 60.0, left: 40.0),
+        child: Align(
+          alignment: Alignment.topLeft,
+          child: FloatingActionButton(
+            backgroundColor: Colors.white,
+            foregroundColor: Colors.black,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(left: 6.0),
+              child: Icon(Icons.arrow_back_ios),
+            ),
+          ),
+        ),
+      ),
       backgroundColor: const Color(0xFFFFFFFF),
       body: SingleChildScrollView(
         child: Column(

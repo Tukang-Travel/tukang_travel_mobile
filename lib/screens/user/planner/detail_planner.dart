@@ -4,6 +4,7 @@ import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/user/planner/insert_itinerary.dart';
 import 'package:tuktraapp/screens/user/planner/update_itinerary.dart';
 import 'package:tuktraapp/services/plan_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class DetailPlanner extends StatefulWidget {
@@ -39,6 +40,23 @@ class _DetailPlannerState extends State<DetailPlanner> {
     setState(() {
       plan = results[0];
     });
+  }
+
+  String convertToAmPm(String time) {
+    List<String> timeParts = time.split(":");
+    
+    int hour = int.parse(timeParts[0]);
+    int minute = int.parse(timeParts[1]);
+
+    String period = (hour >= 12) ? 'PM' : 'AM';
+
+    if (hour > 12) {
+      hour -= 12;
+    } else if (hour == 0) {
+      hour = 12;
+    }
+
+    return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} $period';
   }
 
   @override
@@ -84,12 +102,12 @@ class _DetailPlannerState extends State<DetailPlanner> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(top: 10.0),
-                            child: Text(
-                              plan['title'],
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 22.0,
-                                color: Colors.white,
+                            child: SizedBox(
+                              width: 200,
+                              child: Text(
+                                plan['title'],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w700, fontSize: 22.0, color: Colors.white),
                               ),
                             ),
                           ),
@@ -325,7 +343,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                 255)),
                                                                         onPressed:
                                                                             () {
-                                                                          NavigationUtils.pushTransition(
+                                                                          NavigationUtils.pushRemoveTransition(
                                                                               context,
                                                                               UpdateItinerary(
                                                                                 dayId: (int.parse(day?['day']) - 1),
@@ -335,8 +353,8 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                 title: day?['itineraries'][i]['title'],
                                                                                 source: day?['itineraries'][i]['source'],
                                                                                 destination: day?['itineraries'][i]['destination'],
-                                                                                startTime: day?['itineraries'][i]['startTime'],
-                                                                                endTime: day?['itineraries'][i]['endTime'],
+                                                                                startTime: convertToAmPm(day?['itineraries'][i]['startTime']),
+                                                                                endTime: convertToAmPm(day?['itineraries'][i]['endTime']),
                                                                                 transportation: day?['itineraries'][i]['transportation'],
                                                                                 transportationCost: day?['itineraries'][i]['transportation_cost'],
                                                                               ));
@@ -393,6 +411,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
 
                                                                                       if (context.mounted) {
                                                                                         Navigator.of(context).pop();
+                                                                                        Alert.successMessage("Kegiatan berhasil dihapus.", context);
                                                                                       }
                                                                                     },
                                                                                   ),

@@ -113,6 +113,7 @@ class _InsertPreferenceScreenState extends State<InsertPreferenceScreen> {
                 if (res == 'success') {
                   if (context.mounted) {
                     Navigator.of(context).pop();
+                    Alert.successMessage('Preferensi berhasil ditambahkan.', context);
                   }
                 } else {
                   if (context.mounted) {

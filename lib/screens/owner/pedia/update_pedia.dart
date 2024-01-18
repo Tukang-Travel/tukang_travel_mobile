@@ -358,6 +358,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
                         widget.id, titleTxt.text, descTxt.text, _selectedTypes);
                       NavigationUtils.pushRemoveTransition(
                         context, OwnerPediaDetail(id: widget.id));
+                      Alert.successMessage('Pedia berhasil diperbaharui.', context);
                     }
                   },
                   style: ElevatedButton.styleFrom(

@@ -741,6 +741,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
                         if (context.mounted) {
                           NavigationUtils.pushReplace(
                               context, DetailPlanner(id: widget.id));
+                          Alert.successMessage('Kegiatan berhasil ditambahkan.', context);
                         }
                       }
                     },

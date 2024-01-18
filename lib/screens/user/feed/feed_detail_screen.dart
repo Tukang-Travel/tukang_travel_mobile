@@ -55,6 +55,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
       await FeedService().deleteFeed(feedId);
       await FeedService().deleteFiles(title);
       if (context.mounted) {
+        NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 4));
         Alert.successMessage('Berhasil menghapus feed.', context);
       }
     } catch (err) {
@@ -123,14 +124,17 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            AutoSizeText(
-                                              snapshot.data!["title"],
-                                              maxLines: 10,
-                                              style: const TextStyle(
-                                                fontSize: 25,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w600,
-                                                height: 1.2,
+                                            Container (
+                                              width: 200,
+                                              child: AutoSizeText(
+                                                snapshot.data!["title"],
+                                                maxLines: 10,
+                                                style: const TextStyle(
+                                                  fontSize: 25,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w600,
+                                                  height: 1.2,
+                                                ),
                                               ),
                                             ),
                                             snapshot.data!["userId"] == user.uid
@@ -240,11 +244,6 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                             onPressed:
                                                                                 () {
                                                                               deleteFeed(widget.feedId, snapshot.data!["title"]);
-                                                                              NavigationUtils.pushRemoveTransition(
-                                                                                  context,
-                                                                                  const MainScreen(
-                                                                                    page: 0,
-                                                                                  ));
                                                                             },
                                                                           ),
                                                                         ],

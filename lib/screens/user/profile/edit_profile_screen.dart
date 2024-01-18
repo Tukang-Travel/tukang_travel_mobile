@@ -80,6 +80,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     // Close the screen
     NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 4));
+
+    Alert.successMessage('Profil berhasil diperbaharui.', context);
   }
 
   @override
@@ -312,7 +314,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               onPressed: () {
                                 NavigationUtils.pushTransition(context, const EditPreferencesScreen());
                               },
-                              child: const Text('Edit Preferensi'),
+                              child: const Text('Ubah Preferensi'),
                             ),
                           ),
                         ],

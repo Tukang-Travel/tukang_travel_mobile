@@ -630,6 +630,7 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                     numOfPeople,
                                     UserService().currUser!.uid);
                                 Navigator.of(context).pop();
+                                Alert.successMessage('Rencana berhasil ditambahkan.', context);
                               });
                             }
                           }

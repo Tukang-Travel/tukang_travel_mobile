@@ -191,10 +191,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 const SizedBox(
-                  height: 40.0,
+                  height: 25.0,
                 ),
 
-                
+                const Divider(
+                  color: Colors.grey,
+                  thickness: 1.0,
+                ),
+                const Center(
+                  child: Text(
+                    "Feed",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+                const Divider(
+                  color: Colors.grey,
+                  thickness: 1.0,
+                ),
+
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: StreamBuilder(
@@ -246,18 +263,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    child: Image.network(
-                                      _getFirstImage(itemData['content']),
-                                      height: 220,
-                                      width: 220,
-                                      fit: BoxFit.cover,
+                              child: Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    ClipRRect(
+                                      child: AspectRatio(
+                                        aspectRatio: 1.0,
+                                        child: Image.network(
+                                          _getFirstImage(itemData['content']),
+                                          height: 220,
+                                          width: 220,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           );
@@ -265,7 +287,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     },
                   ),
-                )
+                ),
+                const SizedBox(height: 100,)
               ],
             );
           },
