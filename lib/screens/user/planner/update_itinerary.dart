@@ -53,18 +53,21 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
   TransportService transService = TransportService();
 
   List<Map<int, String>> _transportations = [];
+  List<String> startParts = [];
+  List<String> endParts = [];
   int selectStartTime = 1;
   int selectEndTime = 1;
-  int selectTransportation = 1;
+  int selectTransportation = 0;
 
   bool isLoading = false;
   int budget = 0;
 
+  // initialny dibikin waktu yang dipilih sama user
   Future<void> _selectTime(
-      BuildContext context, TextEditingController controller) async {
+      BuildContext context, TextEditingController controller, int hour, int minute) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: TimeOfDay(hour: hour, minute: minute),
     );
 
     if (picked != null && context.mounted) {
@@ -108,11 +111,21 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
     endTimeController.text = widget.endTime;
     transportationController.text = widget.transportation;
     budget = widget.transportationCost;
-    startTimeIdx = int.parse(startTimeController.text);
-    endTimeIdx = int.parse(endTimeController.text);
-    transportIdx = int.parse(transportationController.text);
+    transportIdx = searchSelected();
+    startParts = startTimeController.text.split(":");
+    endParts = endTimeController.text.split(":");
+
+    print('Transport: $transportIdx');
   }
 
+  int searchSelected() {
+    for (var t in _transportations) {
+      if(t.values.single == transportationController.text) {
+        return t.keys.single;
+      }
+    }
+    return -1;
+  }
   @override
   void initState() {
     super.initState();
@@ -416,7 +429,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                         TextFormField(
                           controller: startTimeController,
                           onTap: () =>
-                              _selectTime(context, startTimeController),
+                              _selectTime(context, startTimeController, int.parse(startParts[0]), int.parse(startParts[0])),
                           decoration: InputDecoration(
                             labelText: 'Pilih Waktu Awal',
                             hintText: 'Pilih Waktu Awal',
@@ -512,7 +525,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                         // ),
                         TextFormField(
                           controller: endTimeController,
-                          onTap: () => _selectTime(context, endTimeController),
+                          onTap: () => _selectTime(context, endTimeController, int.parse(endParts[0]), int.parse(endParts[0])),
                           decoration: InputDecoration(
                             labelText: 'Pilih Waktu Akhir',
                             hintText: 'Pilih Waktu Akhir',
@@ -706,10 +719,12 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                         Alert.alertValidation(
                             'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
                             context);
-                      } else if (selectTransportation == 0) {
+                      } else if (transportationController.text.isEmpty) {
                         Alert.alertValidation('Transportasi harus dipilih!', context);
                       } else {
                         setState(() async {
+                          // print(convertToWib(startTimeController.text));
+                          // print(convertToWib(endTimeController.text));
                           Map<String, dynamic> itinerary = {
                             'title': titleTxt.text,
                             'source': sourceTxt.text,
@@ -730,9 +745,9 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                             Alert.successMessage('Kegiatan berhasil diperbaharui.', context);
                           }
 
-                          // print('startTimeController.text: ${startTimeController.text}');
-                          // print('endTimeController.text: ${endTimeController.text}');
-                          // print('transportationController.text: ${transportationController.text}');
+                          print('startTimeController.text: ${startTimeController.text}');
+                          print('endTimeController.text: ${endTimeController.text}');
+                          print('transportationController.text: ${transportationController.text}');
                         });
                       }
                     },

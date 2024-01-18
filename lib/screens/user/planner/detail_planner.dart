@@ -42,6 +42,23 @@ class _DetailPlannerState extends State<DetailPlanner> {
     });
   }
 
+  String convertToAmPm(String time) {
+    List<String> timeParts = time.split(":");
+    
+    int hour = int.parse(timeParts[0]);
+    int minute = int.parse(timeParts[1]);
+
+    String period = (hour >= 12) ? 'PM' : 'AM';
+
+    if (hour > 12) {
+      hour -= 12;
+    } else if (hour == 0) {
+      hour = 12;
+    }
+
+    return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')} $period';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -90,7 +107,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                               child: Text(
                                 plan['title'],
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 22.0),
+                                    fontWeight: FontWeight.w700, fontSize: 22.0, color: Colors.white),
                               ),
                             ),
                           ),
@@ -336,8 +353,8 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                 title: day?['itineraries'][i]['title'],
                                                                                 source: day?['itineraries'][i]['source'],
                                                                                 destination: day?['itineraries'][i]['destination'],
-                                                                                startTime: day?['itineraries'][i]['startTime'],
-                                                                                endTime: day?['itineraries'][i]['endTime'],
+                                                                                startTime: convertToAmPm(day?['itineraries'][i]['startTime']),
+                                                                                endTime: convertToAmPm(day?['itineraries'][i]['endTime']),
                                                                                 transportation: day?['itineraries'][i]['transportation'],
                                                                                 transportationCost: day?['itineraries'][i]['transportation_cost'],
                                                                               ));
