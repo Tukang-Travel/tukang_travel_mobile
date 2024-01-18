@@ -187,11 +187,12 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(top: 10.0),
-                                          child: Text(
-                                            planner['title'],
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.w800,
-                                              fontSize: 22.0,
+                                          child: SizedBox(
+                                            width: 200,
+                                            child: Text(
+                                              planner['title'],
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w700, fontSize: 22.0),
                                             ),
                                           ),
                                         ),

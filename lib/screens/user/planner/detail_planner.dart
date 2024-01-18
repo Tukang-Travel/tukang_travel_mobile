@@ -85,12 +85,12 @@ class _DetailPlannerState extends State<DetailPlanner> {
                         children: [
                           Padding(
                             padding: const EdgeInsets.only(top: 10.0),
-                            child: Text(
-                              plan['title'],
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w800,
-                                fontSize: 22.0,
-                                color: Colors.white,
+                            child: SizedBox(
+                              width: 200,
+                              child: Text(
+                                plan['title'],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w700, fontSize: 22.0),
                               ),
                             ),
                           ),

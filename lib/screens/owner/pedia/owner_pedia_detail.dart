@@ -7,6 +7,7 @@ import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/owner/pedia/update_pedia.dart';
+import 'package:tuktraapp/screens/owner/profile/owner_profile.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
@@ -48,54 +49,61 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
     List<dynamic> results =
         await Future.wait([pediaService.getPedia(widget.id)]);
 
+    pedia = results[0];
+    medias = pedia['medias'];
+    tags = pedia['tags'];
+
+    if (pedia.containsKey('rates')) {
+      rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
+
+      for (int i = 0; i < rates.length; i++) {
+        try {
+          final rateMap = rates[i];
+          if (rateMap.containsKey('rate')) {
+            avgRate += rateMap['rate'];
+          } else {
+            showSnackBar(
+                context, 'Data struktur rate salah $i: $rateMap');
+          }
+        } catch (e) {
+          showSnackBar(context, 'Error pada data rate ke [$i]: $e');
+        }
+      }
+
+      if (rates.isNotEmpty) {
+        avgRate = (avgRate / rates.length);
+      }
+
+      for (int i = 0; i < rates.length; i++) {
+        if (rates[i]['userid'] == userService.currUser!.uid) {
+          setState(() {
+            rating = rates[i]['rate'];
+          });
+          break;
+        }
+      }
+    }
+
+    if (pedia.containsKey('comments')) {
+      if (pedia['comments'] != null) {
+        comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
+      }
+    }
+
     setState(() {
-      pedia = results[0];
-      medias = pedia['medias'];
-      tags = pedia['tags'];
-
-      if (pedia.containsKey('rates')) {
-        rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
-
-        for (int i = 0; i < rates.length; i++) {
-          try {
-            final rateMap = rates[i];
-            if (rateMap.containsKey('rate')) {
-              avgRate += rateMap['rate'];
-            } else {
-              showSnackBar(
-                  context, 'Data struktur rate salah $i: $rateMap');
-            }
-          } catch (e) {
-            showSnackBar(context, 'Error pada data rate ke [$i]: $e');
-          }
-        }
-
-        if (rates.isNotEmpty) {
-          avgRate = (avgRate / rates.length);
-        }
-
-        for (int i = 0; i < rates.length; i++) {
-          if (rates[i]['userid'] == userService.currUser!.uid) {
-            setState(() {
-              rating = rates[i]['rate'];
-            });
-            break;
-          }
-        }
-      }
-
-      if (pedia.containsKey('comments')) {
-        if (pedia['comments'] != null) {
-          comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
-        }
-      }
+      done = true;
     });
   }
 
   @override
   void initState() {
+    fetch();
+    
     super.initState();
+  }
 
+  @override
+  void dispose() {
     rating = 0;
     pedia = {};
     medias = [];
@@ -103,61 +111,8 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
     rates = [];
     comments = [];
     avgRate = 0;
-  }
-
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-
-    List<dynamic> results =
-        await Future.wait([pediaService.getPedia(widget.id)]);
-
-    setState(() {
-      pedia = results[0];
-      medias = pedia['medias'];
-      tags = pedia['tags'];
-
-      if (pedia.containsKey('rates')) {
-        rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
-
-        for (int i = 0; i < rates.length; i++) {
-          try {
-            final rateMap = rates[i];
-            if (rateMap.containsKey('rate')) {
-              avgRate += rateMap['rate'];
-            } else {
-              showSnackBar(
-                  context, 'Data struktur rate salah $i: $rateMap');
-            }
-          } catch (e) {
-            showSnackBar(context, 'Error pada data rate ke [$i]: $e');
-          }
-        }
-
-        if (rates.isNotEmpty) {
-          avgRate = (avgRate / rates.length);
-        }
-
-        for (int i = 0; i < rates.length; i++) {
-          if (rates[i]['userid'] == userService.currUser!.uid) {
-            setState(() {
-              rating = rates[i]['rate'];
-            });
-            break;
-          }
-        }
-      }
-
-      if (pedia.containsKey('comments')) {
-        if (pedia['comments'] != null) {
-          comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
-        }
-      }
-    });
-
-    setState(() {
-      done = true;
-    });
+    
+    super.dispose();
   }
 
   @override
@@ -287,7 +242,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                                         .deletePedia(widget.id,
                                                             pedia['title']);
                                                     if (context.mounted) {
-                                                      Navigator.of(context).pop();
+                                                      NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 1));
                                                       Alert.successMessage("Pedia berhasil dihapus.", context);
                                                     }
                                                   },
@@ -365,7 +320,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                               ),
                             ),
                             TextSpan(
-                              text: '$avgRate',
+                              text: avgRate.toStringAsFixed(1),
                               style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 15.0,
@@ -471,8 +426,6 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                 pediaService.insertPediaComment(widget.id,
                                     comment, userService.currUser!.uid);
                                 commentTxt.text = "";
-
-                                setState(() {});
                               } else {
                                 Alert.alertValidation('Komentar harus diisi!', context);
                               }

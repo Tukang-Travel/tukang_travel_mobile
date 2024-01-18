@@ -79,7 +79,7 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
         .updateProfile(userService.currUser!.uid, updatedName, updatedUsername);
 
     // Close the screen
-    NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 4));
+    NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 1));
     Alert.successMessage('Profil berhasil diperbaharui.', context);
   }
 
