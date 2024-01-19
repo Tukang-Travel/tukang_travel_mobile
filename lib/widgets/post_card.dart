@@ -154,21 +154,41 @@ class _PostCardState extends State<PostCard> {
                         .any((like) => like.containsValue(user.uid)),
                     smallLike: true,
                     child: IconButton(
-                      icon: (widget.snap['likes'] as List<dynamic>)
-                              .any((like) => like.containsValue(user.uid))
-                          ? const Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                            )
-                          : const Icon(
-                              Icons.favorite_border,
-                            ),
-                      onPressed: () => FeedService().likePost(
-                        widget.snap['feedId'].toString(),
-                        user.uid,
-                        widget.snap['likes'],
-                      ),
-                    ),
+                        icon: (widget.snap['likes'] as List<dynamic>)
+                                .any((like) => like.containsValue(user.uid))
+                            ? const Icon(
+                                Icons.favorite,
+                                color: Colors.red,
+                              )
+                            : const Icon(
+                                Icons.favorite_border,
+                              ),
+                        onPressed: () {
+                          final currentUserID = UserService().currUser!.uid;
+                          final likedByCurrentUser = widget.snap['likes']
+                              .any((like) => like['userId'] == currentUserID);
+
+                          if (likedByCurrentUser) {
+                            FeedService().likePost(
+                              widget.snap['feedId'].toString(),
+                              user.uid,
+                              widget.snap['likes'],
+                            );
+                            widget.snap['likes'].removeWhere(
+                                (like) => like['userId'] == currentUserID);
+                          } else {
+                            FeedService().likePost(
+                              widget.snap['feedId'].toString(),
+                              user.uid,
+                              widget.snap['likes'],
+                            );
+                            widget.snap['likes'].add({'userId': currentUserID});
+                          }
+
+                          setState(() {
+                            isLikeAnimating = true;
+                          });
+                        }),
                   ),
                   IconButton(
                       icon: const Icon(
