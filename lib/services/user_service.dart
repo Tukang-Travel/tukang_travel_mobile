@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tuktraapp/models/user_model.dart';
@@ -160,18 +163,62 @@ class UserService {
 
   // Update Profile
   Future<String> updateProfile(
-      String uid, String newName, String newUsername) async {
+    String uid,
+    String newName,
+    String newUsername,
+    String? newProfileImagePath,
+  ) async {
     String res = "Some error occurred";
     try {
-      _firestore
-          .collection('users')
-          .doc(uid)
-          .update({'name': newName, 'username': newUsername});
+      // If a new profile picture is provided, upload it to Firebase Storage
+      String? newProfileUrl;
+      if (newProfileImagePath != null && newProfileImagePath.isNotEmpty) {
+        newProfileUrl =
+            await uploadImageToFirebaseStorage(uid, newProfileImagePath);
+      }
+
+      // Update user details in Firestore
+      await _firestore.collection('users').doc(uid).update({
+        'name': newName,
+        'username': newUsername,
+        if (newProfileUrl != null) 'profile': newProfileUrl,
+      });
+
       res = 'success';
     } catch (err) {
       res = err.toString();
     }
     return res;
+  }
+
+  Future<String> uploadImageToFirebaseStorage(
+      String uid, String filePath) async {
+    try {
+      File file = File(filePath);
+
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('users')
+          .child(uid)
+          .child('ProfilePhoto');
+
+      // Delete existing images in the "ProfilePhoto" folder
+      await storageRef.listAll().then((ListResult result) async {
+        for (final item in result.items) {
+          await item.delete();
+        }
+      });
+
+      // Upload the new file to Firebase Storage
+      await storageRef.putFile(file);
+
+      // Get the download URL
+      String downloadUrl = await storageRef.getDownloadURL();
+      return downloadUrl;
+    } catch (error) {
+      print("Error uploading image: $error");
+      throw error; // Rethrow the error to handle it in the calling function
+    }
   }
 
   // logout
