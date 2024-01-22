@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/user/edit_preferences_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
@@ -36,6 +40,7 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
   TextEditingController emailTxt = TextEditingController();
 
   bool isLoading = false;
+  String newProfile = "";
 
   @override
   void dispose() {
@@ -56,31 +61,97 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
   }
 
   // Function to update the feed in Firestore
-  void _updateProfile() {
-    // Validate the title and tags
+  void _updateProfile() async {
+    // Validate the name and username
     String updatedName = nameTxt.text.trim();
     String updatedUsername = usernameTxt.text.trim();
 
     if (updatedName.isEmpty) {
-      // Show an error message for the empty name
       Alert.alertValidation('Nama harus diisi!', context);
-      isLoading = false;
+      setState(() {
+        isLoading = false;
+      });
       return;
     }
 
     if (updatedUsername.isEmpty) {
-      // Show an error message for the empty username
       Alert.alertValidation('Username harus diisi!', context);
-      isLoading = false;
+      setState(() {
+        isLoading = false;
+      });
       return;
     }
 
-    UserService()
-        .updateProfile(userService.currUser!.uid, updatedName, updatedUsername);
+    // Call updateProfile with the new profile image path
+    String result = await UserService().updateProfile(
+      widget.userId,
+      updatedName,
+      updatedUsername,
+      newProfile,
+    );
 
     // Close the screen
-    NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 1));
+    NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 4));
     Alert.successMessage('Profil berhasil diperbaharui.', context);
+  }
+
+  // Function to open image cropper
+  Future<void> cropImage(String imagePath) async {
+    File? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imagePath,
+      aspectRatioPresets: [CropAspectRatioPreset.square],
+      androidUiSettings: const AndroidUiSettings(
+        toolbarTitle: 'Crop Photo',
+        toolbarColor: Colors.blue,
+        toolbarWidgetColor: Colors.white,
+        initAspectRatio: CropAspectRatioPreset.square,
+        lockAspectRatio: true,
+      ),
+      iosUiSettings: const IOSUiSettings(
+        title: 'Crop Photo',
+      ),
+    );
+
+    
+
+    if (croppedFile != null) {
+      setState(() {
+        newProfile = croppedFile.path;
+      });
+    }
+  }
+
+  // Helper method to build the profile image widget
+  Widget buildProfileImage() {
+    return Image.asset(
+      'asset/images/default_profile.png',
+      width: 150,
+      height: 150,
+    );
+  }
+
+  // Helper method to build the network profile image widget
+  Widget buildNetworkProfileImage() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(100.0),
+      child: Image.network(
+        widget.profile,
+        width: 100,
+        height: 100,
+      ),
+    );
+  }
+
+  // Helper method to build the local profile image widget
+  Widget buildLocalProfileImage() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(100.0),
+      child: Image.file(
+        File(newProfile),
+        width: 100,
+        height: 100,
+      ),
+    );
   }
 
   @override
@@ -132,43 +203,52 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          widget.profile == "" ?
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 80.0,
-                                top: 80.0,
-                                right: 80.0,
-                                bottom: 20.0,
-                              ),
-                              child: Image.asset(
-                                'asset/images/default_profile.png',
-                                width: 150,
-                                height: 150,
-                              ),
-                            ),
-                          )
-                          :
-                          Align(
-                            alignment: Alignment.topCenter,
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 80.0,
-                                top: 80.0,
-                                right: 80.0,
-                                bottom: 20.0,
-                              ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(100.0),
-                                child: Image.network(
-                                  widget.profile,
-                                  width: 100,
-                                  height: 100,
+                          widget.profile == "" && newProfile.isEmpty
+                              ? Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 80.0,
+                                      top: 80.0,
+                                      right: 80.0,
+                                      bottom: 5.0,
+                                    ),
+                                    child: buildProfileImage(),
+                                  ),
+                                )
+                              : Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 80.0,
+                                      top: 80.0,
+                                      right: 80.0,
+                                      bottom: 5.0,
+                                    ),
+                                    child: newProfile.isEmpty
+                                        ? buildNetworkProfileImage()
+                                        : buildLocalProfileImage(),
+                                  ),
                                 ),
-                              ),
+                          Center(
+                              child: TextButton(
+                            onPressed: () async {
+                              // Open the image picker
+                              final pickedFile = await ImagePicker().pickImage(
+                                source: ImageSource.gallery,
+                              );
+
+                              if (pickedFile != null) {
+                                // Show the image cropper
+                                await cropImage(pickedFile.path);
+                              }
+                            },
+                            child: const Text(
+                              "Ubah Foto",
+                              style: TextStyle(
+                                  color: Color.fromARGB(255, 82, 114, 255)),
                             ),
-                          ),
+                          )),
                           const SizedBox(
                             height: 20,
                           ),
@@ -325,7 +405,8 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15.0),
                                   ),
-                                  backgroundColor: const Color.fromARGB(255, 82, 114, 255),
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 82, 114, 255),
                                   foregroundColor: Colors.white,
                                   elevation: 5,
                                   shadowColor: Colors.black,
