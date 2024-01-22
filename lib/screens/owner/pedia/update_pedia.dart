@@ -42,6 +42,16 @@ class _UpdatePediaState extends State<UpdatePedia> {
   bool checked = false, isSet = false;
 
   @override
+  void dispose() {
+    titleTxt.dispose();
+    descTxt.dispose();
+    typeTxt.dispose();
+    checked = false;
+    isSet = false;
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
 

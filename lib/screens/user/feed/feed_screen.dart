@@ -15,25 +15,22 @@ class _FeedScreenState extends State<FeedScreen> {
 
   Future<void> _pullRefresh() async {
     setState(() {
-      getPreference();
+      _getPreference();
     });
   }
 
   @override
   void initState() {
     super.initState();
-    getPreference();
+    _getPreference();
   }
 
-  Future<void> getPreference() async {
+  Future<void> _getPreference() async {
     userInterestTags = await UserService().getUserPreference();
   }
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    final height = MediaQuery.of(context).size.height;
-
     return Scaffold(
         appBar: AppBar(
           centerTitle: false,
