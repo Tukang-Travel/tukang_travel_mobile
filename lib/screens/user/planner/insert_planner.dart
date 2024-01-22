@@ -61,6 +61,16 @@ class _InsertPlannerState extends State<InsertPlanner> {
   }
 
   @override
+  void dispose() {
+    titleTxt.dispose();
+    sourceTxt.dispose();
+    destinationTxt.dispose();
+    _dateStartController.dispose();
+    _dateEndController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [

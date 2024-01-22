@@ -35,8 +35,6 @@ class _InsertItineraryState extends State<InsertItinerary> {
   TextEditingController transportationController = TextEditingController();
 
   List<Map<int, String>> _transportations = [];
-  int selectStartTime = 0;
-  int selectEndTime = 0;
   int selectTransportation = 0;
 
   bool isLoading = false;
@@ -102,6 +100,17 @@ class _InsertItineraryState extends State<InsertItinerary> {
   void initState() {
     super.initState();
     _getTransport();
+  }
+
+  @override
+  void dispose() {
+    titleTxt.dispose();
+    sourceTxt.dispose();
+    destinationTxt.dispose();
+    startTimeController.dispose();
+    endTimeController.dispose();
+    transportationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -673,10 +682,10 @@ class _InsertItineraryState extends State<InsertItinerary> {
                       else if (startTimeController.text.isEmpty ||
                           endTimeController.text.isEmpty) {
                         Alert.alertValidation('Waktu harus dipilih!', context);
-                      } else if (selectEndTime < selectStartTime) {
-                        Alert.alertValidation(
-                            'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
-                            context);
+                      // } else if (selectEndTime < selectStartTime) {
+                      //   Alert.alertValidation(
+                      //       'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
+                      //       context);
                       } else if (selectTransportation == 0) {
                         Alert.alertValidation(
                             'Transportasi harus dipilih!', context);
