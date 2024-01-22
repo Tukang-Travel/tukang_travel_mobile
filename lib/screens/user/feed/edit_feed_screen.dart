@@ -37,6 +37,13 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
   }
 
   @override
+  void dispose () {
+    titleController.dispose();
+    tagsController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
 
@@ -301,12 +308,5 @@ class _EditFeedScreenState extends State<EditFeedScreen> {
     Navigator.pop(context);
 
     Alert.successMessage('Feed berhasil diperbaharui.', context);
-  }
-
-  @override
-  void dispose() {
-    titleController.dispose();
-    tagsController.dispose();
-    super.dispose();
   }
 }

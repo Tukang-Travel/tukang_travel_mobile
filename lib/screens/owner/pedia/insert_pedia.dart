@@ -133,6 +133,18 @@ class _InsertPediaState extends State<InsertPedia> {
   bool isLoading = false;
 
   @override
+  void dispose() {
+    titleTxt.dispose();
+    descTxt.dispose();
+    typeTxt.dispose();
+    checked = false;
+    isLoading = false;
+    _pickedImages = [];
+    _types = [];
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Stack(
       children: [

@@ -48,7 +48,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
   @override
   Widget build(BuildContext context) {
     double h = MediaQuery.of(context).size.height;
-    double w = MediaQuery.of(context).size.width;
+    
     return Scaffold(
         body: SingleChildScrollView(
             child: Column(

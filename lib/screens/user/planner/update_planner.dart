@@ -28,6 +28,16 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
   int budget = 0;
   DateTime? _selectedStartDate, _selectedEndDate;
 
+  @override
+  void dispose() {
+    titleTxt.dispose();
+    sourceTxt.dispose();
+    destinationTxt.dispose();
+    _dateStartController.dispose();
+    _dateEndController.dispose();
+    super.dispose();
+  }
+
   Future<void> _selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -75,11 +85,6 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
       budget = plan?['budget'];
       numOfPeople = plan?['people'];
     });
-  }
-
-  @override
-  void setState(VoidCallback fn) {
-    super.setState(fn);
   }
 
   @override
