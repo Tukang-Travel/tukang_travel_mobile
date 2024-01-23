@@ -31,6 +31,7 @@ class App extends StatelessWidget {
           primarySwatch: tukangtravelColor,
         ),
         home: const WelcomeScreen(),
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
