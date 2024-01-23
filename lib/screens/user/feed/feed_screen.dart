@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tuktraapp/services/recommendation_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/widgets/post_card.dart';
 
@@ -23,10 +24,30 @@ class _FeedScreenState extends State<FeedScreen> {
   void initState() {
     super.initState();
     _getPreference();
+    RecommendationService().load(context);
   }
 
   Future<void> _getPreference() async {
     userInterestTags = await UserService().getUserPreference();
+
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('feeds')
+        .where('likes', arrayContains: {'userId': UserService().currUser!.uid})
+        .get();
+
+    List<Map<String, dynamic>> resultList = [];
+
+    List<DocumentSnapshot> documents = querySnapshot.docs;
+
+    for (DocumentSnapshot document in documents) {
+      // Access the data of each document
+      Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+      // Add the data to the resultList
+      resultList.add(data);
+    }
+    await (RecommendationService().recommend(resultList)).then((value) => 
+      print("MASUK -> $value")
+    );
   }
 
   @override
