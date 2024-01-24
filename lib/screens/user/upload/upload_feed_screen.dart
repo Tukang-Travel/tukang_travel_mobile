@@ -140,13 +140,12 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
           bottomNavigationBar: Padding(
             padding: const EdgeInsets.all(16.0),
             child: FloatingActionButton.extended(
-              foregroundColor: Colors.white,
-              onPressed: () {
-                insertFeed();
-              },
-              label: const Text('Buat'),
-              backgroundColor: const Color.fromARGB(255, 82, 114, 255)
-            ),
+                foregroundColor: Colors.white,
+                onPressed: () {
+                  insertFeed();
+                },
+                label: const Text('Buat'),
+                backgroundColor: const Color.fromARGB(255, 82, 114, 255)),
           ),
         ),
         if (isLoading)
@@ -348,21 +347,32 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
   }
 
   Future<void> _checkPermissionAndPickFile() async {
-    var status = await Permission.storage.status;
-    if (status.isGranted) {
+    
+    var statusStorage = await Permission.storage.status;
+    var statusPhoto = await Permission.photos.status;
+
+    if (statusStorage.isGranted || statusPhoto.isGranted) {
       // Permission is already granted, proceed to pick file
       _pickFile();
     } else {
       // Permission is not granted, request it
       await Permission.storage.request();
+      await Permission.photos.request();
       // Check the permission status again
-      status = await Permission.storage.status;
-      if (status.isGranted) {
+      statusStorage = await Permission.storage.status;
+      statusPhoto = await Permission.photos.status;
+      if (statusStorage.isGranted || statusPhoto.isGranted) {
         // Permission granted, proceed to pick file
         _pickFile();
       } else {
-        // Handle the case where the user denied the permission
-        print('User denied storage permission.');
+        var foto = await Permission.photos.status;
+        if (foto.isGranted) {
+          _pickFile();
+        } else {
+          if (context.mounted) {
+            Alert.alertValidation('Tidak bisa mengakses Penyimpanan', context);
+          }
+        }
       }
     }
   }
