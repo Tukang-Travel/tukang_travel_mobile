@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
 import 'package:tuktraapp/services/plan_service.dart';
 import 'package:tuktraapp/services/transport_service.dart';
@@ -68,13 +69,20 @@ class _InsertItineraryState extends State<InsertItinerary> {
 
   Future<void> _selectTime(
       BuildContext context, TextEditingController controller) async {
-    final TimeOfDay? picked = await showTimePicker(
+    TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
 
-    if (picked != null && context.mounted) {
-      controller.text = picked.format(context);
+    if (picked != null) {
+      DateTime tempDate = DateFormat("HH:mm")
+          .parse("${picked.hour}:${picked.minute}");
+      var dateFormat = DateFormat("h:mm a");
+      var formatedTime = dateFormat.format(tempDate);
+      Alert.successMessage('disinin $formatedTime', context);
+      if (context.mounted) {
+        controller.text = formatedTime;
+      }
     }
   }
 
@@ -670,22 +678,21 @@ class _InsertItineraryState extends State<InsertItinerary> {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
                     onPressed: () async {
-                      if(titleTxt.text.isEmpty) {
+                      if (titleTxt.text.isEmpty) {
                         Alert.alertValidation('Judul harus diisi!', context);
-                      }
-                      else if(sourceTxt.text.isEmpty) {
-                        Alert.alertValidation('Lokasi Awal harus diisi!', context);
-                      }
-                      else if(destinationTxt.text.isEmpty) {
-                        Alert.alertValidation('Lokasi Destinasi harus diisi!', context);
-                      }
-                      else if (startTimeController.text.isEmpty ||
+                      } else if (sourceTxt.text.isEmpty) {
+                        Alert.alertValidation(
+                            'Lokasi Awal harus diisi!', context);
+                      } else if (destinationTxt.text.isEmpty) {
+                        Alert.alertValidation(
+                            'Lokasi Destinasi harus diisi!', context);
+                      } else if (startTimeController.text.isEmpty ||
                           endTimeController.text.isEmpty) {
                         Alert.alertValidation('Waktu harus dipilih!', context);
-                      // } else if (selectEndTime < selectStartTime) {
-                      //   Alert.alertValidation(
-                      //       'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
-                      //       context);
+                        // } else if (selectEndTime < selectStartTime) {
+                        //   Alert.alertValidation(
+                        //       'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
+                        //       context);
                       } else if (selectTransportation == 0) {
                         Alert.alertValidation(
                             'Transportasi harus dipilih!', context);
@@ -750,7 +757,8 @@ class _InsertItineraryState extends State<InsertItinerary> {
                         if (context.mounted) {
                           NavigationUtils.pushReplace(
                               context, DetailPlanner(id: widget.id));
-                          Alert.successMessage('Kegiatan berhasil ditambahkan.', context);
+                          Alert.successMessage(
+                              'Kegiatan berhasil ditambahkan.', context);
                         }
                       }
                     },
