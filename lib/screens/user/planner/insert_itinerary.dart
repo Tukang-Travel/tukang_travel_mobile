@@ -79,7 +79,6 @@ class _InsertItineraryState extends State<InsertItinerary> {
           .parse("${picked.hour}:${picked.minute}");
       var dateFormat = DateFormat("h:mm a");
       var formatedTime = dateFormat.format(tempDate);
-      Alert.successMessage('disinin $formatedTime', context);
       if (context.mounted) {
         controller.text = formatedTime;
       }
