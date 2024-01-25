@@ -55,12 +55,21 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
   List<Map<int, String>> _transportations = [];
   List<String> startParts = [];
   List<String> endParts = [];
-  int selectStartTime = 1;
-  int selectEndTime = 1;
   int selectTransportation = 0;
 
   bool isLoading = false;
   int budget = 0;
+
+  @override
+  void dispose() {
+    titleTxt.dispose();
+    sourceTxt.dispose();
+    destinationTxt.dispose();
+    startTimeController.dispose();
+    endTimeController.dispose();
+    transportationController.dispose();
+    super.dispose();
+  }
 
   // initialny dibikin waktu yang dipilih sama user
   Future<void> _selectTime(
@@ -715,10 +724,10 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                       else if (startTimeController.text.isEmpty ||
                           endTimeController.text.isEmpty) {
                         Alert.alertValidation('Waktu harus dipilih!', context);
-                      } else if (selectEndTime < selectStartTime) {
-                        Alert.alertValidation(
-                            'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
-                            context);
+                      // } else if (selectEndTime < selectStartTime) {
+                      //   Alert.alertValidation(
+                      //       'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
+                      //       context);
                       } else if (transportationController.text.isEmpty) {
                         Alert.alertValidation('Transportasi harus dipilih!', context);
                       } else {

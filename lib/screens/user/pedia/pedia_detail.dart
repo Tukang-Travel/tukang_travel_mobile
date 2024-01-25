@@ -1,13 +1,16 @@
+import 'dart:async';
+
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
-import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
+import 'package:tuktraapp/screens/owner/pedia/update_pedia.dart';
+import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/tags_card.dart';
 
@@ -22,8 +25,6 @@ class PediaDetail extends StatefulWidget {
 class _PediaDetailState extends State<PediaDetail> {
   UserService userService = UserService();
   PediaService pediaService = PediaService();
-  final TextEditingController commentEditingController =
-      TextEditingController();
   int rating = 0;
   Map<String, dynamic> pedia = {};
   List<dynamic> medias = [];
@@ -34,24 +35,6 @@ class _PediaDetailState extends State<PediaDetail> {
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController commentTxt = TextEditingController();
-
-  void postComment(String uid, String username) async {
-    try {
-      String res = await PediaService()
-          .postComment(widget.id, commentEditingController.text, uid, username);
-
-      if (res != 'success') {
-        if (context.mounted) Alert.alertValidation(res, context);
-      }
-      setState(() {
-        commentEditingController.text = "";
-      });
-    } catch (err) {
-      if (context.mounted) {
-        Alert.alertValidation(err.toString(), context);
-      }
-    }
-  }
 
   Future<void> fetch() async {
     rating = 0;
@@ -127,6 +110,7 @@ class _PediaDetailState extends State<PediaDetail> {
     rates = [];
     comments = [];
     avgRate = 0;
+    
     super.dispose();
   }
 
@@ -145,9 +129,6 @@ class _PediaDetailState extends State<PediaDetail> {
 
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-        ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Column(
@@ -184,14 +165,20 @@ class _PediaDetailState extends State<PediaDetail> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 15.0, left: 25.0),
-                child: SizedBox(
-                  width: 200,
-                  child: Text(
-                    pedia['title'],
-                    style: const TextStyle(
-                        fontWeight: FontWeight.w700, fontSize: 22.0),
-                  ),
+                padding:
+                    const EdgeInsets.only(top: 15.0, left: 25.0, right: 25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                      width: 200,
+                      child: Text(
+                        pedia['title'],
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w700, fontSize: 22.0),
+                      ),
+                    ),
+                  ],
                 ),
               ),
               Padding(
@@ -243,7 +230,7 @@ class _PediaDetailState extends State<PediaDetail> {
                               ),
                             ),
                             TextSpan(
-                              text: '$avgRate',
+                              text: avgRate.toStringAsFixed(1),
                               style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 15.0,
@@ -349,8 +336,6 @@ class _PediaDetailState extends State<PediaDetail> {
                                 pediaService.insertPediaComment(widget.id,
                                     comment, userService.currUser!.uid);
                                 commentTxt.text = "";
-
-                                setState(() {});
                               } else {
                                 Alert.alertValidation('Komentar harus diisi!', context);
                               }
@@ -498,7 +483,7 @@ class _PediaDetailState extends State<PediaDetail> {
               foregroundColor: Colors.black,
               onPressed: () {
                 NavigationUtils.pushRemoveTransition(
-                    context, const MainScreen(page: 1));
+                    context, const MainScreen(page: 0));
               },
               child: const Padding(
                 padding: EdgeInsets.only(left: 6.0),
