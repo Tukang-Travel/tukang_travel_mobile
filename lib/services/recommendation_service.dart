@@ -20,18 +20,18 @@ class RecommendationService {
   Interpreter? tflite;
 
   Future<void> initializeInterpreter(dynamic model) async {
-  try {
-    tflite?.close();
+    try {
+      tflite?.close();
 
+      // Initialize the TFLite interpreter
+      tflite = Interpreter.fromFile(model.file);
 
-    // Initialize the TFLite interpreter
-    tflite = Interpreter.fromFile(model.file);
-
-    print('Model loaded for dataset: $dataset');
-  } catch (e) {
-    print('Error initializing interpreter: $e');
+      print('Model loaded for dataset: $dataset');
+      print('tflite is $tflite');
+    } catch (e) {
+      print('Error initializing interpreter: $e');
+    }
   }
-}
 
   /* Future<void> loadLocalModel() async {
     try {
@@ -68,6 +68,8 @@ class RecommendationService {
       candidatesFeed[index] = item;
     });
 
+    print('tes $candidatesFeed');
+
     print('Candidate list loaded.');
   }
 
@@ -84,21 +86,35 @@ class RecommendationService {
   }
 
   Future<List<Result>> recommend(List<Map<String, dynamic>> likeFeed) async {
-    final inputs = [await preprocess(likeFeed)];
-
-    final outputIds = List.filled(RecommendationConfig().outputLength, 0);
-    final confidences = List.filled(RecommendationConfig().outputLength, 0.0);
-    final outputs = {
-      RecommendationConfig().outputIdsIndex: outputIds,
-      RecommendationConfig().outputScoresIndex: confidences,
-    };
-
-    print(confidences);
-
     try {
+      // Preprocess the input data
+      final inputs = [await preprocess(likeFeed)];
+
+      // Initialize lists for output results
+      final outputIds = List.filled(RecommendationConfig().outputLength, 0);
+      final confidences = List.filled(RecommendationConfig().outputLength, 0.0);
+      final outputs = {
+        RecommendationConfig().outputIdsIndex: outputIds,
+        RecommendationConfig().outputScoresIndex: confidences,
+      };
+
+      // Print information about input tensors before running inference
+      print('Before results: ${inputs}');
+
+      // Run inference with TensorFlow Lite
       tflite?.runForMultipleInputs(inputs, outputs);
+
+      // Debugging: Print intermediate values for further inspection
+      print(
+          'Intermediate values - outputIds: $outputIds, confidences: $confidences');
+
+      // Print the results of the inference
+      print('Inference results: $outputs');
+
+      // Postprocess the results and return them
       return postprocess(outputIds, confidences, likeFeed);
     } catch (e) {
+      // Handle errors during inference
       print('Error running inference: $e');
       return [];
     }
@@ -156,12 +172,13 @@ class RecommendationService {
   }
 
   Future<void> downloadRemoteModel() async {
-    await downloadModel('feed_recommendations');
+    await downloadModel('feed_model_recommendations');
   }
 
   Future<void> downloadModel(String modelName) async {
     final conditions = FirebaseModelDownloadConditions(
       androidWifiRequired: true,
+      iosAllowsCellularAccess: true,
     );
 
     try {

@@ -13,6 +13,7 @@ class FeedScreen extends StatefulWidget {
 
 class _FeedScreenState extends State<FeedScreen> {
   var userInterestTags = <String>[];
+  RecommendationService recommendationService = RecommendationService();
 
   Future<void> _pullRefresh() async {
     setState(() {
@@ -24,7 +25,7 @@ class _FeedScreenState extends State<FeedScreen> {
   void initState() {
     super.initState();
     _getPreference();
-    RecommendationService().load(context);
+    recommendationService.load(context);
   }
 
   Future<void> _getPreference() async {
@@ -45,8 +46,8 @@ class _FeedScreenState extends State<FeedScreen> {
       // Add the data to the resultList
       resultList.add(data);
     }
-    await (RecommendationService().recommend(resultList)).then((value) => 
-      print("MASUK -> $value")
+    await (recommendationService.recommend(resultList)).then((value) => 
+      print("")
     );
   }
 
