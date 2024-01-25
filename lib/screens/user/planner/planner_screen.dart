@@ -19,7 +19,6 @@ class PlannerScreen extends StatefulWidget {
 class _PlannerScreenState extends State<PlannerScreen> {
   PlanService planService = PlanService();
   UserService userService = UserService();
-  int idx = 0;
 
   Stream<List<QueryDocumentSnapshot<Map<String, dynamic>>>?>
       getPlansStream() async* {

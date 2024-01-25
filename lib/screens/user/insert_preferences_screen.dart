@@ -19,10 +19,10 @@ class _InsertPreferenceScreenState extends State<InsertPreferenceScreen> {
   @override
   void initState() {
     super.initState();
-    getPrefences();
+    getPreferences();
   }
 
-  Future<void> getPrefences() async {
+  Future<void> getPreferences() async {
     List<Map<String, dynamic>> preferences =
         await UserService().getPreferencesTemplate();
 
