@@ -4,7 +4,6 @@ class FeedModel {
   final String feedId;
   final String title;
   final String userId;
-  final String username;
   final dynamic content;
   final dynamic likes;
   final dynamic comments;
@@ -15,7 +14,6 @@ class FeedModel {
     required this.feedId,
     required this.title,
     required this.userId,
-    required this.username,
     required this.content,
     required this.likes,
     required this.comments,
@@ -30,7 +28,6 @@ class FeedModel {
       feedId: snapshot["FeedId"],
       title: snapshot["title"],
       userId: snapshot["uid"],
-      username: snapshot["username"],
       content: snapshot['content'],
       likes: snapshot["likes"],
       comments: snapshot["comments"],
@@ -43,7 +40,6 @@ class FeedModel {
         "feedId": feedId,
         "title": title,
         "uid": userId,
-        "username": username,
         'content': content,
         "likes": likes,
         "comments": comments,

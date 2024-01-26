@@ -31,6 +31,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
   TextEditingController titleTxt = TextEditingController();
   TextEditingController sourceTxt = TextEditingController();
   TextEditingController destinationTxt = TextEditingController();
+  TextEditingController budgetTxt = TextEditingController(text: '0');
   TextEditingController startTimeController = TextEditingController();
   TextEditingController endTimeController = TextEditingController();
   TextEditingController transportationController = TextEditingController();
@@ -627,9 +628,18 @@ class _InsertItineraryState extends State<InsertItinerary> {
                                 )
                               ]),
                           child: TextFormField(
-                            controller:
-                                TextEditingController(text: budget.toString()),
+                            controller: budgetTxt,
                             keyboardType: TextInputType.number,
+                            onEditingComplete: () {
+                              setState(() {
+                                budget = int.tryParse(budgetTxt.text) ?? budget;
+                              });
+                            },
+                            onTapOutside: (event) {
+                              setState(() {
+                                budget = int.tryParse(budgetTxt.text) ?? budget;
+                              });
+                            },
                             inputFormatters: <TextInputFormatter>[
                               FilteringTextInputFormatter.digitsOnly
                             ],
@@ -639,7 +649,10 @@ class _InsertItineraryState extends State<InsertItinerary> {
                                     Icons.remove_circle_outline_rounded),
                                 onPressed: () {
                                   setState(() {
-                                    budget = (budget > 0) ? budget - 100000 : 0;
+                                    budget = (int.tryParse(budgetTxt.text)! > 0)
+                                        ? int.tryParse(budgetTxt.text)! - 100000
+                                        : 0;
+                                    budgetTxt.text = budget.toString();
                                   });
                                 },
                               ),
@@ -661,7 +674,9 @@ class _InsertItineraryState extends State<InsertItinerary> {
                                     Icons.add_circle_outline_rounded),
                                 onPressed: () {
                                   setState(() {
-                                    budget = budget + 100000;
+                                    budget =
+                                        int.tryParse(budgetTxt.text)! + 100000;
+                                    budgetTxt.text = budget.toString();
                                   });
                                 },
                               ),

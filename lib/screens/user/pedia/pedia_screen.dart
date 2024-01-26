@@ -13,8 +13,6 @@ class PediaScreen extends StatefulWidget {
 class _PediaScreenState extends State<PediaScreen> {
   @override
   Widget build(BuildContext context) {
-    double h = MediaQuery.of(context).size.height;
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: false,
@@ -60,6 +58,7 @@ class _PediaScreenState extends State<PediaScreen> {
                 child: StreamBuilder(
                   stream: FirebaseFirestore.instance
                       .collection('pedias')
+                      .orderBy('date', descending: true)
                       .snapshots(),
                   builder: (BuildContext context,
                       AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -77,76 +76,75 @@ class _PediaScreenState extends State<PediaScreen> {
 
                     return Align(
                       alignment: Alignment.center,
-                      child: SizedBox(
-                        height: h,
-                        child: GridView.builder(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 8.0,
-                            mainAxisSpacing: 8.0,
-                            childAspectRatio: 0.85,
-                          ),
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            var itemData = snapshot.data!.docs[index].data()
-                                as Map<String, dynamic>;
-                            var itemId = snapshot.data!.docs[index].id;
-                            return GestureDetector(
-                              onTap: () {
-                                NavigationUtils.pushRemoveTransition(
-                                    context, PediaDetail(id: itemId));
-                              },
-                              child: Card(
-                                elevation: 5,
-                                color: Colors.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(10.0),
-                                            topRight: Radius.circular(10.0)),
-                                        child: Image.network(
-                                          itemData['medias'][0],
-                                          height: 90,
-                                          width: 300,
-                                        )),
-                                    const SizedBox(
-                                      height: 8.0,
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5.0, vertical: 5.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(itemData['title'],
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 17.0)),
-                                          const SizedBox(
-                                            height: 5.0,
-                                          ),
-                                          Text(
-                                            itemData['description'],
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 2,
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          },
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 8.0,
+                          mainAxisSpacing: 8.0,
+                          childAspectRatio: 0.85,
                         ),
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          var itemData = snapshot.data!.docs[index].data()
+                              as Map<String, dynamic>;
+                          var itemId = snapshot.data!.docs[index].id;
+                          return GestureDetector(
+                            onTap: () {
+                              NavigationUtils.pushRemoveTransition(
+                                  context, PediaDetail(id: itemId));
+                            },
+                            child: Card(
+                              elevation: 5,
+                              color: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                      borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(10.0),
+                                          topRight: Radius.circular(10.0)),
+                                      child: Image.network(
+                                        itemData['medias'][0],
+                                        height: 90,
+                                        width: 300,
+                                      )),
+                                  const SizedBox(
+                                    height: 8.0,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5.0, vertical: 5.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(itemData['title'],
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 17.0)),
+                                        const SizedBox(
+                                          height: 5.0,
+                                        ),
+                                        Text(
+                                          itemData['description'],
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     );
                   },

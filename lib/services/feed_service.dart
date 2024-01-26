@@ -8,7 +8,7 @@ import 'package:tuktraapp/services/user_service.dart';
 class FeedService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> uploadFeed(String userId, String username, String title,
+  Future<void> uploadFeed(String userId, String title,
       List<Map<String, dynamic>> content, List<String> tags) async {
     // Create a new document in the "feeds" collection
     CollectionReference feedsCollection =
@@ -19,7 +19,6 @@ class FeedService {
     await newFeedRef.set({
       'feedId': newFeedRef.id, // Automatically generated ID from Firestore
       'userId': userId,
-      'username': username,
       'title': title,
       'content': content,
       'tags': tags,

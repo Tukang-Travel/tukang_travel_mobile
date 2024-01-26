@@ -109,6 +109,7 @@ class UserService {
   Future<String> googleLoginRegister(String type) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     final GoogleSignIn googleSignIn = GoogleSignIn();
+    await googleSignIn.signOut();
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signIn();
     if (googleSignInAccount != null) {
@@ -289,7 +290,7 @@ class UserService {
       FirebaseFirestore.instance
           .collection('users')
           .doc(currUser?.uid)
-          .update({'interest': FieldValue.arrayUnion(data)});
+          .update({'interest': data});
       res = 'success';
     } catch (err) {
       res = err.toString();

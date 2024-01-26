@@ -95,7 +95,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         ),
         Positioned(
           bottom: 30.0,
-          left: MediaQuery.of(context).size.width / 2 - 185,
+          left: MediaQuery.of(context).size.width / 2 - 157,
           child: Row(
             children: [
               ElevatedButton(
@@ -104,7 +104,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   elevation: 5,
                   shadowColor: Colors.black,
                   padding: const EdgeInsets.symmetric(
-                      vertical: 20.0, horizontal: 15.0),
+                      vertical: 15.0, horizontal: 10.0),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0)),
                 ),
@@ -114,7 +114,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 },
                 child: const Text(
                   "Masuk sebagai Owner",
-                  style: TextStyle(color: Colors.white, fontSize: 15.0),
+                  style: TextStyle(color: Colors.white, fontSize: 13.0),
                 ),
               ),
               const SizedBox(
@@ -126,7 +126,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   elevation: 5,
                   shadowColor: Colors.black,
                   padding: const EdgeInsets.symmetric(
-                      vertical: 20.0, horizontal: 15.0),
+                      vertical: 15.0, horizontal: 10.0),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0)),
                 ),
@@ -136,7 +136,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                 },
                 child: const Text(
                   "Masuk sebagai User",
-                  style: TextStyle(color: Colors.white, fontSize: 15.0),
+                  style: TextStyle(color: Colors.white, fontSize: 13.0),
                 ),
               ),
             ],

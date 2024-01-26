@@ -65,7 +65,8 @@ class _InsertPediaState extends State<InsertPedia> {
         });
       } catch (e) {
         if (context.mounted) {
-          Alert.alertValidation('Terjadi kesalahan saat memilih gambar: $e', context);
+          Alert.alertValidation(
+              'Terjadi kesalahan saat memilih gambar: $e', context);
         }
       }
     } else {
@@ -111,12 +112,18 @@ class _InsertPediaState extends State<InsertPedia> {
       );
 
       if (context.mounted) {
-        NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 0,));
+        NavigationUtils.pushRemoveTransition(
+            context,
+            const MainScreen(
+              page: 0,
+            ));
         Alert.successMessage("Pedia berhasil ditambahkan.", context);
       }
     } catch (error) {
       if (context.mounted) {
-        Alert.alertValidation('Terjadi Kesalahan, Silahkan Coba Lagi Ya. ${error as String}', context);
+        Alert.alertValidation(
+            'Terjadi Kesalahan, Silahkan Coba Lagi Ya. ${error as String}',
+            context);
       }
     } finally {
       setState(() {
@@ -447,7 +454,14 @@ class _InsertPediaState extends State<InsertPedia> {
                               ),
                               Container(
                                 padding: const EdgeInsets.all(10.0),
-                                height: 250.0,
+                                height: 120.0,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    // Add border to the container
+                                    color: Colors.black, // Set the border color
+                                    width: 1.0, // Set the border width
+                                  ),
+                                ),
                                 child: GridView.builder(
                                   gridDelegate:
                                       const SliverGridDelegateWithFixedCrossAxisCount(
@@ -543,19 +557,19 @@ class _InsertPediaState extends State<InsertPedia> {
                     child: ElevatedButton(
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
-                          if(titleTxt.text.isEmpty) {
-                            Alert.alertValidation("Judul harus diisi!", context);
-                          }
-                          else if(descTxt.text.isEmpty) {
-                            Alert.alertValidation("Deskripsi harus diisi!", context);
-                          }
-                          else if(_selectedTypes.isEmpty) {
-                            Alert.alertValidation("Tag harus dipilih!", context);
-                          }
-                          else if(_pickedImages.isEmpty) {
-                            Alert.alertValidation("Foto harus dipilih!", context);
-                          } 
-                          else {
+                          if (titleTxt.text.isEmpty) {
+                            Alert.alertValidation(
+                                "Judul harus diisi!", context);
+                          } else if (descTxt.text.isEmpty) {
+                            Alert.alertValidation(
+                                "Deskripsi harus diisi!", context);
+                          } else if (_selectedTypes.isEmpty) {
+                            Alert.alertValidation(
+                                "Tag harus dipilih!", context);
+                          } else if (_pickedImages.isEmpty) {
+                            Alert.alertValidation(
+                                "Foto harus dipilih!", context);
+                          } else {
                             _insertPedia();
                           }
                         }
@@ -571,10 +585,7 @@ class _InsertPediaState extends State<InsertPedia> {
                             horizontal: 20.0, vertical: 15.0),
                         child: Text(
                           'Buat',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white
-                          ),
+                          style: TextStyle(fontSize: 18.0, color: Colors.white),
                         ),
                       ),
                     ),

@@ -11,7 +11,8 @@ class EditPreferencesScreen extends StatefulWidget {
 
 class _EditPreferencesScreenState extends State<EditPreferencesScreen> {
   List<Map<String, dynamic>> genres = [];
-  List<String> selectedGenres = []; // Initialize it with the user's existing preferences
+  List<String> selectedGenres =
+      []; // Initialize it with the user's existing preferences
 
   @override
   void initState() {
@@ -21,8 +22,8 @@ class _EditPreferencesScreenState extends State<EditPreferencesScreen> {
 
   Future<void> getPreferences() async {
     // Retrieve the user's existing preferences and update selectedGenres
-    List<String> existingPreferences =
-        await UserService().getUserPreference(); // Adjust this based on your implementation
+    List<String> existingPreferences = await UserService()
+        .getUserPreference(); // Adjust this based on your implementation
 
     List<Map<String, dynamic>> preferences =
         await UserService().getPreferencesTemplate();
@@ -102,28 +103,34 @@ class _EditPreferencesScreenState extends State<EditPreferencesScreen> {
       floatingActionButton: Align(
         alignment: Alignment.bottomRight,
         child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.4,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: FloatingActionButton.extended(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              onPressed: () async {
-                String res = await UserService()
-                    .createUpdateUserPreferences(selectedGenres);
-                if (res == 'success') {
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                    Alert.successMessage('Preferensi berhasil diperbaharui!', context);
-                  }
-                } else {
-                  if (context.mounted) {
-                    Alert.alertValidation(res, context);
-                  }
+          width: MediaQuery.of(context).size.width * 0.2,
+          child: FloatingActionButton.extended(
+            backgroundColor:
+                const Color.fromARGB(127, 255, 255, 255), // Set background color to transparent
+            foregroundColor: Colors.black,
+            onPressed: () async {
+              String res = await UserService()
+                  .createUpdateUserPreferences(selectedGenres);
+              if (res == 'success') {
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  Alert.successMessage(
+                      'Preferensi berhasil diperbaharui!', context);
                 }
-              },
-              label: const Text('Simpan'),
+              } else {
+                if (context.mounted) {
+                  Alert.alertValidation(res, context);
+                }
+              }
+            },
+            label: const Icon(
+              Icons.check,
+              size: 30, // Increase size
+              color: Colors.black,
+              semanticLabel: 'Check',
+              textDirection: TextDirection.ltr,
             ),
+            shape: const CircleBorder(),
           ),
         ),
       ),

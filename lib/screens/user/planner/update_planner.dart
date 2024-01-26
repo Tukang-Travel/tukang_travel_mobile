@@ -19,6 +19,8 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
   TextEditingController titleTxt = TextEditingController();
   TextEditingController sourceTxt = TextEditingController();
   TextEditingController destinationTxt = TextEditingController();
+  TextEditingController budgetTxt = TextEditingController(text: '0');
+  TextEditingController bykOrgTxt = TextEditingController(text: '0');
   final TextEditingController _dateStartController = TextEditingController();
   final TextEditingController _dateEndController = TextEditingController();
 
@@ -79,13 +81,19 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
       plan = results[0];
 
       setState(() {
-        titleTxt.text = plan?['title'];
-        sourceTxt.text = plan?['source'];
-        destinationTxt.text = plan?['destination'];
-        _dateStartController.text = plan?['startDate'];
-        _dateEndController.text = plan?['endDate'];
-        budget = plan?['budget'];
-        numOfPeople = plan?['people'];
+        if (plan != null) {
+          titleTxt.text = plan!['title'];
+          sourceTxt.text = plan!['source'];
+          destinationTxt.text = plan!['destination'];
+          _dateStartController.text = plan!['startDate'];
+          _dateEndController.text = plan!['endDate'];
+          budgetTxt.text =
+              plan!['budget'] != null ? plan!['budget'].toString() : '0';
+          bykOrgTxt.text =
+              plan!['people'] != null ? plan!['people'].toString() : '0';
+          budget = plan!['budget'];
+          numOfPeople = plan!['people'];
+        }
       });
     } catch (e) {
       if (context.mounted) {
@@ -477,8 +485,17 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                                 )
                               ]),
                           child: TextFormField(
-                            controller:
-                                TextEditingController(text: budget.toString()),
+                            controller: budgetTxt,
+                            onEditingComplete: () {
+                              setState(() {
+                                budget = int.tryParse(budgetTxt.text) ?? budget;
+                              });
+                            },
+                            onTapOutside: (event) {
+                              setState(() {
+                                budget = int.tryParse(budgetTxt.text) ?? budget;
+                              });
+                            },
                             keyboardType: TextInputType.number,
                             inputFormatters: <TextInputFormatter>[
                               FilteringTextInputFormatter.digitsOnly
@@ -489,7 +506,10 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                                     Icons.remove_circle_outline_rounded),
                                 onPressed: () {
                                   setState(() {
-                                    budget = (budget > 0) ? budget - 100000 : 0;
+                                    budget = (int.tryParse(budgetTxt.text)! > 0)
+                                        ? int.tryParse(budgetTxt.text)! - 100000
+                                        : 0;
+                                    budgetTxt.text = budget.toString();
                                   });
                                 },
                               ),
@@ -511,7 +531,9 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                                     Icons.add_circle_outline_rounded),
                                 onPressed: () {
                                   setState(() {
-                                    budget = budget + 100000;
+                                    budget =
+                                        int.tryParse(budgetTxt.text)! + 100000;
+                                    budgetTxt.text = budget.toString();
                                   });
                                 },
                               ),
@@ -559,9 +581,20 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                                 )
                               ]),
                           child: TextFormField(
-                            controller: TextEditingController(
-                                text: numOfPeople.toString()),
+                            controller: bykOrgTxt,
                             keyboardType: TextInputType.number,
+                            onEditingComplete: () {
+                              setState(() {
+                                numOfPeople =
+                                    int.tryParse(bykOrgTxt.text) ?? numOfPeople;
+                              });
+                            },
+                            onTapOutside: (event) {
+                              setState(() {
+                                numOfPeople =
+                                    int.tryParse(bykOrgTxt.text) ?? numOfPeople;
+                              });
+                            },
                             inputFormatters: <TextInputFormatter>[
                               FilteringTextInputFormatter.digitsOnly
                             ],
@@ -572,7 +605,10 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                                 onPressed: () {
                                   setState(() {
                                     numOfPeople =
-                                        (numOfPeople > 0) ? numOfPeople - 1 : 0;
+                                        (int.tryParse(bykOrgTxt.text)! > 0)
+                                            ? int.tryParse(bykOrgTxt.text)! - 1
+                                            : 0;
+                                    bykOrgTxt.text = numOfPeople.toString();
                                   });
                                 },
                               ),
@@ -594,7 +630,9 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                                     Icons.add_circle_outline_rounded),
                                 onPressed: () {
                                   setState(() {
-                                    numOfPeople = numOfPeople + 1;
+                                    numOfPeople =
+                                        int.tryParse(bykOrgTxt.text)! + 1;
+                                    bykOrgTxt.text = numOfPeople.toString();
                                   });
                                 },
                               ),

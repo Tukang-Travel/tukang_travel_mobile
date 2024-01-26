@@ -311,8 +311,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 4),
                   child: Text(
-                    DateFormat.yMMMd()
-                        .format(pedia['date'].toDate()),
+                    DateFormat.yMMMd().format(pedia['date'].toDate()),
                     style: const TextStyle(
                       color: secondaryColor,
                     ),
@@ -480,8 +479,10 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                 final comment = commentTxt.text;
                                 try {
                                   pediaService.insertPediaComment(
-                                      widget.id, comment,
-                                      userService.currUser!.uid, user.username);
+                                      widget.id,
+                                      comment,
+                                      userService.currUser!.uid,
+                                      user.username);
                                   commentTxt.text = "";
 
                                   setState(() {
@@ -490,7 +491,9 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                   });
                                 } catch (e) {
                                   if (context.mounted) {
-                                    Alert.alertValidation('Terjadi Kesalahan, Mohon Coba Lagi Ya.', context);
+                                    Alert.alertValidation(
+                                        'Terjadi Kesalahan, Mohon Coba Lagi Ya.',
+                                        context);
                                   }
                                 }
                               } else {
@@ -524,33 +527,46 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                             child: ListView.builder(
                               itemCount: comments.length,
                               itemBuilder: (context, index) {
-                                if (comments.isEmpty) {
+                                // Sort the comments by 'datePublished'
+                                List sortedComments = List.from(comments);
+                                sortedComments.sort((a, b) => b['datePublished']
+                                    .compareTo(a['datePublished']));
+
+                                // Check if comments are empty
+                                if (sortedComments.isEmpty) {
                                   return const Padding(
                                     padding: EdgeInsets.only(top: 8.0),
                                     child: Text(
                                       'Belum terdapat komentar',
                                       style: TextStyle(
-                                          color: Color.fromARGB(
-                                              255, 107, 107, 107)),
+                                        color:
+                                            Color.fromARGB(255, 107, 107, 107),
+                                      ),
                                     ),
                                   );
                                 }
 
-                                if (index >= comments.length) {
+                                // Check if index is out of bounds
+                                if (index >= sortedComments.length) {
                                   return const Padding(
                                     padding: EdgeInsets.only(top: 8.0),
                                     child: Text(
                                       'Belum terdapat komentar',
                                       style: TextStyle(
-                                          color: Color.fromARGB(
-                                              255, 107, 107, 107)),
+                                        color:
+                                            Color.fromARGB(255, 107, 107, 107),
+                                      ),
                                     ),
                                   );
                                 }
-                                final comment = comments[index];
 
+                                // Retrieve the comment from the sorted list
+                                final comment = sortedComments[index];
+
+                                // Retrieve user data
                                 final user = userData[comment['userId']];
 
+                                // Build and return the Card widget
                                 return Card(
                                   color: Colors.white,
                                   shape: RoundedRectangleBorder(

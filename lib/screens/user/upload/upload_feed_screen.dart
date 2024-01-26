@@ -195,7 +195,14 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
         ),
         Container(
           padding: const EdgeInsets.all(10.0),
-          height: 250.0,
+          height: 120.0,
+          decoration: BoxDecoration(
+            border: Border.all(
+              // Add border to the container
+              color: Colors.black, // Set the border color
+              width: 1.0, // Set the border width
+            ),
+          ),
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
@@ -346,7 +353,6 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
   }
 
   Future<void> _checkPermissionAndPickFile() async {
-    
     var statusStorage = await Permission.storage.status;
     var statusPhoto = await Permission.photos.status;
 
@@ -440,8 +446,8 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
           await FeedService().uploadFiles(title, files);
 
       // Add feed details to Firestore
-      await FeedService().uploadFeed(
-          userService.currUser!.uid, username, title, content, updatedTags);
+      await FeedService()
+          .uploadFeed(userService.currUser!.uid, title, content, updatedTags);
 
       if (context.mounted) {
         setState(() {
@@ -452,7 +458,7 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
           NavigationUtils.pushRemoveTransition(
               context,
               const MainScreen(
-                page: 0,
+                page: 4,
               ));
           Alert.successMessage("Feed berhasil ditambahkan.", context);
           isLoading = false;
