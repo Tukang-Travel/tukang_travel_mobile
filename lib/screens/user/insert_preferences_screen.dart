@@ -6,8 +6,7 @@ class InsertPreferenceScreen extends StatefulWidget {
   const InsertPreferenceScreen({super.key});
 
   @override
-  State<InsertPreferenceScreen> createState() =>
-      _InsertPreferenceScreenState();
+  State<InsertPreferenceScreen> createState() => _InsertPreferenceScreenState();
 }
 
 class _InsertPreferenceScreenState extends State<InsertPreferenceScreen> {
@@ -100,28 +99,34 @@ class _InsertPreferenceScreenState extends State<InsertPreferenceScreen> {
       floatingActionButton: Align(
         alignment: Alignment.bottomRight,
         child: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.4,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: FloatingActionButton.extended(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.black,
-              onPressed: () async {
-                String res = await UserService()
-                    .createUpdateUserPreferences(selectedGenres);
-                if (res == 'success') {
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                    Alert.successMessage('Preferensi berhasil ditambahkan.', context);
-                  }
-                } else {
-                  if (context.mounted) {
-                    Alert.alertValidation(res, context);
-                  }
+          width: MediaQuery.of(context).size.width * 0.2,
+          child: FloatingActionButton.extended(
+            backgroundColor: const Color.fromARGB(
+                127, 255, 255, 255), // Set background color to transparent
+            foregroundColor: Colors.black,
+            onPressed: () async {
+              String res = await UserService()
+                  .createUpdateUserPreferences(selectedGenres);
+              if (res == 'success') {
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  Alert.successMessage(
+                      'Preferensi berhasil diperbaharui!', context);
                 }
-              },
-              label: const Text('Simpan'),
+              } else {
+                if (context.mounted) {
+                  Alert.alertValidation(res, context);
+                }
+              }
+            },
+            label: const Icon(
+              Icons.check,
+              size: 30, // Increase size
+              color: Colors.black,
+              semanticLabel: 'Check',
+              textDirection: TextDirection.ltr,
             ),
+            shape: const CircleBorder(),
           ),
         ),
       ),

@@ -289,7 +289,7 @@ class UserService {
       FirebaseFirestore.instance
           .collection('users')
           .doc(currUser?.uid)
-          .update({'interest': FieldValue.arrayUnion(data)});
+          .update({'interest': data});
       res = 'success';
     } catch (err) {
       res = err.toString();

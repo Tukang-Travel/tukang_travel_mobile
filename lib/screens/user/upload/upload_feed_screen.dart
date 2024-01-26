@@ -441,7 +441,7 @@ class _UploadFeedScreenState extends State<UploadFeedScreen> {
 
       // Add feed details to Firestore
       await FeedService().uploadFeed(
-          userService.currUser!.uid, username, title, content, updatedTags);
+          userService.currUser!.uid, title, content, updatedTags);
 
       if (context.mounted) {
         setState(() {

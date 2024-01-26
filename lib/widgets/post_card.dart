@@ -26,6 +26,7 @@ class _PostCardState extends State<PostCard> {
   bool isLikeAnimating = false;
   var done = false;
   String urlPhoto = "";
+  String username = "";
 
   @override
   void initState() {
@@ -39,6 +40,7 @@ class _PostCardState extends State<PostCard> {
         await UserService().getUser(widget.snap['userId']);
     setState(() {
       if (feedUserData != null) {
+        username = feedUserData["username"];
         if (feedUserData['profile'] != null) {
           urlPhoto = feedUserData['profile'];
         }
@@ -81,18 +83,18 @@ class _PostCardState extends State<PostCard> {
                 child: Row(
                   children: <Widget>[
                     urlPhoto.isEmpty
-                  ? const CircleAvatar(
-                      backgroundImage: AssetImage(
-                        'asset/images/default_profile.png',
-                      ),
-                      radius: 15,
-                    )
-                  : CircleAvatar(
-                      backgroundImage: NetworkImage(
-                        urlPhoto,
-                      ),
-                      radius: 15,
-                    ),
+                        ? const CircleAvatar(
+                            backgroundImage: AssetImage(
+                              'asset/images/default_profile.png',
+                            ),
+                            radius: 15,
+                          )
+                        : CircleAvatar(
+                            backgroundImage: NetworkImage(
+                              urlPhoto,
+                            ),
+                            radius: 15,
+                          ),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(
@@ -103,7 +105,7 @@ class _PostCardState extends State<PostCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              '@${widget.snap['username'].toString()}',
+                              '@$username',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 15.0,
@@ -279,7 +281,7 @@ class _PostCardState extends State<PostCard> {
                             ),
                           ),
                         ),
-                        onTap: () => NavigationUtils.pushTransition(
+                        onTap: () => NavigationUtils.pushRemoveTransition(
                             context,
                             FeedDetailScreen(
                                 feedId: widget.snap['feedId'].toString()))),
