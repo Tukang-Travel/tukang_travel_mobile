@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:tuktraapp/services/user_service.dart';
 
 class FeedService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -34,7 +35,7 @@ class FeedService {
 
     if (files.isNotEmpty) {
       // Create a folder in Firebase Storage using the title
-      String folderPath = 'feeds/$title/';
+      String folderPath = 'feeds/${UserService().currUser!.uid}/$title/';
       Reference storageRef = FirebaseStorage.instance.ref().child(folderPath);
 
       // Upload each file to the created folder
@@ -165,7 +166,7 @@ class FeedService {
   }
 
   Future<String> deleteFiles(String title) async {
-    String folderPath = 'feeds/$title/';
+    String folderPath = 'feeds/${UserService().currUser!.uid}/$title/';
     Reference storageRef = FirebaseStorage.instance.ref().child(folderPath);
 
     try {
