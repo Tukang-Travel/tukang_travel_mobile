@@ -34,11 +34,13 @@ class _PediaDetailState extends State<PediaDetail> {
   List<Map<String, dynamic>> rates = [], comments = [];
   double avgRate = 0;
   bool done = false;
+  Map<String, dynamic> userData = {};
 
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   TextEditingController commentTxt = TextEditingController();
 
   Future<void> fetch() async {
+    done = false; 
     rating = 0;
     pedia = {};
     medias = [];
@@ -63,8 +65,7 @@ class _PediaDetailState extends State<PediaDetail> {
           if (rateMap.containsKey('rate')) {
             avgRate += rateMap['rate'];
           } else {
-            showSnackBar(
-                context, 'Data struktur rate salah $i: $rateMap');
+            showSnackBar(context, 'Data struktur rate salah $i: $rateMap');
           }
         } catch (e) {
           showSnackBar(context, 'Error pada data rate ke [$i]: $e');
@@ -88,6 +89,11 @@ class _PediaDetailState extends State<PediaDetail> {
     if (pedia.containsKey('comments')) {
       if (pedia['comments'] != null) {
         comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
+
+        for (final comment in comments) {
+          final user = await userService.getUser(comment['userid']);
+          userData[comment['userid']] = user;
+        }
       }
     }
 
@@ -99,7 +105,7 @@ class _PediaDetailState extends State<PediaDetail> {
   @override
   void initState() {
     fetch();
-    
+
     super.initState();
   }
 
@@ -112,7 +118,7 @@ class _PediaDetailState extends State<PediaDetail> {
     rates = [];
     comments = [];
     avgRate = 0;
-    
+
     super.dispose();
   }
 
@@ -348,11 +354,15 @@ class _PediaDetailState extends State<PediaDetail> {
                               if (commentTxt.text != '' ||
                                   commentTxt.text.isNotEmpty) {
                                 final comment = commentTxt.text;
-                                pediaService.insertPediaComment(widget.id,
-                                    comment, userService.currUser!.uid, user.username);
+                                pediaService.insertPediaComment(widget.id, comment, userService.currUser!.uid, user.username);
                                 commentTxt.text = "";
+                                setState(() {
+                                  commentTxt.text = "";
+                                  fetch();
+                                });
                               } else {
-                                Alert.alertValidation('Komentar harus diisi!', context);
+                                Alert.alertValidation(
+                                    'Komentar harus diisi!', context);
                               }
                             },
                             child: Container(
@@ -406,75 +416,46 @@ class _PediaDetailState extends State<PediaDetail> {
                                 }
                                 final comment = comments[index];
 
-                                return FutureBuilder(
-                                  future:
-                                      userService.getUser(comment['userid']),
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return const Center(
-                                          child:
-                                              CircularProgressIndicator()); // Loading indicator while fetching data
-                                    }
+                                final user = userData[comment['userid']];
 
-                                    if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
-                                    }
-
-                                    final user = snapshot.data!;
-
-                                    return Card(
-                                        color: Colors.white,
-                                        shape: RoundedRectangleBorder(
+                                return Card(
+                                  color: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 10.0),
+                                    child: Row(
+                                      children: [
+                                        ClipRRect(
                                           borderRadius:
-                                              BorderRadius.circular(20.0),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8.0, horizontal: 10.0),
-                                          child: Row(
-                                            children: [
-                                              user.containsKey('profile')
-                                                  ? ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              100.0),
-                                                      child: Image.network(
-                                                        user['profile'],
-                                                        width: 50,
-                                                        height: 50,
-                                                      ),
-                                                    )
-                                                  : Image.asset(
-                                                      'asset/images/default_profile.png',
-                                                      width: 50,
-                                                      height: 50,
-                                                    ),
-                                              const SizedBox(
-                                                width: 10.0,
-                                              ),
-                                              Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    '${user['username']}',
-                                                    style: const TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 16.0,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5.0,
-                                                  ),
-                                                  Text(comment['comment']),
-                                                ],
-                                              ),
-                                            ],
+                                              BorderRadius.circular(100.0),
+                                          child: Image.network(
+                                            user['profile'],
+                                            width: 50,
+                                            height: 50,
                                           ),
-                                        ));
-                                  },
+                                        ),
+                                        const SizedBox(width: 10.0),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              '${user['username']}',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 16.0,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 5.0),
+                                            Text(comment['comment']),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 );
                               },
                             ),
