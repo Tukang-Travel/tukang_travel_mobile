@@ -24,10 +24,27 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   bool isLikeAnimating = false;
+  var done = false;
+  String urlPhoto = "";
 
   @override
   void initState() {
     super.initState();
+
+    fetch();
+  }
+
+  Future<void> fetch() async {
+    Map<String, dynamic>? feedUserData =
+        await UserService().getUser(widget.snap['userId']);
+    setState(() {
+      if (feedUserData != null) {
+        if (feedUserData['profile'] != null) {
+          urlPhoto = feedUserData['profile'];
+        }
+      }
+      done = true;
+    });
   }
 
   @override
@@ -63,10 +80,23 @@ class _PostCardState extends State<PostCard> {
                 margin: const EdgeInsets.only(bottom: 30.0),
                 child: Row(
                   children: <Widget>[
+                    urlPhoto.isEmpty
+                  ? const CircleAvatar(
+                      backgroundImage: AssetImage(
+                        'asset/images/default_profile.png',
+                      ),
+                      radius: 15,
+                    )
+                  : CircleAvatar(
+                      backgroundImage: NetworkImage(
+                        urlPhoto,
+                      ),
+                      radius: 15,
+                    ),
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(
-                          left: 0,
+                          left: 5,
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -76,7 +106,7 @@ class _PostCardState extends State<PostCard> {
                               '@${widget.snap['username'].toString()}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 20.0,
+                                fontSize: 15.0,
                               ),
                             ),
                           ],
