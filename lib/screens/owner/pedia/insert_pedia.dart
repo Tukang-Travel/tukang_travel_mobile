@@ -117,7 +117,7 @@ class _InsertPediaState extends State<InsertPedia> {
       }
     } catch (error) {
       if (context.mounted) {
-        Alert.alertValidation(error as String, context);
+        Alert.alertValidation('Terjadi Kesalahan, Silahkan Coba Lagi Ya. ${error as String}', context);
       }
     } finally {
       setState(() {

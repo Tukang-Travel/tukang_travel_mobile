@@ -7,7 +7,6 @@ import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/screens/owner/pedia/update_pedia.dart';
-import 'package:tuktraapp/screens/owner/profile/owner_profile.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
@@ -52,48 +51,61 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
     List<dynamic> results =
         await Future.wait([pediaService.getPedia(widget.id)]);
 
-    pedia = results[0];
-    medias = pedia['medias'];
-    tags = pedia['tags'];
+    if (results.isNotEmpty) {
+      pedia = results[0];
+      medias = pedia['medias'];
+      tags = pedia['tags'];
 
-    if (pedia.containsKey('rates')) {
-      rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
+      if (pedia.containsKey('rates')) {
+        rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
 
-      for (int i = 0; i < rates.length; i++) {
-        try {
-          final rateMap = rates[i];
-          if (rateMap.containsKey('rate')) {
-            avgRate += rateMap['rate'];
-          } else {
-            showSnackBar(context, 'Data struktur rate salah $i: $rateMap');
+        for (int i = 0; i < rates.length; i++) {
+          try {
+            final rateMap = rates[i];
+            if (rateMap.containsKey('rate')) {
+              avgRate += rateMap['rate'];
+            } else {
+              if (context.mounted) {
+                Alert.alertValidation(
+                    'Data struktur rate salah $i: $rateMap', context);
+              }
+            }
+          } catch (e) {
+            if (context.mounted) {
+              Alert.alertValidation(
+                  'Error pada data rate ke [$i]: $e', context);
+            }
           }
-        } catch (e) {
-          showSnackBar(context, 'Error pada data rate ke [$i]: $e');
+        }
+
+        if (rates.isNotEmpty) {
+          avgRate = (avgRate / rates.length);
+        }
+
+        for (int i = 0; i < rates.length; i++) {
+          if (rates[i]['userid'] == userService.currUser!.uid) {
+            setState(() {
+              rating = rates[i]['rate'];
+            });
+            break;
+          }
         }
       }
 
-      if (rates.isNotEmpty) {
-        avgRate = (avgRate / rates.length);
-      }
+      if (pedia.containsKey('comments')) {
+        if (pedia['comments'] != null) {
+          comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
+        }
 
-      for (int i = 0; i < rates.length; i++) {
-        if (rates[i]['userid'] == userService.currUser!.uid) {
-          setState(() {
-            rating = rates[i]['rate'];
-          });
-          break;
+        for (final comment in comments) {
+          final user = await userService.getUser(comment['userid']);
+          userData[comment['userid']] = user;
         }
       }
-    }
-
-    if (pedia.containsKey('comments')) {
-      if (pedia['comments'] != null) {
-        comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
-      }
-
-      for (final comment in comments) {
-        final user = await userService.getUser(comment['userid']);
-        userData[comment['userid']] = user;
+    } else {
+      if (context.mounted) {
+        Alert.alertValidation(
+            "Gagal Mendapatkan data, Silahkan Coba Lagi ya.", context);
       }
     }
 
@@ -245,18 +257,27 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                                 ),
                                                 ElevatedButton(
                                                   onPressed: () async {
-                                                    await pediaService
-                                                        .deletePedia(widget.id,
-                                                            pedia['title']);
-                                                    if (context.mounted) {
-                                                      NavigationUtils
-                                                          .pushRemoveTransition(
-                                                              context,
-                                                              const MainScreen(
-                                                                  page: 1));
-                                                      Alert.successMessage(
-                                                          "Pedia berhasil dihapus.",
-                                                          context);
+                                                    try {
+                                                      await pediaService
+                                                          .deletePedia(
+                                                              widget.id,
+                                                              pedia['title']);
+                                                      if (context.mounted) {
+                                                        NavigationUtils
+                                                            .pushRemoveTransition(
+                                                                context,
+                                                                const MainScreen(
+                                                                    page: 1));
+                                                        Alert.successMessage(
+                                                            "Pedia berhasil dihapus.",
+                                                            context);
+                                                      }
+                                                    } catch (e) {
+                                                      if (context.mounted) {
+                                                        Alert.alertValidation(
+                                                            "Terjadi Kesalahan, Silahkan Coba Lagi Ya.",
+                                                            context);
+                                                      }
                                                     }
                                                   },
                                                   style:

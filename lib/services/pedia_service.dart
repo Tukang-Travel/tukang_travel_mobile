@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 
 class PediaService {
   UserService userService = UserService();
@@ -45,11 +46,9 @@ class PediaService {
       if (pediaDocument.exists) {
         return pediaDocument.data() as Map<String, dynamic>;
       } else {
-        print('Pedia not found');
         return null;
       }
     } catch (e) {
-      print('Error retrieving pedia data: $e');
       return null;
     }
   }

@@ -38,7 +38,7 @@ class _PediaDetailState extends State<PediaDetail> {
   TextEditingController commentTxt = TextEditingController();
 
   Future<void> fetch() async {
-    done = false; 
+    done = false;
     rating = 0;
     pedia = {};
     medias = [];
@@ -50,48 +50,61 @@ class _PediaDetailState extends State<PediaDetail> {
     List<dynamic> results =
         await Future.wait([pediaService.getPedia(widget.id)]);
 
-    pedia = results[0];
-    medias = pedia['medias'];
-    tags = pedia['tags'];
+    if (results.isNotEmpty) {
+      pedia = results[0];
+      medias = pedia['medias'];
+      tags = pedia['tags'];
 
-    if (pedia.containsKey('rates')) {
-      rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
+      if (pedia.containsKey('rates')) {
+        rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
 
-      for (int i = 0; i < rates.length; i++) {
-        try {
-          final rateMap = rates[i];
-          if (rateMap.containsKey('rate')) {
-            avgRate += rateMap['rate'];
-          } else {
-            showSnackBar(context, 'Data struktur rate salah $i: $rateMap');
+        for (int i = 0; i < rates.length; i++) {
+          try {
+            final rateMap = rates[i];
+            if (rateMap.containsKey('rate')) {
+              avgRate += rateMap['rate'];
+            } else {
+              if (context.mounted) {
+                Alert.alertValidation(
+                    'Data struktur rate salah $i: $rateMap', context);
+              }
+            }
+          } catch (e) {
+            if (context.mounted) {
+              Alert.alertValidation(
+                  'Error pada data rate ke [$i]: $e', context);
+            }
           }
-        } catch (e) {
-          showSnackBar(context, 'Error pada data rate ke [$i]: $e');
+        }
+
+        if (rates.isNotEmpty) {
+          avgRate = (avgRate / rates.length);
+        }
+
+        for (int i = 0; i < rates.length; i++) {
+          if (rates[i]['userid'] == userService.currUser!.uid) {
+            setState(() {
+              rating = rates[i]['rate'];
+            });
+            break;
+          }
         }
       }
 
-      if (rates.isNotEmpty) {
-        avgRate = (avgRate / rates.length);
-      }
+      if (pedia.containsKey('comments')) {
+        if (pedia['comments'] != null) {
+          comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
 
-      for (int i = 0; i < rates.length; i++) {
-        if (rates[i]['userid'] == userService.currUser!.uid) {
-          setState(() {
-            rating = rates[i]['rate'];
-          });
-          break;
+          for (final comment in comments) {
+            final user = await userService.getUser(comment['userid']);
+            userData[comment['userid']] = user;
+          }
         }
       }
-    }
-
-    if (pedia.containsKey('comments')) {
-      if (pedia['comments'] != null) {
-        comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
-
-        for (final comment in comments) {
-          final user = await userService.getUser(comment['userid']);
-          userData[comment['userid']] = user;
-        }
+    } else {
+      if (context.mounted) {
+        Alert.alertValidation(
+            "Gagal Mendapatkan data Pedia, Silahkan coba lagi ya.", context);
       }
     }
 
@@ -339,8 +352,17 @@ class _PediaDetailState extends State<PediaDetail> {
                               if (commentTxt.text != '' ||
                                   commentTxt.text.isNotEmpty) {
                                 final comment = commentTxt.text;
-                                pediaService.insertPediaComment(widget.id,
-                                    comment, userService.currUser!.uid);
+
+                                try {
+                                  pediaService.insertPediaComment(widget.id,
+                                      comment, userService.currUser!.uid);
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    Alert.alertValidation(
+                                        "Terjadi Kesalahan, Silahkan Coba Lagi Ya.",
+                                        context);
+                                  }
+                                }
 
                                 setState(() {
                                   commentTxt.text = "";

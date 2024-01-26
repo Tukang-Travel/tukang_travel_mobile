@@ -10,12 +10,10 @@ class PlanService {
       if (planDocument.exists) {
         return planDocument.data() as Map<String, dynamic>;
       } else {
-        print('Plan not found');
         return null;
       }
     } catch (e) {
-      print('Error retrieving plan data: $e');
-      return null;
+      rethrow;
     }
   }
 
@@ -37,7 +35,6 @@ class PlanService {
 
       return planList;
     } catch (e) {
-      print('Error retrieving plan data: $e');
       return null;
     }
   }
@@ -57,7 +54,7 @@ class PlanService {
     try {
       await FirebaseFirestore.instance.collection('planners').add(plan);
     } catch (e) {
-      print('Error inserting plan: $e');
+      rethrow;
     }
   }
 
@@ -65,7 +62,7 @@ class PlanService {
     try {
       await FirebaseFirestore.instance.collection('planners').doc(id).delete();
     } catch (e) {
-      print('Error deleting plan: $e');
+      rethrow;
     }
   }
 
@@ -93,7 +90,7 @@ class PlanService {
           .doc(id)
           .update(plan);
     } catch (e) {
-      print('Error updating plan: $e');
+      rethrow;
     }
   }
 
@@ -107,7 +104,7 @@ class PlanService {
         });
       }
     } catch (e) {
-      print('Error inserting itinerary: $e');
+      rethrow;
     }
   }
 
@@ -139,7 +136,6 @@ class PlanService {
   Future<void> updateSubItinerary(String id, int dayIdx, int itineraryIdx,
       Map<String, dynamic> itinerary) async {
     try {
-      print('Updating...');
 
       // Get the current document data
       var documentSnapshot =

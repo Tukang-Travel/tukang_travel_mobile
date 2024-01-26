@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
-import 'package:tuktraapp/screens/user/edit_preferences_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:tuktraapp/utils/utils.dart';
 
 class EditOwnerProfileScreen extends StatefulWidget {
   const EditOwnerProfileScreen({
@@ -90,9 +88,18 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
       newProfile,
     );
 
-    // Close the screen
-    NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 4));
-    Alert.successMessage('Profil berhasil diperbaharui.', context);
+    if (result != 'success') {
+      if (context.mounted) {
+        Alert.alertValidation(result, context);
+      }
+    } else {
+      if (context.mounted) {
+        // Close the screen
+        NavigationUtils.pushRemoveTransition(
+            context, const MainScreen(page: 4));
+        Alert.successMessage('Profil berhasil diperbaharui.', context);
+      }
+    }
   }
 
   // Function to open image cropper
@@ -111,8 +118,6 @@ class _EditOwnerProfileScreenState extends State<EditOwnerProfileScreen> {
         title: 'Crop Photo',
       ),
     );
-
-    
 
     if (croppedFile != null) {
       setState(() {

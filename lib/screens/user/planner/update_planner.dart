@@ -11,7 +11,6 @@ class UpdatePlanner extends StatefulWidget {
   State<UpdatePlanner> createState() => _UpdatePlannerState();
 }
 
-
 class _UpdatePlannerState extends State<UpdatePlanner> {
   PlanService planService = PlanService();
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -73,18 +72,27 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
   }
 
   Future<void> _getAllData() async {
-    List<dynamic> results = await Future.wait([planService.getPlan(widget.id)]);
-    plan = results[0];
-    
-    setState(() {
-      titleTxt.text = plan?['title'];
-      sourceTxt.text = plan?['source'];
-      destinationTxt.text = plan?['destination'];
-      _dateStartController.text = plan?['startDate'];
-      _dateEndController.text = plan?['endDate'];
-      budget = plan?['budget'];
-      numOfPeople = plan?['people'];
-    });
+    try {
+      List<dynamic> results =
+          await Future.wait([planService.getPlan(widget.id)]);
+
+      plan = results[0];
+
+      setState(() {
+        titleTxt.text = plan?['title'];
+        sourceTxt.text = plan?['source'];
+        destinationTxt.text = plan?['destination'];
+        _dateStartController.text = plan?['startDate'];
+        _dateEndController.text = plan?['endDate'];
+        budget = plan?['budget'];
+        numOfPeople = plan?['people'];
+      });
+    } catch (e) {
+      if (context.mounted) {
+        Alert.alertValidation(
+            "Terjadi Kesalahan, Silahkan Coba Lagi Ya.", context);
+      }
+    }
   }
 
   @override
@@ -603,41 +611,49 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
-                        if(titleTxt.text.isEmpty) {
+                        if (titleTxt.text.isEmpty) {
                           Alert.alertValidation('Judul harus diisi!', context);
-                        }
-                        else if(sourceTxt.text.isEmpty) {
-                          Alert.alertValidation('Lokasi awal harus diisi!', context);
-                        }
-                        else if(destinationTxt.text.isEmpty) {
-                          Alert.alertValidation('Lokasi destinasi harus diisi!', context);
-                        }
-                        else if(_dateStartController.text.isEmpty) {
-                          Alert.alertValidation('Tanggal Awal harus diisi!', context);
-                        }
-                        else if(_dateEndController.text.isEmpty) {
-                          Alert.alertValidation('Tanggal Akhir harus diisi!', context);
-                        }
-                        else if(budget == 0) {
-                          Alert.alertValidation('Anggaran harus lebih dari 0!', context);
-                        }
-                        else if(numOfPeople == 0) {
-                          Alert.alertValidation('Banyak orang harus lebih dari 0!', context);
-                        }
-                        else {
+                        } else if (sourceTxt.text.isEmpty) {
+                          Alert.alertValidation(
+                              'Lokasi awal harus diisi!', context);
+                        } else if (destinationTxt.text.isEmpty) {
+                          Alert.alertValidation(
+                              'Lokasi destinasi harus diisi!', context);
+                        } else if (_dateStartController.text.isEmpty) {
+                          Alert.alertValidation(
+                              'Tanggal Awal harus diisi!', context);
+                        } else if (_dateEndController.text.isEmpty) {
+                          Alert.alertValidation(
+                              'Tanggal Akhir harus diisi!', context);
+                        } else if (budget == 0) {
+                          Alert.alertValidation(
+                              'Anggaran harus lebih dari 0!', context);
+                        } else if (numOfPeople == 0) {
+                          Alert.alertValidation(
+                              'Banyak orang harus lebih dari 0!', context);
+                        } else {
                           setState(() {
                             isLoading = true;
-                            planService.updatePlanner(
-                                widget.id,
-                                titleTxt.text,
-                                sourceTxt.text,
-                                destinationTxt.text,
-                                _dateStartController.text,
-                                _dateEndController.text,
-                                budget,
-                                numOfPeople);
-                            Navigator.of(context).pop();
-                            Alert.successMessage('Rencana berhasil diperbaharui.', context);
+                            try {
+                              planService.updatePlanner(
+                                  widget.id,
+                                  titleTxt.text,
+                                  sourceTxt.text,
+                                  destinationTxt.text,
+                                  _dateStartController.text,
+                                  _dateEndController.text,
+                                  budget,
+                                  numOfPeople);
+                              Navigator.of(context).pop();
+                              Alert.successMessage(
+                                  'Rencana berhasil diperbaharui.', context);
+                            } catch (e) {
+                              if (context.mounted) {
+                                Alert.alertValidation(
+                                    "Gagal Memperbarui Rencana, Silahkan Coba Lagi Ya.",
+                                    context);
+                              }
+                            }
                           });
                         }
                       }
@@ -653,10 +669,7 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                           horizontal: 20.0, vertical: 15.0),
                       child: Text(
                         'Ubah',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          color: Colors.white
-                        ),
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
                       ),
                     ),
                   ),
