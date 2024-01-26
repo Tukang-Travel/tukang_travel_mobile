@@ -11,9 +11,11 @@ import 'package:tuktraapp/screens/owner/profile/owner_profile.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
+import 'package:tuktraapp/utils/color.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/tags_card.dart';
+import 'package:intl/intl.dart';
 
 class OwnerPediaDetail extends StatefulWidget {
   final String id;
@@ -271,6 +273,19 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                 ),
               ),
               Padding(
+                padding: const EdgeInsets.only(left: 25.0, right: 25.0),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Text(
+                    DateFormat.yMMMd()
+                        .format(pedia['date'].toDate()),
+                    style: const TextStyle(
+                      color: secondaryColor,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
                 padding: const EdgeInsets.symmetric(
                     vertical: 10.0, horizontal: 25.0),
                 child: Row(
@@ -423,7 +438,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                   commentTxt.text.isNotEmpty) {
                                 final comment = commentTxt.text;
                                 pediaService.insertPediaComment(widget.id,
-                                    comment, userService.currUser!.uid);
+                                    comment, userService.currUser!.uid, user.username);
                                 commentTxt.text = "";
                               } else {
                                 Alert.alertValidation('Komentar harus diisi!', context);
@@ -572,7 +587,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
               foregroundColor: Colors.black,
               onPressed: () {
                 NavigationUtils.pushRemoveTransition(
-                    context, const MainScreen(page: 0));
+                    context, const MainScreen(page: 1));
               },
               child: const Padding(
                 padding: EdgeInsets.only(left: 6.0),

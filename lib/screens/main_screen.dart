@@ -94,8 +94,8 @@ class _MainScreenState extends State<MainScreen> {
     Icons.person,
   ];
 
-  final List<String> menus = ['Home', 'Pedia', '', 'Diary', 'Profile'];
-  final List<String> ownerMenus = ['Home', 'Profile'];
+  final List<String> menus = ['Feed', 'Pedia', '', 'Planner', 'Profile'];
+  final List<String> ownerMenus = ['Pedia', 'Profile'];
 
   final PageStorageBucket bucket = PageStorageBucket();
 
@@ -139,7 +139,7 @@ class _MainScreenState extends State<MainScreen> {
 
         switch (currScreenCount) {
           case 1:
-            currScreen = const ProfileScreen();
+            currScreen = const OwnerProfileScreen();
             break;
           default:
             currScreen = const OwnerPediaScreen();

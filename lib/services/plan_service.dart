@@ -52,7 +52,8 @@ class PlanService {
       'endDate': endDate,
       'budget': budget,
       'people': people,
-      'userid': userId
+      'userid': userId,
+      'date': DateTime.now(),
     };
     try {
       await FirebaseFirestore.instance.collection('planners').add(plan);

@@ -55,11 +55,14 @@ class PediaService {
   }
 
   Future<void> insertPediaComment(
-      String id, String comment, String userId) async {
+      String id, String comment, String userId, String username) async {
     try {
       await FirebaseFirestore.instance.collection('pedias').doc(id).update({
         'comments': FieldValue.arrayUnion([
-          {'comment': comment, 'userid': userId}
+          {'username': username,
+          'userId': userId,
+          'comment': comment,
+          'datePublished': DateTime.now(),}
         ]),
       });
       print('Comment added successfully!');
@@ -115,6 +118,7 @@ class PediaService {
       'description': description,
       'tags': tags,
       'title': title,
+      'date': DateTime.now(),
     };
     List<String> mediaNames = [];
 
