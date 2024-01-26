@@ -7,7 +7,6 @@ import 'package:tflite_flutter/tflite_flutter.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/recommendation_config.dart';
-import 'package:collection/collection.dart';
 
 class RecommendationService {
   late BuildContext context;
@@ -64,10 +63,6 @@ class RecommendationService {
       int index = feeds.indexOf(item);
       candidatesFeed[index] = item;
     }
-
-    // print('tes $candidatesFeed');
-
-    print('Candidate list loaded.');
   }
 
   Future<void> initializeInterpreter(dynamic model) async {
@@ -76,11 +71,8 @@ class RecommendationService {
 
       // Initialize the TFLite interpreter
       tflite = Interpreter.fromFile(model.file);
-
-      print('Model loaded for dataset: $dataset');
-      print('tflite is $tflite');
     } catch (e) {
-      print('Error initializing interpreter: $e');
+      rethrow;
     }
   }
 
@@ -99,9 +91,8 @@ class RecommendationService {
       }
       final buffer = await FileUtils.loadModelFile(modelPath);
       initializeInterpreter(buffer);
-      print('Model loaded for dataset: $dataset');
     } catch (ioException) {
-      print(ioException);
+      rethrow;
     }
   } */
 
@@ -140,20 +131,20 @@ class RecommendationService {
     List<String> userInterestTags = await UserService().getUserPreference();
 
     // Iterate through each item in the likeFeed
-    likeFeed.forEach((feed) {
+    for (var feed in likeFeed) {
       // Extract the tags from the current item
       List<String> tags = List<String>.from(feed['tags']);
 
       // Update the tagCounts map with the occurrences of each tag
-      tags.forEach((tag) {
+      for (var tag in tags) {
         tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
-      });
-    });
+      }
+    }
 
     // Iterate through userInterestTags and update the tagCounts map
-    userInterestTags.forEach((tag) {
+    for (var tag in userInterestTags) {
       tagCounts[tag] = (tagCounts[tag] ?? 0) + 1;
-    });
+    }
 
     // Sort the tagCounts map in descending order based on the count
     var sortedTagCounts = Map.fromEntries(
@@ -201,58 +192,47 @@ class RecommendationService {
     List<int> dataToPredict = [];
 
     // Print or process the top 10 entries
-    top10Entries.forEach((entry) {
+    for (var entry in top10Entries) {
       dataToPredict.add(entry.key);
-    });
+    }
 
     return dataToPredict;
   }
 
   Future<List<int>> recommend(List<Map<String, dynamic>> likeFeed) async {
     try {
-      if(likeFeed.isNotEmpty) {
-      Map<String, int> tagCount = await countTags(likeFeed);
+      if (likeFeed.isNotEmpty) {
+        Map<String, int> tagCount = await countTags(likeFeed);
 
-      List<int> inputRaw = findDataMatchingTags(tagCount);
+        List<int> inputRaw = findDataMatchingTags(tagCount);
 
-      // Preprocess the input data
-      final inputs = [await preprocess(inputRaw)];
+        // Preprocess the input data
+        final inputs = [await preprocess(inputRaw)];
 
-      // Initialize lists for output results
-      final outputIds = List.filled(RecommendationConfig().outputLength, 0);
-      final confidences = List.filled(RecommendationConfig().outputLength, 0.0);
-      final outputs = {
-        RecommendationConfig().outputIdsIndex: outputIds,
-        RecommendationConfig().outputScoresIndex: confidences,
-      };
+        // Initialize lists for output results
+        final outputIds = List.filled(RecommendationConfig().outputLength, 0);
+        final confidences =
+            List.filled(RecommendationConfig().outputLength, 0.0);
+        final outputs = {
+          RecommendationConfig().outputIdsIndex: outputIds,
+          RecommendationConfig().outputScoresIndex: confidences,
+        };
 
-      // Print information about input tensors before running inference
-      // print('Before results: ${inputs}');
+        // Run inference with TensorFlow Lite
+        tflite?.runForMultipleInputs(inputs, outputs);
 
-      // Run inference with TensorFlow Lite
-      tflite?.runForMultipleInputs(inputs, outputs);
+        // Postprocess the results and return them
 
-      // Debugging: Print intermediate values for further inspection
-      // print('Intermediate values - outputIds: $outputIds, confidences: $confidences');
+        var result = await postprocess(outputIds, confidences, likeFeed);
 
-      // Print the results of the inference
-      // print('Inference results: $outputs');
+        result.sort((a, b) => b.confidence.compareTo(a.confidence));
 
-      // Postprocess the results and return them
-
-      var result = await postprocess(outputIds, confidences, likeFeed);
-
-      result.sort((a, b) => b.confidence.compareTo(a.confidence));
-
-      print(result);
-
-      return result.map((r) => r.id).toList();
+        return result.map((r) => r.id).toList();
       } else {
         return [];
       }
     } catch (e) {
       // Handle errors during inference
-      print('Error running inference: $e');
       return [];
     }
   }
@@ -278,7 +258,6 @@ class RecommendationService {
 
     for (var i = 0; i < outputIds.length; i++) {
       if (results.length >= RecommendationConfig().topK) {
-        // print('Selected top K: ${RecommendationConfig().topK}. Ignore the rest.');
         break;
       }
 
@@ -286,23 +265,17 @@ class RecommendationService {
       final item = candidatesFeed[id];
 
       if (item == null) {
-        // print('Inference output[$i]. Id: $id is null');
         continue;
       }
-
-      print('ini id $id');
 
       // Check if the item is in likeFeed based on its contents
       final containsItem = likeFeed.any((likedItem) {
         // Compare map contents instead of references
 
-        print('ini like -> ${likedItem["docId"].runtimeType}');
-        print('ini hasil ${likedItem["docId"] == id.toString()}');
         return likedItem["docId"] == id.toString();
       });
 
       if (containsItem) {
-        print('Inference output[$i]. Id: $id is contained');
         continue;
       }
 
@@ -312,12 +285,7 @@ class RecommendationService {
         confidence: confidences[i],
       );
       results.add(result);
-      // print('Inference output[$i]. Result: $result');
     }
-
-    results.forEach((element) {
-      print(element.id);
-    });
 
     return results;
   }

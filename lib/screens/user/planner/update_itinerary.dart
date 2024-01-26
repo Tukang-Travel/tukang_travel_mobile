@@ -746,19 +746,21 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
 
                           isLoading = true;
 
-                          try{
-                          await planService.updateSubItinerary(widget.planId,
-                              widget.dayId, widget.id, itinerary);
-                          if (context.mounted) {
-                            NavigationUtils.pushRemoveTransition(
-                                context, DetailPlanner(id: widget.planId));
-                            Alert.successMessage(
-                                'Kegiatan berhasil diperbaharui.', context);
-                          }
+                          try {
+                            await planService.updateSubItinerary(widget.planId,
+                                widget.dayId, widget.id, itinerary);
+                            if (context.mounted) {
+                              NavigationUtils.pushRemoveTransition(
+                                  context, DetailPlanner(id: widget.planId));
+                              Alert.successMessage(
+                                  'Kegiatan berhasil diperbaharui.', context);
+                            }
                           } catch (e) {
-                            if(context.mounted) {
-          Alert.alertValidation("Gagal Memperbarui Kegiatan, Silahkan Coba Lagi Ya.", context);
-        }
+                            if (context.mounted) {
+                              Alert.alertValidation(
+                                  "Gagal Memperbarui Kegiatan, Mohon Coba Lagi Ya.",
+                                  context);
+                            }
                           }
                         });
                       }

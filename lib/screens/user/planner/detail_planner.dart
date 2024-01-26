@@ -34,7 +34,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
     } catch (e) {
       if (context.mounted) {
         Alert.alertValidation(
-            "Terjadi Kesalahan, Silahkan Coba Lagi Ya.", context);
+            "Terjadi Kesalahan, Mohon Coba Lagi Ya.", context);
       }
     }
   }
@@ -429,7 +429,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                         }
                                                                                       } catch (e) {
                                                                                         if (context.mounted) {
-                                                                                          Alert.alertValidation("Gagal Memperbarui Kegiatan, Silahkan Coba Lagi Ya.S", context);
+                                                                                          Alert.alertValidation("Gagal Memperbarui Kegiatan, Mohon Coba Lagi Ya.", context);
                                                                                         }
                                                                                       }
                                                                                     },

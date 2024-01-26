@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:tuktraapp/services/user_service.dart';
-import 'package:tuktraapp/utils/alert.dart';
 
 class PediaService {
   UserService userService = UserService();
@@ -61,9 +60,8 @@ class PediaService {
           {'comment': comment, 'userid': userId}
         ]),
       });
-      print('Comment added successfully!');
     } catch (e) {
-      print('Error adding comment: $e');
+      rethrow;
     }
   }
 
@@ -120,14 +118,11 @@ class PediaService {
     try {
       DocumentReference newPedia =
           await FirebaseFirestore.instance.collection('pedias').add(pedia);
-      // print('Pedia inserted successfully!');
 
       for (int i = 0; i < medias.length; i++) {
         String url = await uploadImageToFirebase(
             userid, medias[i], getFileName(medias[i]), title);
         mediaNames.add(url);
-        // print(getFileName(medias[i]));
-        // print(medias[i]);
       }
 
       await FirebaseFirestore.instance
@@ -135,9 +130,8 @@ class PediaService {
           .doc(newPedia.id)
           .update({'medias': mediaNames});
 
-      print('Pedia inserted successfully');
     } catch (e) {
-      print('Error inserting pedia: $e');
+      rethrow;
     }
   }
 
@@ -164,12 +158,10 @@ class PediaService {
       await storageReference.putFile(imageFile);
       String downloadURL = await storageReference.getDownloadURL();
 
-      print("Image uploaded successfully");
       return downloadURL;
     } catch (e) {
-      print("Error uploading image: $e");
+      rethrow;
     }
-    return "";
   }
 
   Future<void> updatePedia(
@@ -180,9 +172,8 @@ class PediaService {
           .doc(id)
           .update({'title': title, 'description': description, 'tags': tags});
 
-      print('Pedia updated successfully');
     } catch (e) {
-      print('Error updating pedia: $e');
+      rethrow;
     }
   }
 
@@ -203,16 +194,14 @@ class PediaService {
         }
       });
 
-      print('Folder deleted successfully.');
     } catch (e) {
-      print('Error deleting folder: $e');
+      rethrow;
     }
 
     try {
       FirebaseFirestore.instance.collection('pedias').doc(id).delete();
-      print('Pedia deleted successfully.');
     } catch (e) {
-      print('Error deleting pedia: $e');
+      rethrow;
     }
   }
 }

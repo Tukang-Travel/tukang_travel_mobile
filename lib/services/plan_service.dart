@@ -39,8 +39,15 @@ class PlanService {
     }
   }
 
-  Future<void> insertPlanner(String title, String source, String destination,
-      String startDate, String endDate, int budget, int people, String userId) async {
+  Future<void> insertPlanner(
+      String title,
+      String source,
+      String destination,
+      String startDate,
+      String endDate,
+      int budget,
+      int people,
+      String userId) async {
     Map<String, dynamic> plan = {
       'title': title,
       'source': source,
@@ -136,7 +143,6 @@ class PlanService {
   Future<void> updateSubItinerary(String id, int dayIdx, int itineraryIdx,
       Map<String, dynamic> itinerary) async {
     try {
-
       // Get the current document data
       var documentSnapshot =
           await FirebaseFirestore.instance.collection('planners').doc(id).get();
@@ -156,10 +162,8 @@ class PlanService {
       await FirebaseFirestore.instance.collection('planners').doc(id).update({
         'days': data?['days'],
       });
-
-      print('Itinerary updated successfully!');
     } catch (e) {
-      print('Error updating itinerary: $e');
+      rethrow;
     }
   }
 
@@ -187,13 +191,11 @@ class PlanService {
         await FirebaseFirestore.instance.collection('planners').doc(id).update({
           'days': data?['days'],
         });
-
-        print('Itinerary deleted successfully!');
       } else {
-        print('Invalid itinerary index');
+        throw Exception('Index yang dimasukkan salah!');
       }
     } catch (e) {
-      print('Error deleting itinerary: $e');
+      rethrow;
     }
   }
 }

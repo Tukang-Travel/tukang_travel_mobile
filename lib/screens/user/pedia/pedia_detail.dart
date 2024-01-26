@@ -6,12 +6,10 @@ import 'package:provider/provider.dart';
 import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
-import 'package:tuktraapp/screens/owner/pedia/update_pedia.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/tags_card.dart';
 
 class PediaDetail extends StatefulWidget {
@@ -104,7 +102,7 @@ class _PediaDetailState extends State<PediaDetail> {
     } else {
       if (context.mounted) {
         Alert.alertValidation(
-            "Gagal Mendapatkan data Pedia, Silahkan coba lagi ya.", context);
+            "Gagal Mendapatkan data Pedia, Mohon Coba Lagi Ya.", context);
       }
     }
 
@@ -327,12 +325,19 @@ class _PediaDetailState extends State<PediaDetail> {
                       padding: const EdgeInsets.only(left: 16, right: 8),
                       child: Row(
                         children: [
-                          const CircleAvatar(
-                            backgroundImage: AssetImage(
-                              'asset/images/default_profile.png',
-                            ),
-                            radius: 18,
-                          ),
+                          user.profile == null
+                              ? const CircleAvatar(
+                                  backgroundImage: AssetImage(
+                                    'asset/images/default_profile.png',
+                                  ),
+                                  radius: 18,
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                    user.profile!,
+                                  ),
+                                  radius: 18,
+                                ),
                           Expanded(
                             child: Padding(
                               padding:
@@ -356,18 +361,18 @@ class _PediaDetailState extends State<PediaDetail> {
                                 try {
                                   pediaService.insertPediaComment(widget.id,
                                       comment, userService.currUser!.uid);
+
+                                  setState(() {
+                                    commentTxt.text = "";
+                                    fetch();
+                                  });
                                 } catch (e) {
                                   if (context.mounted) {
                                     Alert.alertValidation(
-                                        "Terjadi Kesalahan, Silahkan Coba Lagi Ya.",
+                                        "Terjadi Kesalahan, Mohon Coba Lagi Ya.",
                                         context);
                                   }
                                 }
-
-                                setState(() {
-                                  commentTxt.text = "";
-                                  fetch();
-                                });
                               } else {
                                 Alert.alertValidation(
                                     'Komentar harus diisi!', context);
@@ -436,15 +441,23 @@ class _PediaDetailState extends State<PediaDetail> {
                                         vertical: 8.0, horizontal: 10.0),
                                     child: Row(
                                       children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                          child: Image.network(
-                                            user['profile'],
-                                            width: 50,
-                                            height: 50,
-                                          ),
-                                        ),
+                                        user['profile'] != null
+                                            ? ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        100.0),
+                                                child: Image.network(
+                                                  user['profile'],
+                                                  width: 50,
+                                                  height: 50,
+                                                ),
+                                              )
+                                            : const CircleAvatar(
+                                                backgroundImage: AssetImage(
+                                                  'asset/images/default_profile.png',
+                                                ),
+                                                radius: 18,
+                                              ),
                                         const SizedBox(width: 10.0),
                                         Column(
                                           crossAxisAlignment:

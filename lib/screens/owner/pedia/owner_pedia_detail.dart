@@ -11,7 +11,6 @@ import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/tags_card.dart';
 
 class OwnerPediaDetail extends StatefulWidget {
@@ -105,7 +104,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
     } else {
       if (context.mounted) {
         Alert.alertValidation(
-            "Gagal Mendapatkan data, Silahkan Coba Lagi ya.", context);
+            "Gagal Mendapatkan data, Mohon Coba Lagi Ya.", context);
       }
     }
 
@@ -275,7 +274,7 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                                     } catch (e) {
                                                       if (context.mounted) {
                                                         Alert.alertValidation(
-                                                            "Terjadi Kesalahan, Silahkan Coba Lagi Ya.",
+                                                            "Terjadi Kesalahan, Mohon Coba Lagi Ya.",
                                                             context);
                                                       }
                                                     }
@@ -432,12 +431,19 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                       padding: const EdgeInsets.only(left: 16, right: 8),
                       child: Row(
                         children: [
-                          const CircleAvatar(
-                            backgroundImage: AssetImage(
-                              'asset/images/default_profile.png',
-                            ),
-                            radius: 18,
-                          ),
+                          user.profile == null
+                              ? const CircleAvatar(
+                                  backgroundImage: AssetImage(
+                                    'asset/images/default_profile.png',
+                                  ),
+                                  radius: 18,
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                    user.profile!,
+                                  ),
+                                  radius: 18,
+                                ),
                           Expanded(
                             child: Padding(
                               padding:
@@ -457,13 +463,19 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                               if (commentTxt.text != '' ||
                                   commentTxt.text.isNotEmpty) {
                                 final comment = commentTxt.text;
-                                pediaService.insertPediaComment(widget.id,
-                                    comment, userService.currUser!.uid);
+                                try {
+                                  pediaService.insertPediaComment(widget.id,
+                                      comment, userService.currUser!.uid);
 
-                                setState(() {
-                                  commentTxt.text = "";
-                                  fetch();
-                                });
+                                  setState(() {
+                                    commentTxt.text = "";
+                                    fetch();
+                                  });
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    Alert.alertValidation('Terjadi Kesalahan, Mohon Coba Lagi Ya.', context);
+                                  }
+                                }
                               } else {
                                 Alert.alertValidation(
                                     'Komentar harus diisi!', context);
@@ -532,15 +544,23 @@ class _OwnerPediaDetailState extends State<OwnerPediaDetail> {
                                         vertical: 8.0, horizontal: 10.0),
                                     child: Row(
                                       children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                          child: Image.network(
-                                            user['profile'],
-                                            width: 50,
-                                            height: 50,
-                                          ),
-                                        ),
+                                        user['profile'] != null
+                                            ? ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        100.0),
+                                                child: Image.network(
+                                                  user['profile'],
+                                                  width: 50,
+                                                  height: 50,
+                                                ),
+                                              )
+                                            : const CircleAvatar(
+                                                backgroundImage: AssetImage(
+                                                  'asset/images/default_profile.png',
+                                                ),
+                                                radius: 18,
+                                              ),
                                         const SizedBox(width: 10.0),
                                         Column(
                                           crossAxisAlignment:

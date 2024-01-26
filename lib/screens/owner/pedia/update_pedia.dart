@@ -74,7 +74,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
     } else {
       if (context.mounted) {
         Alert.alertValidation(
-            "Terjadi Kesalahan, Silahkan Coba Lagi Ya.", context);
+            "Terjadi Kesalahan, Mohon Coba Lagi Ya.", context);
       }
     }
   }
@@ -378,7 +378,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
                       } catch (e) {
                         if (context.mounted) {
                           Alert.alertValidation(
-                              "Terjadi Kesalahan, Silahkan Coba Lagi Ya.",
+                              "Terjadi Kesalahan, Mohon Coba Lagi Ya.",
                               context);
                         }
                       }

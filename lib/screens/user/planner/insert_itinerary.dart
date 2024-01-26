@@ -742,7 +742,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
                             } catch (e) {
                               if (context.mounted) {
                                 Alert.alertValidation(
-                                    "Gagal Menambahkan Kegiatan, Silahkan Coba Lagi Ya.",
+                                    "Gagal Menambahkan Kegiatan, Mohon Coba Lagi Ya.",
                                     context);
                               }
                             }

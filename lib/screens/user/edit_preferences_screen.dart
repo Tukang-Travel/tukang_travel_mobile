@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
-import 'package:tuktraapp/utils/utils.dart';
 
 class EditPreferencesScreen extends StatefulWidget {
   const EditPreferencesScreen({super.key});

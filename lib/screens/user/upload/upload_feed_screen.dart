@@ -12,7 +12,6 @@ import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:tuktraapp/utils/utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class UploadFeedScreen extends StatefulWidget {

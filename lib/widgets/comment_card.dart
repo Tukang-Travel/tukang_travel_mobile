@@ -1,14 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/color.dart';
 
-class CommentCard extends StatelessWidget {
+class CommentCard extends StatefulWidget {
   final Map<String, dynamic> snap;
 
   const CommentCard({super.key, required this.snap});
 
   @override
+  State<CommentCard> createState() => _CommentCardState();
+}
+
+class _CommentCardState extends State<CommentCard> {
+  var done = false;
+  String urlPhoto = "";
+
+  @override
+  void initState() {
+    super.initState();
+    fetch();
+  }
+
+  Future<void> fetch() async {
+    Map<String, dynamic>? commentUserData =
+        await UserService().getUser(widget.snap['userId']);
+    setState(() {
+      if (commentUserData != null) {
+        if (commentUserData['profile'] != null) {
+          urlPhoto = commentUserData['profile'];
+        }
+      }
+      done = true;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (!done) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return Card(
         color: Colors.white,
         elevation: 10.0,
@@ -27,18 +62,19 @@ class CommentCard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
           child: Row(
             children: [
-              const CircleAvatar(
-                backgroundImage: AssetImage(
-                  'asset/images/default_profile.png',
-                ),
-                radius: 18,
-              ),
-              /* CircleAvatar(
-            backgroundImage: NetworkImage(
-              snap.data()['profilePic'],
-            ),
-            radius: 18,
-          ), */
+              urlPhoto.isEmpty
+                  ? const CircleAvatar(
+                      backgroundImage: AssetImage(
+                        'asset/images/default_profile.png',
+                      ),
+                      radius: 18,
+                    )
+                  : CircleAvatar(
+                      backgroundImage: NetworkImage(
+                        urlPhoto,
+                      ),
+                      radius: 18,
+                    ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 16),
@@ -47,7 +83,7 @@ class CommentCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        snap['username'],
+                        widget.snap['username'],
                         style: const TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
@@ -62,7 +98,7 @@ class CommentCard extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                                text: '${snap['comment']}',
+                                text: '${widget.snap['comment']}',
                                 style: const TextStyle(
                                   color: primaryColor,
                                 )),
@@ -77,7 +113,7 @@ class CommentCard extends StatelessWidget {
                         padding: const EdgeInsets.only(top: 4),
                         child: Text(
                           DateFormat.yMMMd().format(
-                            snap['datePublished'].toDate(),
+                            widget.snap['datePublished'].toDate(),
                           ),
                           style: const TextStyle(
                             fontSize: 12,

@@ -329,7 +329,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                                 Alert.successMessage("Rencana berhasil dihapus.", context);
                                                                 } catch (e) {
                                                                   if(context.mounted) {
-          Alert.alertValidation("Gagal Menghapus Rencana, Silahkan Coba Lagi Ya.", context);
+          Alert.alertValidation("Gagal Menghapus Rencana, Mohon Coba Lagi Ya.", context);
         }
                                                                 }
                                                               }),

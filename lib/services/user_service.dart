@@ -149,7 +149,7 @@ class UserService {
         if (e.code == 'account-exists-with-different-credential') {
           return 'Akun sudah terdaftar dengan kredensial yang berbeda!';
         } else if (e.code == 'invalid-credential') {
-          return 'Terjadi kesalahan saat mengakses akun. Silahkan coba lagi Ya.';
+          return 'Terjadi kesalahan saat mengakses akun. Mohon Coba Lagi Ya.';
         }
       } catch (e) {
         return e.toString();

@@ -645,7 +645,7 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                       'Rencana berhasil ditambahkan.', context);
                                 } catch (e) {
                                   if (context.mounted) {
-                                    Alert.alertValidation("Gagal Menambahkan Rencana, Silahkan Coba Lagi Ya.", context);
+                                    Alert.alertValidation("Gagal Menambahkan Rencana, Mohon Coba Lagi Ya.", context);
                                   }
                                 }
                               });

@@ -55,7 +55,8 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
       await FeedService().deleteFeed(feedId);
       await FeedService().deleteFiles(title);
       if (context.mounted) {
-        NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 4));
+        NavigationUtils.pushRemoveTransition(
+            context, const MainScreen(page: 4));
         Alert.successMessage('Berhasil menghapus feed.', context);
       }
     } catch (err) {
@@ -124,7 +125,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Container (
+                                            SizedBox(
                                               width: 200,
                                               child: AutoSizeText(
                                                 snapshot.data!["title"],
@@ -202,9 +203,10 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                     context:
                                                                         context,
                                                                     builder:
-                                                                        (BuildContextcontext) {
+                                                                        (builderContext) {
                                                                       return AlertDialog(
-                                                                        backgroundColor: Colors.white,
+                                                                        backgroundColor:
+                                                                            Colors.white,
                                                                         title:
                                                                             const Text(
                                                                           'Apakah anda yakin ingin menghapus feed ini?',
@@ -372,12 +374,19 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                           left: 16, right: 8),
                                       child: Row(
                                         children: [
-                                          const CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                              'asset/images/default_profile.png',
-                                            ),
-                                            radius: 18,
-                                          ),
+                                          user.profile == null
+                                              ? const CircleAvatar(
+                                                  backgroundImage: AssetImage(
+                                                    'asset/images/default_profile.png',
+                                                  ),
+                                                  radius: 18,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundImage: NetworkImage(
+                                                    user.profile!,
+                                                  ),
+                                                  radius: 18,
+                                                ),
                                           Expanded(
                                             child: Padding(
                                               padding: const EdgeInsets.only(

@@ -90,7 +90,7 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
     } catch (e) {
       if (context.mounted) {
         Alert.alertValidation(
-            "Terjadi Kesalahan, Silahkan Coba Lagi Ya.", context);
+            "Terjadi Kesalahan, Mohon Coba Lagi Ya.", context);
       }
     }
   }
@@ -650,7 +650,7 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                             } catch (e) {
                               if (context.mounted) {
                                 Alert.alertValidation(
-                                    "Gagal Memperbarui Rencana, Silahkan Coba Lagi Ya.",
+                                    "Gagal Memperbarui Rencana, Mohon Coba Lagi Ya.",
                                     context);
                               }
                             }

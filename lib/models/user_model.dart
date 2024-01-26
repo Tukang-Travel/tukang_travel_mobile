@@ -7,6 +7,7 @@ class UserModel {
   final String username;
   final String email;
   final String type;
+  final String? profile;
 
   /* constructor object yang 
   bertujuan untuk menginisialisasi atribut 
@@ -16,7 +17,8 @@ class UserModel {
       required this.name,
       required this.username,
       required this.email,
-      required this.type});
+      required this.type,
+      this.profile});
 
   static UserModel fromSnap(DocumentSnapshot snap) {
     var snapshot = snap.data() as Map<String, dynamic>;
@@ -27,6 +29,7 @@ class UserModel {
       username: snapshot["username"],
       email: snapshot["email"],
       type: snapshot["type"],
+      profile: snapshot["profile"],
     );
   }
 
@@ -36,7 +39,8 @@ class UserModel {
       'name': name,
       'username': username,
       'email': email,
-      'type': type
+      'type': type,
+      'profile': profile,
     };
   }
 }
