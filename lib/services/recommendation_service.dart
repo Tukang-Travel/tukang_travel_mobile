@@ -210,6 +210,7 @@ class RecommendationService {
 
   Future<List<int>> recommend(List<Map<String, dynamic>> likeFeed) async {
     try {
+      if(likeFeed.isNotEmpty) {
       Map<String, int> tagCount = await countTags(likeFeed);
 
       List<int> inputRaw = findDataMatchingTags(tagCount);
@@ -243,7 +244,12 @@ class RecommendationService {
 
       result.sort((a, b) => b.confidence.compareTo(a.confidence));
 
+      print(result);
+
       return result.map((r) => r.id).toList();
+      } else {
+        return [];
+      }
     } catch (e) {
       // Handle errors during inference
       print('Error running inference: $e');
