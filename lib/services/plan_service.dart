@@ -10,12 +10,10 @@ class PlanService {
       if (planDocument.exists) {
         return planDocument.data() as Map<String, dynamic>;
       } else {
-        print('Plan not found');
         return null;
       }
     } catch (e) {
-      print('Error retrieving plan data: $e');
-      return null;
+      rethrow;
     }
   }
 
@@ -37,13 +35,19 @@ class PlanService {
 
       return planList;
     } catch (e) {
-      print('Error retrieving plan data: $e');
       return null;
     }
   }
 
-  Future<void> insertPlanner(String title, String source, String destination,
-      String startDate, String endDate, int budget, int people, String userId) async {
+  Future<void> insertPlanner(
+      String title,
+      String source,
+      String destination,
+      String startDate,
+      String endDate,
+      int budget,
+      int people,
+      String userId) async {
     Map<String, dynamic> plan = {
       'title': title,
       'source': source,
@@ -58,7 +62,7 @@ class PlanService {
     try {
       await FirebaseFirestore.instance.collection('planners').add(plan);
     } catch (e) {
-      print('Error inserting plan: $e');
+      rethrow;
     }
   }
 
@@ -66,7 +70,7 @@ class PlanService {
     try {
       await FirebaseFirestore.instance.collection('planners').doc(id).delete();
     } catch (e) {
-      print('Error deleting plan: $e');
+      rethrow;
     }
   }
 
@@ -94,7 +98,7 @@ class PlanService {
           .doc(id)
           .update(plan);
     } catch (e) {
-      print('Error updating plan: $e');
+      rethrow;
     }
   }
 
@@ -108,7 +112,7 @@ class PlanService {
         });
       }
     } catch (e) {
-      print('Error inserting itinerary: $e');
+      rethrow;
     }
   }
 
@@ -140,8 +144,6 @@ class PlanService {
   Future<void> updateSubItinerary(String id, int dayIdx, int itineraryIdx,
       Map<String, dynamic> itinerary) async {
     try {
-      print('Updating...');
-
       // Get the current document data
       var documentSnapshot =
           await FirebaseFirestore.instance.collection('planners').doc(id).get();
@@ -161,10 +163,8 @@ class PlanService {
       await FirebaseFirestore.instance.collection('planners').doc(id).update({
         'days': data?['days'],
       });
-
-      print('Itinerary updated successfully!');
     } catch (e) {
-      print('Error updating itinerary: $e');
+      rethrow;
     }
   }
 
@@ -192,13 +192,11 @@ class PlanService {
         await FirebaseFirestore.instance.collection('planners').doc(id).update({
           'days': data?['days'],
         });
-
-        print('Itinerary deleted successfully!');
       } else {
-        print('Invalid itinerary index');
+        throw Exception('Index yang dimasukkan salah!');
       }
     } catch (e) {
-      print('Error deleting itinerary: $e');
+      rethrow;
     }
   }
 }

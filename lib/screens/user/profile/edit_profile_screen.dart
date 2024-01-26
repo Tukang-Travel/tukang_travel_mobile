@@ -9,7 +9,6 @@ import 'package:tuktraapp/screens/user/edit_preferences_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:tuktraapp/utils/utils.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({
@@ -90,9 +89,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       newProfile,
     );
 
-    // Close the screen
-    NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 4));
-    Alert.successMessage('Profil berhasil diperbaharui.', context);
+    if (result != 'success') {
+      if (context.mounted) {
+        Alert.alertValidation(result, context);
+      }
+    } else {
+      if (context.mounted) {
+        // Close the screen
+        NavigationUtils.pushRemoveTransition(
+            context, const MainScreen(page: 4));
+        Alert.successMessage('Profil berhasil diperbaharui.', context);
+      }
+    }
   }
 
   // Function to open image cropper
@@ -111,8 +119,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         title: 'Crop Photo',
       ),
     );
-
-    
 
     if (croppedFile != null) {
       setState(() {

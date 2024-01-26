@@ -4,7 +4,6 @@ import 'package:tuktraapp/services/feed_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/constant.dart';
-import 'package:tuktraapp/utils/utils.dart';
 
 class EditFeedScreen extends StatefulWidget {
   const EditFeedScreen({

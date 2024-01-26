@@ -606,41 +606,48 @@ class _InsertPlannerState extends State<InsertPlanner> {
                       child: ElevatedButton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
-                            if(titleTxt.text.isEmpty) {
-                              Alert.alertValidation('Judul harus diisi!', context);
-                            }
-                            else if(sourceTxt.text.isEmpty) {
-                              Alert.alertValidation('Lokasi awal harus diisi!', context);
-                            }
-                            else if(destinationTxt.text.isEmpty) {
-                              Alert.alertValidation('Lokasi destinasi harus diisi!', context);
-                            }
-                            else if(_dateStartController.text.isEmpty) {
-                              Alert.alertValidation('Tanggal Awal harus diisi!', context);
-                            }
-                            else if(_dateEndController.text.isEmpty) {
-                              Alert.alertValidation('Tanggal Akhir harus diisi!', context);
-                            }
-                            else if(budget == 0) {
-                              Alert.alertValidation('Anggaran harus lebih dari 0!', context);
-                            }
-                            else if(numOfPeople == 0) {
-                              Alert.alertValidation('Banyak orang harus lebih dari 0!', context);
-                            }
-                            else {
+                            if (titleTxt.text.isEmpty) {
+                              Alert.alertValidation(
+                                  'Judul harus diisi!', context);
+                            } else if (sourceTxt.text.isEmpty) {
+                              Alert.alertValidation(
+                                  'Lokasi awal harus diisi!', context);
+                            } else if (destinationTxt.text.isEmpty) {
+                              Alert.alertValidation(
+                                  'Lokasi destinasi harus diisi!', context);
+                            } else if (_dateStartController.text.isEmpty) {
+                              Alert.alertValidation(
+                                  'Tanggal Awal harus diisi!', context);
+                            } else if (_dateEndController.text.isEmpty) {
+                              Alert.alertValidation(
+                                  'Tanggal Akhir harus diisi!', context);
+                            } else if (budget == 0) {
+                              Alert.alertValidation(
+                                  'Anggaran harus lebih dari 0!', context);
+                            } else if (numOfPeople == 0) {
+                              Alert.alertValidation(
+                                  'Banyak orang harus lebih dari 0!', context);
+                            } else {
                               setState(() {
                                 isLoading = true;
-                                planService.insertPlanner(
-                                    titleTxt.text,
-                                    sourceTxt.text,
-                                    destinationTxt.text,
-                                    _dateStartController.text,
-                                    _dateEndController.text,
-                                    budget,
-                                    numOfPeople,
-                                    UserService().currUser!.uid);
-                                Navigator.of(context).pop();
-                                Alert.successMessage('Rencana berhasil ditambahkan.', context);
+                                try {
+                                  planService.insertPlanner(
+                                      titleTxt.text,
+                                      sourceTxt.text,
+                                      destinationTxt.text,
+                                      _dateStartController.text,
+                                      _dateEndController.text,
+                                      budget,
+                                      numOfPeople,
+                                      UserService().currUser!.uid);
+                                  Navigator.of(context).pop();
+                                  Alert.successMessage(
+                                      'Rencana berhasil ditambahkan.', context);
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    Alert.alertValidation("Gagal Menambahkan Rencana, Mohon Coba Lagi Ya.", context);
+                                  }
+                                }
                               });
                             }
                           }

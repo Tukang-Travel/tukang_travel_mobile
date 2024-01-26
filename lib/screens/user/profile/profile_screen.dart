@@ -5,7 +5,6 @@ import 'package:tuktraapp/screens/user/feed/feed_detail_screen.dart';
 import 'package:tuktraapp/screens/user/profile/edit_profile_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:tuktraapp/widgets/tags_card.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -48,9 +47,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double h = MediaQuery.of(context).size.height;
-    double w = MediaQuery.of(context).size.width;
-    bool isTapped = false;
     return Scaffold(
         body: SingleChildScrollView(
             child: Column(
@@ -263,23 +259,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: Container(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      child: AspectRatio(
-                                        aspectRatio: 1.0,
-                                        child: Image.network(
-                                          _getFirstImage(itemData['content']),
-                                          height: 220,
-                                          width: 220,
-                                          fit: BoxFit.cover,
-                                        ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ClipRRect(
+                                    child: AspectRatio(
+                                      aspectRatio: 1.0,
+                                      child: Image.network(
+                                        _getFirstImage(itemData['content']),
+                                        height: 220,
+                                        width: 220,
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           );

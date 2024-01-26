@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:tuktraapp/screens/owner/pedia/owner_pedia_screen.dart';
@@ -11,6 +10,7 @@ import 'package:tuktraapp/screens/user/upload/upload_feed_screen.dart';
 import 'package:tuktraapp/screens/user/pedia/pedia_screen.dart';
 import 'package:tuktraapp/screens/user/profile/profile_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
+import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class MainScreen extends StatefulWidget {
@@ -55,14 +55,10 @@ class _MainScreenState extends State<MainScreen> {
               context, const InsertPreferenceScreen());
         }
       }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided.');
-      }
     } catch (e) {
-      print(e);
+      if (context.mounted) {
+        Alert.alertValidation("Terjadi Kesalahan, mohon coba lagi ya.", context);
+      }
     }
   }
 

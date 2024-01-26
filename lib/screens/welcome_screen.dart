@@ -3,8 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/authentication/login_owner_screen.dart';
 import 'package:tuktraapp/screens/authentication/login_screen.dart';
-import 'package:tuktraapp/screens/authentication/register_owner_screen.dart';
-import 'package:tuktraapp/screens/authentication/register_screen.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';

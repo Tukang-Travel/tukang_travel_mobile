@@ -58,17 +58,24 @@ class _UpdatePediaState extends State<UpdatePedia> {
     List<dynamic> results =
         await Future.wait([pediaService.getPedia(widget.id)]);
 
-    setState(() {
-      pedia = results[0];
-    });
-
-    if (!isSet) {
+    if (results.isNotEmpty) {
       setState(() {
-        isSet = true;
-        titleTxt.text = pedia['title'];
-        descTxt.text = pedia['description'];
-        _selectedTypes = pedia['tags'];
+        pedia = results[0];
       });
+
+      if (!isSet) {
+        setState(() {
+          isSet = true;
+          titleTxt.text = pedia['title'];
+          descTxt.text = pedia['description'];
+          _selectedTypes = pedia['tags'];
+        });
+      }
+    } else {
+      if (context.mounted) {
+        Alert.alertValidation(
+            "Terjadi Kesalahan, Mohon Coba Lagi Ya.", context);
+      }
     }
   }
 
@@ -354,21 +361,27 @@ class _UpdatePediaState extends State<UpdatePedia> {
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
                   onPressed: () async {
-                    if(titleTxt.text.isEmpty) {
+                    if (titleTxt.text.isEmpty) {
                       Alert.alertValidation("Judul harus diisi!", context);
-                    }
-                    else if(descTxt.text.isEmpty) {
+                    } else if (descTxt.text.isEmpty) {
                       Alert.alertValidation("Deskripsi harus diisi!", context);
-                    }
-                    else if(_selectedTypes.isEmpty) {
+                    } else if (_selectedTypes.isEmpty) {
                       Alert.alertValidation("Tag harus dipilih!", context);
-                    }
-                    else {
-                      pediaService.updatePedia(
-                        widget.id, titleTxt.text, descTxt.text, _selectedTypes);
-                      NavigationUtils.pushRemoveTransition(
-                        context, OwnerPediaDetail(id: widget.id));
-                      Alert.successMessage('Pedia berhasil diperbaharui.', context);
+                    } else {
+                      try {
+                        pediaService.updatePedia(widget.id, titleTxt.text,
+                            descTxt.text, _selectedTypes);
+                        NavigationUtils.pushRemoveTransition(
+                            context, OwnerPediaDetail(id: widget.id));
+                        Alert.successMessage(
+                            'Pedia berhasil diperbaharui.', context);
+                      } catch (e) {
+                        if (context.mounted) {
+                          Alert.alertValidation(
+                              "Terjadi Kesalahan, Mohon Coba Lagi Ya.",
+                              context);
+                        }
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -381,10 +394,7 @@ class _UpdatePediaState extends State<UpdatePedia> {
                         EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                     child: Text(
                       'Ubah',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.white
-                      ),
+                      style: TextStyle(fontSize: 18.0, color: Colors.white),
                     ),
                   ),
                 ),

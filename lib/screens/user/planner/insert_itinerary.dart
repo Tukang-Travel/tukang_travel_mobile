@@ -75,8 +75,8 @@ class _InsertItineraryState extends State<InsertItinerary> {
     );
 
     if (picked != null) {
-      DateTime tempDate = DateFormat("HH:mm")
-          .parse("${picked.hour}:${picked.minute}");
+      DateTime tempDate =
+          DateFormat("HH:mm").parse("${picked.hour}:${picked.minute}");
       var dateFormat = DateFormat("h:mm a");
       var formatedTime = dateFormat.format(tempDate);
       if (context.mounted) {
@@ -737,7 +737,15 @@ class _InsertItineraryState extends State<InsertItinerary> {
                               },
                             ];
                             isLoading = true;
-                            planService.insertItinerary(widget.id, days);
+                            try {
+                              planService.insertItinerary(widget.id, days);
+                            } catch (e) {
+                              if (context.mounted) {
+                                Alert.alertValidation(
+                                    "Gagal Menambahkan Kegiatan, Mohon Coba Lagi Ya.",
+                                    context);
+                              }
+                            }
                           });
                         } else if (widget.type == "sub") {
                           subItinerary = {

@@ -24,11 +24,9 @@ class UserService {
       if (userDocument.exists) {
         return userDocument.data() as Map<String, dynamic>;
       } else {
-        print('User not found');
         return null;
       }
     } catch (e) {
-      print('Error retrieving user data: $e');
       return null;
     }
   }
@@ -151,7 +149,7 @@ class UserService {
         if (e.code == 'account-exists-with-different-credential') {
           return 'Akun sudah terdaftar dengan kredensial yang berbeda!';
         } else if (e.code == 'invalid-credential') {
-          return 'Terjadi kesalahan saat mengakses akun. Silahkan coba lagi.';
+          return 'Terjadi kesalahan saat mengakses akun. Mohon Coba Lagi Ya.';
         }
       } catch (e) {
         return e.toString();
@@ -216,8 +214,7 @@ class UserService {
       String downloadUrl = await storageRef.getDownloadURL();
       return downloadUrl;
     } catch (error) {
-      print("Error uploading image: $error");
-      throw error; // Rethrow the error to handle it in the calling function
+      rethrow;
     }
   }
 
@@ -258,7 +255,6 @@ class UserService {
       }
       return resultList;
     } catch (e) {
-      print('Error retrieving preferences data: $e');
       return [];
     }
   }
@@ -283,7 +279,6 @@ class UserService {
 
       return resultList;
     } catch (e) {
-      print('Error retrieving preferences data: $e');
       return [];
     }
   }

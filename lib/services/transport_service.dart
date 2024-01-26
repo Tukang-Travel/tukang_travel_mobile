@@ -17,11 +17,9 @@ class TransportService {
         }
         return transports;
       } else {
-        print('No documents found in the collection');
         return [];
       }
     } catch (e) {
-      print('Error retrieving transportation data: $e');
       return [];
     }
   }

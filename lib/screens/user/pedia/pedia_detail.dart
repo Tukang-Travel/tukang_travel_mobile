@@ -6,13 +6,11 @@ import 'package:provider/provider.dart';
 import 'package:tuktraapp/models/user_model.dart';
 import 'package:tuktraapp/provider/user_provider.dart';
 import 'package:tuktraapp/screens/main_screen.dart';
-import 'package:tuktraapp/screens/owner/pedia/update_pedia.dart';
 import 'package:tuktraapp/services/pedia_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/color.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/tags_card.dart';
 import 'package:intl/intl.dart';
 
@@ -40,7 +38,7 @@ class _PediaDetailState extends State<PediaDetail> {
   TextEditingController commentTxt = TextEditingController();
 
   Future<void> fetch() async {
-    done = false; 
+    done = false;
     rating = 0;
     pedia = {};
     medias = [];
@@ -52,48 +50,61 @@ class _PediaDetailState extends State<PediaDetail> {
     List<dynamic> results =
         await Future.wait([pediaService.getPedia(widget.id)]);
 
-    pedia = results[0];
-    medias = pedia['medias'];
-    tags = pedia['tags'];
+    if (results.isNotEmpty) {
+      pedia = results[0];
+      medias = pedia['medias'];
+      tags = pedia['tags'];
 
-    if (pedia.containsKey('rates')) {
-      rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
+      if (pedia.containsKey('rates')) {
+        rates = (pedia['rates'] as List).cast<Map<String, dynamic>>();
 
-      for (int i = 0; i < rates.length; i++) {
-        try {
-          final rateMap = rates[i];
-          if (rateMap.containsKey('rate')) {
-            avgRate += rateMap['rate'];
-          } else {
-            showSnackBar(context, 'Data struktur rate salah $i: $rateMap');
+        for (int i = 0; i < rates.length; i++) {
+          try {
+            final rateMap = rates[i];
+            if (rateMap.containsKey('rate')) {
+              avgRate += rateMap['rate'];
+            } else {
+              if (context.mounted) {
+                Alert.alertValidation(
+                    'Data struktur rate salah $i: $rateMap', context);
+              }
+            }
+          } catch (e) {
+            if (context.mounted) {
+              Alert.alertValidation(
+                  'Error pada data rate ke [$i]: $e', context);
+            }
           }
-        } catch (e) {
-          showSnackBar(context, 'Error pada data rate ke [$i]: $e');
+        }
+
+        if (rates.isNotEmpty) {
+          avgRate = (avgRate / rates.length);
+        }
+
+        for (int i = 0; i < rates.length; i++) {
+          if (rates[i]['userid'] == userService.currUser!.uid) {
+            setState(() {
+              rating = rates[i]['rate'];
+            });
+            break;
+          }
         }
       }
 
-      if (rates.isNotEmpty) {
-        avgRate = (avgRate / rates.length);
-      }
+      if (pedia.containsKey('comments')) {
+        if (pedia['comments'] != null) {
+          comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
 
-      for (int i = 0; i < rates.length; i++) {
-        if (rates[i]['userid'] == userService.currUser!.uid) {
-          setState(() {
-            rating = rates[i]['rate'];
-          });
-          break;
+          for (final comment in comments) {
+            final user = await userService.getUser(comment['userId']);
+            userData[comment['userId']] = user;
+          }
         }
       }
-    }
-
-    if (pedia.containsKey('comments')) {
-      if (pedia['comments'] != null) {
-        comments = (pedia['comments'] as List).cast<Map<String, dynamic>>();
-
-        for (final comment in comments) {
-          final user = await userService.getUser(comment['userid']);
-          userData[comment['userid']] = user;
-        }
+    } else {
+      if (context.mounted) {
+        Alert.alertValidation(
+            "Gagal Mendapatkan data Pedia, Mohon Coba Lagi Ya.", context);
       }
     }
 
@@ -329,12 +340,19 @@ class _PediaDetailState extends State<PediaDetail> {
                       padding: const EdgeInsets.only(left: 16, right: 8),
                       child: Row(
                         children: [
-                          const CircleAvatar(
-                            backgroundImage: AssetImage(
-                              'asset/images/default_profile.png',
-                            ),
-                            radius: 18,
-                          ),
+                          user.profile == null
+                              ? const CircleAvatar(
+                                  backgroundImage: AssetImage(
+                                    'asset/images/default_profile.png',
+                                  ),
+                                  radius: 18,
+                                )
+                              : CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                    user.profile!,
+                                  ),
+                                  radius: 18,
+                                ),
                           Expanded(
                             child: Padding(
                               padding:
@@ -354,12 +372,23 @@ class _PediaDetailState extends State<PediaDetail> {
                               if (commentTxt.text != '' ||
                                   commentTxt.text.isNotEmpty) {
                                 final comment = commentTxt.text;
-                                pediaService.insertPediaComment(widget.id, comment, userService.currUser!.uid, user.username);
-                                commentTxt.text = "";
-                                setState(() {
+
+                                try {
+                                  pediaService.insertPediaComment(
+                                      widget.id, comment,
+                                      userService.currUser!.uid, user.username);
                                   commentTxt.text = "";
-                                  fetch();
-                                });
+                                  setState(() {
+                                    commentTxt.text = "";
+                                    fetch();
+                                  });
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    Alert.alertValidation(
+                                        "Terjadi Kesalahan, Mohon Coba Lagi Ya.",
+                                        context);
+                                  }
+                                }
                               } else {
                                 Alert.alertValidation(
                                     'Komentar harus diisi!', context);
@@ -416,7 +445,7 @@ class _PediaDetailState extends State<PediaDetail> {
                                 }
                                 final comment = comments[index];
 
-                                final user = userData[comment['userid']];
+                                final user = userData[comment['userId']];
 
                                 return Card(
                                   color: Colors.white,
@@ -428,15 +457,23 @@ class _PediaDetailState extends State<PediaDetail> {
                                         vertical: 8.0, horizontal: 10.0),
                                     child: Row(
                                       children: [
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(100.0),
-                                          child: Image.network(
-                                            user['profile'],
-                                            width: 50,
-                                            height: 50,
-                                          ),
-                                        ),
+                                        user['profile'] != null
+                                            ? ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        100.0),
+                                                child: Image.network(
+                                                  user['profile'],
+                                                  width: 50,
+                                                  height: 50,
+                                                ),
+                                              )
+                                            : const CircleAvatar(
+                                                backgroundImage: AssetImage(
+                                                  'asset/images/default_profile.png',
+                                                ),
+                                                radius: 18,
+                                              ),
                                         const SizedBox(width: 10.0),
                                         Column(
                                           crossAxisAlignment:

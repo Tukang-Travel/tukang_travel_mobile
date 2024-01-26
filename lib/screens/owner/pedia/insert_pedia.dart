@@ -8,7 +8,6 @@ import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/constant.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:tuktraapp/utils/utils.dart';
 
 class InsertPedia extends StatefulWidget {
   const InsertPedia({super.key});
@@ -117,7 +116,7 @@ class _InsertPediaState extends State<InsertPedia> {
       }
     } catch (error) {
       if (context.mounted) {
-        Alert.alertValidation(error as String, context);
+        Alert.alertValidation('Terjadi Kesalahan, Silahkan Coba Lagi Ya. ${error as String}', context);
       }
     } finally {
       setState(() {

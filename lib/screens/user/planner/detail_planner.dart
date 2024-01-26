@@ -23,14 +23,20 @@ class _DetailPlannerState extends State<DetailPlanner> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
+    try {
+      List<dynamic> results = await Future.wait([
+        planService.getPlan(widget.id),
+      ]);
 
-    List<dynamic> results = await Future.wait([
-      planService.getPlan(widget.id),
-    ]);
-
-    setState(() {
-      plan = results[0];
-    });
+      setState(() {
+        plan = results[0];
+      });
+    } catch (e) {
+      if (context.mounted) {
+        Alert.alertValidation(
+            "Terjadi Kesalahan, Mohon Coba Lagi Ya.", context);
+      }
+    }
   }
 
   Future<void> _getPlan() async {
@@ -44,7 +50,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
 
   String convertToAmPm(String time) {
     List<String> timeParts = time.split(":");
-    
+
     int hour = int.parse(timeParts[0]);
     int minute = int.parse(timeParts[1]);
 
@@ -107,7 +113,9 @@ class _DetailPlannerState extends State<DetailPlanner> {
                               child: Text(
                                 plan['title'],
                                 style: const TextStyle(
-                                    fontWeight: FontWeight.w700, fontSize: 22.0, color: Colors.white),
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 22.0,
+                                    color: Colors.white),
                               ),
                             ),
                           ),
@@ -386,7 +394,10 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                             builder:
                                                                                 (BuildContext context) {
                                                                               return AlertDialog(
-                                                                                content: Text('Apakah anda yakin untuk menghapus rencana "${day?['itineraries'][i]['title']}"?', style: const TextStyle(fontWeight: FontWeight.w500),),
+                                                                                content: Text(
+                                                                                  'Apakah anda yakin untuk menghapus rencana "${day?['itineraries'][i]['title']}"?',
+                                                                                  style: const TextStyle(fontWeight: FontWeight.w500),
+                                                                                ),
                                                                                 actions: <Widget>[
                                                                                   TextButton(
                                                                                     onPressed: () {
@@ -394,7 +405,10 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                         Navigator.of(context).pop();
                                                                                       }
                                                                                     },
-                                                                                    child: const Text('Batal', style: TextStyle(color: Colors.black),),
+                                                                                    child: const Text(
+                                                                                      'Batal',
+                                                                                      style: TextStyle(color: Colors.black),
+                                                                                    ),
                                                                                   ),
                                                                                   ElevatedButton(
                                                                                     style: ElevatedButton.styleFrom(backgroundColor: const Color.fromRGBO(209, 26, 42, 1.0)),
@@ -403,15 +417,20 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                       style: TextStyle(color: Colors.white),
                                                                                     ),
                                                                                     onPressed: () async {
-                                                                                      // print('${widget.id}, ${(int.parse(day['day']) - 1)}, $i');
-                                                                                      await planService.deleteSubItinerary(widget.id, (int.parse(day?['day']) - 1), i);
-                                                                                      setState(() {
-                                                                                        _getPlan();
-                                                                                      });
+                                                                                      try {
+                                                                                        await planService.deleteSubItinerary(widget.id, (int.parse(day?['day']) - 1), i);
+                                                                                        setState(() {
+                                                                                          _getPlan();
+                                                                                        });
 
-                                                                                      if (context.mounted) {
-                                                                                        Navigator.of(context).pop();
-                                                                                        Alert.successMessage("Kegiatan berhasil dihapus.", context);
+                                                                                        if (context.mounted) {
+                                                                                          Navigator.of(context).pop();
+                                                                                          Alert.successMessage("Kegiatan berhasil dihapus.", context);
+                                                                                        }
+                                                                                      } catch (e) {
+                                                                                        if (context.mounted) {
+                                                                                          Alert.alertValidation("Gagal Memperbarui Kegiatan, Mohon Coba Lagi Ya.", context);
+                                                                                        }
                                                                                       }
                                                                                     },
                                                                                   ),
@@ -492,7 +511,8 @@ class _DetailPlannerState extends State<DetailPlanner> {
               backgroundColor: Colors.white,
               foregroundColor: Colors.black,
               onPressed: () {
-                NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 3));
+                NavigationUtils.pushRemoveTransition(
+                    context, const MainScreen(page: 3));
               },
               child: const Padding(
                 padding: EdgeInsets.only(left: 6.0),

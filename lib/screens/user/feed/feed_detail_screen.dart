@@ -10,7 +10,6 @@ import 'package:tuktraapp/screens/user/feed/edit_feed_screen.dart';
 import 'package:tuktraapp/services/feed_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
 import 'package:tuktraapp/utils/navigation_utils.dart';
-import 'package:tuktraapp/utils/utils.dart';
 import 'package:tuktraapp/widgets/comment_card.dart';
 import 'package:tuktraapp/widgets/image_video_slider.dart';
 import 'package:tuktraapp/widgets/tags_card.dart';
@@ -35,17 +34,16 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
           widget.feedId, commentEditingController.text, uid, username);
 
       if (res != 'success') {
-        if (context.mounted) showSnackBar(context, res);
+        if (context.mounted) {
+          Alert.alertValidation(res, context);
+        }
       }
       setState(() {
         commentEditingController.text = "";
       });
     } catch (err) {
       if (context.mounted) {
-        showSnackBar(
-          context,
-          err.toString(),
-        );
+        Alert.alertValidation(err.toString(), context);
       }
     }
   }
@@ -55,15 +53,13 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
       await FeedService().deleteFeed(feedId);
       await FeedService().deleteFiles(title);
       if (context.mounted) {
-        NavigationUtils.pushRemoveTransition(context, const MainScreen(page: 4));
+        NavigationUtils.pushRemoveTransition(
+            context, const MainScreen(page: 4));
         Alert.successMessage('Berhasil menghapus feed.', context);
       }
     } catch (err) {
       if (context.mounted) {
-        showSnackBar(
-          context,
-          err.toString(),
-        );
+        Alert.alertValidation(err.toString(), context);
       }
     }
   }
@@ -124,7 +120,7 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Container (
+                                            SizedBox(
                                               width: 200,
                                               child: AutoSizeText(
                                                 snapshot.data!["title"],
@@ -202,9 +198,10 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                                                     context:
                                                                         context,
                                                                     builder:
-                                                                        (BuildContextcontext) {
+                                                                        (builderContext) {
                                                                       return AlertDialog(
-                                                                        backgroundColor: Colors.white,
+                                                                        backgroundColor:
+                                                                            Colors.white,
                                                                         title:
                                                                             const Text(
                                                                           'Apakah anda yakin ingin menghapus feed ini?',
@@ -372,12 +369,19 @@ class _FeedDetailScreenState extends State<FeedDetailScreen> {
                                           left: 16, right: 8),
                                       child: Row(
                                         children: [
-                                          const CircleAvatar(
-                                            backgroundImage: AssetImage(
-                                              'asset/images/default_profile.png',
-                                            ),
-                                            radius: 18,
-                                          ),
+                                          user.profile == null
+                                              ? const CircleAvatar(
+                                                  backgroundImage: AssetImage(
+                                                    'asset/images/default_profile.png',
+                                                  ),
+                                                  radius: 18,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundImage: NetworkImage(
+                                                    user.profile!,
+                                                  ),
+                                                  radius: 18,
+                                                ),
                                           Expanded(
                                             child: Padding(
                                               padding: const EdgeInsets.only(

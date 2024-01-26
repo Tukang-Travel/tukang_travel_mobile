@@ -72,8 +72,8 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
   }
 
   // initialny dibikin waktu yang dipilih sama user
-  Future<void> _selectTime(
-      BuildContext context, TextEditingController controller, int hour, int minute) async {
+  Future<void> _selectTime(BuildContext context,
+      TextEditingController controller, int hour, int minute) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: TimeOfDay(hour: hour, minute: minute),
@@ -91,7 +91,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
       // Handle invalid input format
       return ''; // or throw an exception
     }
-    
+
     List<String> timeParts = parts[0].split(":");
 
     int hour = int.parse(timeParts[0]);
@@ -123,23 +123,21 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
     transportIdx = searchSelected();
     startParts = startTimeController.text.split(":");
     endParts = endTimeController.text.split(":");
-
-    print('Transport: $transportIdx');
   }
 
   int searchSelected() {
     for (var t in _transportations) {
-      if(t.values.single == transportationController.text) {
+      if (t.values.single == transportationController.text) {
         return t.keys.single;
       }
     }
     return -1;
   }
+
   @override
   void initState() {
     super.initState();
 
-    print('plan id: ${widget.planId}');
     _getAllData();
   }
 
@@ -437,8 +435,11 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                         // ),
                         TextFormField(
                           controller: startTimeController,
-                          onTap: () =>
-                              _selectTime(context, startTimeController, int.parse(startParts[0]), int.parse(startParts[0])),
+                          onTap: () => _selectTime(
+                              context,
+                              startTimeController,
+                              int.parse(startParts[0]),
+                              int.parse(startParts[0])),
                           decoration: InputDecoration(
                             labelText: 'Pilih Waktu Awal',
                             hintText: 'Pilih Waktu Awal',
@@ -534,7 +535,8 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                         // ),
                         TextFormField(
                           controller: endTimeController,
-                          onTap: () => _selectTime(context, endTimeController, int.parse(endParts[0]), int.parse(endParts[0])),
+                          onTap: () => _selectTime(context, endTimeController,
+                              int.parse(endParts[0]), int.parse(endParts[0])),
                           decoration: InputDecoration(
                             labelText: 'Pilih Waktu Akhir',
                             hintText: 'Pilih Waktu Akhir',
@@ -611,7 +613,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
-                            labelText:  'Pilih Transportasi',
+                            labelText: 'Pilih Transportasi',
                             focusedBorder: OutlineInputBorder(
                               borderSide: const BorderSide(
                                 color: Color.fromARGB(128, 170, 188, 192),
@@ -712,28 +714,26 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
                     onPressed: () {
-                      if(titleTxt.text.isEmpty) {
+                      if (titleTxt.text.isEmpty) {
                         Alert.alertValidation('Judul harus diisi!', context);
-                      }
-                      else if(sourceTxt.text.isEmpty) {
-                        Alert.alertValidation('Lokasi Awal harus diisi!', context);
-                      }
-                      else if(destinationTxt.text.isEmpty) {
-                        Alert.alertValidation('Lokasi Destinasi harus diisi!', context);
-                      }
-                      else if (startTimeController.text.isEmpty ||
+                      } else if (sourceTxt.text.isEmpty) {
+                        Alert.alertValidation(
+                            'Lokasi Awal harus diisi!', context);
+                      } else if (destinationTxt.text.isEmpty) {
+                        Alert.alertValidation(
+                            'Lokasi Destinasi harus diisi!', context);
+                      } else if (startTimeController.text.isEmpty ||
                           endTimeController.text.isEmpty) {
                         Alert.alertValidation('Waktu harus dipilih!', context);
-                      // } else if (selectEndTime < selectStartTime) {
-                      //   Alert.alertValidation(
-                      //       'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
-                      //       context);
+                        // } else if (selectEndTime < selectStartTime) {
+                        //   Alert.alertValidation(
+                        //       'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
+                        //       context);
                       } else if (transportationController.text.isEmpty) {
-                        Alert.alertValidation('Transportasi harus dipilih!', context);
+                        Alert.alertValidation(
+                            'Transportasi harus dipilih!', context);
                       } else {
                         setState(() async {
-                          // print(convertToWib(startTimeController.text));
-                          // print(convertToWib(endTimeController.text));
                           Map<String, dynamic> itinerary = {
                             'title': titleTxt.text,
                             'source': sourceTxt.text,
@@ -745,18 +745,23 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                           };
 
                           isLoading = true;
-                          
-                          await planService.updateSubItinerary(widget.planId,
-                              widget.dayId, widget.id, itinerary);
-                          if (context.mounted) {
-                            NavigationUtils.pushRemoveTransition(
-                                context, DetailPlanner(id: widget.planId));
-                            Alert.successMessage('Kegiatan berhasil diperbaharui.', context);
-                          }
 
-                          print('startTimeController.text: ${startTimeController.text}');
-                          print('endTimeController.text: ${endTimeController.text}');
-                          print('transportationController.text: ${transportationController.text}');
+                          try {
+                            await planService.updateSubItinerary(widget.planId,
+                                widget.dayId, widget.id, itinerary);
+                            if (context.mounted) {
+                              NavigationUtils.pushRemoveTransition(
+                                  context, DetailPlanner(id: widget.planId));
+                              Alert.successMessage(
+                                  'Kegiatan berhasil diperbaharui.', context);
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              Alert.alertValidation(
+                                  "Gagal Memperbarui Kegiatan, Mohon Coba Lagi Ya.",
+                                  context);
+                            }
+                          }
                         });
                       }
                     },
@@ -771,10 +776,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                           horizontal: 20.0, vertical: 15.0),
                       child: Text(
                         'Ubah',
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          color: Colors.white
-                        ),
+                        style: TextStyle(fontSize: 18.0, color: Colors.white),
                       ),
                     ),
                   ),
@@ -792,7 +794,8 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
             backgroundColor: Colors.white,
             foregroundColor: Colors.black,
             onPressed: () {
-              NavigationUtils.pushRemoveTransition(context, DetailPlanner(id: widget.planId));
+              NavigationUtils.pushRemoveTransition(
+                  context, DetailPlanner(id: widget.planId));
             },
             child: const Padding(
               padding: EdgeInsets.only(left: 6.0),
