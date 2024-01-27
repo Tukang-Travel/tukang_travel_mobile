@@ -109,6 +109,7 @@ class UserService {
   Future<String> googleLoginRegister(String type) async {
     FirebaseAuth auth = FirebaseAuth.instance;
     final GoogleSignIn googleSignIn = GoogleSignIn();
+    await googleSignIn.signOut();
     final GoogleSignInAccount? googleSignInAccount =
         await googleSignIn.signIn();
     if (googleSignInAccount != null) {

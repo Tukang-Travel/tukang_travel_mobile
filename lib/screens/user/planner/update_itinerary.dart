@@ -47,6 +47,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
   TextEditingController titleTxt = TextEditingController();
   TextEditingController sourceTxt = TextEditingController();
   TextEditingController destinationTxt = TextEditingController();
+  TextEditingController budgetTxt = TextEditingController(text: '0');
   TextEditingController startTimeController = TextEditingController();
   TextEditingController endTimeController = TextEditingController();
   TextEditingController transportationController = TextEditingController();
@@ -119,6 +120,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
     startTimeController.text = widget.startTime;
     endTimeController.text = widget.endTime;
     transportationController.text = widget.transportation;
+    budgetTxt.text = widget.transportationCost.toString();
     budget = widget.transportationCost;
     transportIdx = searchSelected();
     startParts = startTimeController.text.split(":");
@@ -664,9 +666,18 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                                 )
                               ]),
                           child: TextFormField(
-                            controller:
-                                TextEditingController(text: budget.toString()),
+                            controller: budgetTxt,
                             keyboardType: TextInputType.number,
+                            onEditingComplete: () {
+                              setState(() {
+                                budget = int.tryParse(budgetTxt.text) ?? budget;
+                              });
+                            },
+                            onTapOutside: (event) {
+                              setState(() {
+                                budget = int.tryParse(budgetTxt.text) ?? budget;
+                              });
+                            },
                             inputFormatters: <TextInputFormatter>[
                               FilteringTextInputFormatter.digitsOnly
                             ],
@@ -676,7 +687,10 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                                     Icons.remove_circle_outline_rounded),
                                 onPressed: () {
                                   setState(() {
-                                    budget = (budget > 0) ? budget - 100000 : 0;
+                                    budget = (int.tryParse(budgetTxt.text)! > 0)
+                                        ? int.tryParse(budgetTxt.text)! - 100000
+                                        : 0;
+                                    budgetTxt.text = budget.toString();
                                   });
                                 },
                               ),
@@ -698,7 +712,9 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                                     Icons.add_circle_outline_rounded),
                                 onPressed: () {
                                   setState(() {
-                                    budget = budget + 100000;
+                                    budget =
+                                        int.tryParse(budgetTxt.text)! + 100000;
+                                    budgetTxt.text = budget.toString();
                                   });
                                 },
                               ),

@@ -48,10 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SingleChildScrollView(
-            child: Column(
-      children: [
-        StreamBuilder(
+      body: StreamBuilder(
           stream: FirebaseFirestore.instance
               .collection('users')
               .doc(userService.currUser!.uid)
@@ -64,151 +61,179 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
             }
 
-            return Column(
-              children: [
-                user?['profile'] == null ?
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 80.0,
-                      top: 80.0,
-                      right: 80.0,
-                      bottom: 20.0,
-                    ),
-                    child: Image.asset(
-                      'asset/images/default_profile.png',
-                      width: 150,
-                      height: 150,
-                    ),
-                  ),
-                )
-                :
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 80.0,
-                      top: 80.0,
-                      right: 80.0,
-                      bottom: 20.0,
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100.0),
-                      child: Image.network(
-                        user?['profile'],
-                        width: 100,
-                        height: 100,
+            return NestedScrollView(
+                headerSliverBuilder:
+                    (BuildContext context, bool innerBoxIsScrolled) {
+                  return <Widget>[
+                    SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 16.0,
+                              top: 16.0,
+                              right: 16.0,
+                              bottom: 0.0,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                user?['profile'] == null
+                                    ? Align(
+                                        alignment: Alignment.topCenter,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 80.0,
+                                            top: 80.0,
+                                            right: 80.0,
+                                            bottom: 20.0,
+                                          ),
+                                          child: Image.asset(
+                                            'asset/images/default_profile.png',
+                                            width: 150,
+                                            height: 150,
+                                          ),
+                                        ),
+                                      )
+                                    : Align(
+                                        alignment: Alignment.topCenter,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 80.0,
+                                            top: 80.0,
+                                            right: 80.0,
+                                            bottom: 20.0,
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(100.0),
+                                            child: Image.network(
+                                              user?['profile'],
+                                              width: 100,
+                                              height: 100,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                Text(
+                                  '${user?['name']}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 25.0,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 10.0,
+                                ),
+                                Text(
+                                  '@${user?['username']}',
+                                ),
+                                const SizedBox(
+                                  height: 15.0,
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    String profile = "";
+                                    if (user?['profile'] != null) {
+                                      setState(() {
+                                        profile = user?['profile'];
+                                      });
+                                    }
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => EditProfileScreen(
+                                          profile: profile,
+                                          userId: userService.currUser!.uid,
+                                          initialName: snapshot.data!["name"],
+                                          initialUsername:
+                                              snapshot.data!["username"],
+                                          initialEmail: snapshot.data!["email"],
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 82, 114, 255),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 55.0,
+                                      vertical: 15.0,
+                                    ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
+                                  ),
+                                  child: const Text(
+                                    'Ubah Profil',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 15.0,
+                                ),
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await userService.logout();
+                                    if (context.mounted) {
+                                      NavigationUtils.pushRemoveTransition(
+                                          context, const LoginScreen());
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.white,
+                                    foregroundColor: Colors.black,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 55.0, vertical: 15.0),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(20.0)),
+                                  ),
+                                  child: RichText(
+                                    text: const TextSpan(
+                                      text: 'Keluar ',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 15.0,
+                                      ),
+                                      children: [
+                                        WidgetSpan(
+                                            child: Icon(Icons.logout_rounded))
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 25.0,
+                                ),
+                                const Divider(
+                                  color: Colors.grey,
+                                  thickness: 1.0,
+                                ),
+                                const Center(
+                                  child: Text(
+                                    "Feed",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 20.0,
+                                    ),
+                                  ),
+                                ),
+                                const Divider(
+                                  color: Colors.grey,
+                                  thickness: 1.0,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                ),
-                Text(
-                  '${user?['name']}',
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 25.0,
-                  ),
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Text(
-                  '@${user?['username']}',
-                ),
-                const SizedBox(
-                  height: 15.0,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    String profile = "";
-                    if(user?['profile'] != null) {
-                      setState(() {
-                        profile = user?['profile'];
-                      });
-                    }
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => EditProfileScreen(
-                          profile: profile,
-                          userId: userService.currUser!.uid,
-                          initialName: snapshot.data!["name"],
-                          initialUsername: snapshot.data!["username"],
-                          initialEmail: snapshot.data!["email"],
-                        ),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 82, 114, 255),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 55.0,
-                      vertical: 15.0,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                  ),
-                  child: const Text(
-                    'Ubah Profil',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                const SizedBox(
-                  height: 15.0,
-                ),
-                ElevatedButton(
-                  onPressed: () async {
-                    await userService.logout();
-                    if (context.mounted) {
-                      NavigationUtils.pushRemoveTransition(
-                          context, const LoginScreen());
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 55.0, vertical: 15.0),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0)),
-                  ),
-                  child: RichText(
-                    text: const TextSpan(
-                      text: 'Keluar ',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15.0,
-                      ),
-                      children: [WidgetSpan(child: Icon(Icons.logout_rounded))],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 25.0,
-                ),
-
-                const Divider(
-                  color: Colors.grey,
-                  thickness: 1.0,
-                ),
-                const Center(
-                  child: Text(
-                    "Feed",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 20.0,
-                    ),
-                  ),
-                ),
-                const Divider(
-                  color: Colors.grey,
-                  thickness: 1.0,
-                ),
-
-                Padding(
+                    )
+                  ];
+                },
+                body: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
                   child: StreamBuilder(
                     stream: FirebaseFirestore.instance
@@ -226,7 +251,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       }
 
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return const Text('Belum Ada Feed yang diupload');
+                        return const Center(child: Text('Belum Ada Feed yang diupload'));
                       }
 
                       return GridView.builder(
@@ -281,14 +306,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     },
                   ),
-                ),
-                const SizedBox(height: 100,)
-              ],
-            );
-          },
-        ),
-      ],
-    )));
+                ));
+          }),
+    );
   }
 
   String _getFirstImage(List<dynamic> content) {

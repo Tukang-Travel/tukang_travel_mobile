@@ -18,6 +18,8 @@ class _InsertPlannerState extends State<InsertPlanner> {
   TextEditingController titleTxt = TextEditingController();
   TextEditingController sourceTxt = TextEditingController();
   TextEditingController destinationTxt = TextEditingController();
+  TextEditingController budgetTxt = TextEditingController(text: '0');
+  TextEditingController bykOrgTxt = TextEditingController(text: '0');
   final TextEditingController _dateStartController = TextEditingController();
   final TextEditingController _dateEndController = TextEditingController();
 
@@ -466,8 +468,19 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                     )
                                   ]),
                               child: TextFormField(
-                                controller: TextEditingController(
-                                    text: budget.toString()),
+                                controller: budgetTxt,
+                                onEditingComplete: () {
+                                  setState(() {
+                                    budget =
+                                        int.tryParse(budgetTxt.text) ?? budget;
+                                  });
+                                },
+                                onTapOutside: (value) {
+                                  setState(() {
+                                    budget =
+                                        int.tryParse(budgetTxt.text) ?? budget;
+                                  });
+                                },
                                 keyboardType: TextInputType.number,
                                 inputFormatters: <TextInputFormatter>[
                                   FilteringTextInputFormatter.digitsOnly
@@ -479,7 +492,12 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                     onPressed: () {
                                       setState(() {
                                         budget =
-                                            (budget > 0) ? budget - 100000 : 0;
+                                            (int.tryParse(budgetTxt.text)! > 0)
+                                                ? int.tryParse(
+                                                        budgetTxt.text)! -
+                                                    100000
+                                                : 0;
+                                        budgetTxt.text = budget.toString();
                                       });
                                     },
                                   ),
@@ -503,7 +521,9 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                         Icons.add_circle_outline_rounded),
                                     onPressed: () {
                                       setState(() {
-                                        budget = budget + 100000;
+                                        budget = int.tryParse(budgetTxt.text)! +
+                                            100000;
+                                        budgetTxt.text = budget.toString();
                                       });
                                     },
                                   ),
@@ -551,9 +571,22 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                     )
                                   ]),
                               child: TextFormField(
-                                controller: TextEditingController(
-                                    text: numOfPeople.toString()),
+                                controller: bykOrgTxt,
                                 keyboardType: TextInputType.number,
+                                onEditingComplete: () {
+                                  setState(() {
+                                    numOfPeople =
+                                        int.tryParse(bykOrgTxt.text) ??
+                                            numOfPeople;
+                                  });
+                                },
+                                onTapOutside: (event) {
+                                  setState(() {
+                                    numOfPeople =
+                                        int.tryParse(bykOrgTxt.text) ??
+                                            numOfPeople;
+                                  });
+                                },
                                 inputFormatters: <TextInputFormatter>[
                                   FilteringTextInputFormatter.digitsOnly
                                 ],
@@ -563,9 +596,12 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                         Icons.remove_circle_outline_rounded),
                                     onPressed: () {
                                       setState(() {
-                                        numOfPeople = (numOfPeople > 0)
-                                            ? numOfPeople - 1
+                                        numOfPeople = (int.tryParse(
+                                                    bykOrgTxt.text)! >
+                                                0)
+                                            ? int.tryParse(bykOrgTxt.text)! - 1
                                             : 0;
+                                        bykOrgTxt.text = numOfPeople.toString();
                                       });
                                     },
                                   ),
@@ -589,7 +625,9 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                         Icons.add_circle_outline_rounded),
                                     onPressed: () {
                                       setState(() {
-                                        numOfPeople = numOfPeople + 1;
+                                        numOfPeople =
+                                            int.tryParse(bykOrgTxt.text)! + 1;
+                                        bykOrgTxt.text = numOfPeople.toString();
                                       });
                                     },
                                   ),
@@ -645,7 +683,9 @@ class _InsertPlannerState extends State<InsertPlanner> {
                                       'Rencana berhasil ditambahkan.', context);
                                 } catch (e) {
                                   if (context.mounted) {
-                                    Alert.alertValidation("Gagal Menambahkan Rencana, Mohon Coba Lagi Ya.", context);
+                                    Alert.alertValidation(
+                                        "Gagal Menambahkan Rencana, Mohon Coba Lagi Ya.",
+                                        context);
                                   }
                                 }
                               });
