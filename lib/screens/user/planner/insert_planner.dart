@@ -656,9 +656,15 @@ class _InsertPlannerState extends State<InsertPlanner> {
                             } else if (_dateStartController.text.isEmpty) {
                               Alert.alertValidation(
                                   'Tanggal Awal harus diisi!', context);
+                            } else if(_selectedStartDate!.isBefore(DateTime.now())) {
+                              Alert.alertValidation(
+                                  'Pilihan tanggal harus sama atau setelah hari ini!', context);
                             } else if (_dateEndController.text.isEmpty) {
                               Alert.alertValidation(
                                   'Tanggal Akhir harus diisi!', context);
+                            } else if(_selectedEndDate!.isBefore(_selectedStartDate!)) {
+                              Alert.alertValidation(
+                                  'Tanggal akhir tidak bisa sebelum tanggal awal!', context);
                             } else if (budget == 0) {
                               Alert.alertValidation(
                                   'Anggaran harus lebih dari 0!', context);

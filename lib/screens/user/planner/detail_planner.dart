@@ -475,15 +475,25 @@ class _DetailPlannerState extends State<DetailPlanner> {
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
                     onPressed: () {
-                      NavigationUtils.pushTransition(
-                          context,
-                          InsertItinerary(
-                              id: widget.id,
-                              planTitle: plan['title'],
-                              day: days == null
-                                  ? "1"
-                                  : (days.length + 1).toString(),
-                              type: 'full'));
+                      DateTime startDate = DateTime.parse(plan['startDate']);
+                      DateTime endDate = DateTime.parse(plan['endDate']);
+
+                      // Calculate the difference in days
+                      int diff = endDate.difference(startDate).inDays;
+                      if(days!.length >= diff) {
+                        Alert.alertValidation('Anda tidak dapat menambahkan hari lagi karena perjalanan Anda hanya berlangsung selama $diff hari!', context);
+                      }
+                      else {
+                        NavigationUtils.pushTransition(
+                        context,
+                        InsertItinerary(
+                            id: widget.id,
+                            planTitle: plan['title'],
+                            day: days == null
+                                ? "1"
+                                : (days.length + 1).toString(),
+                            type: 'full'));
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                         backgroundColor:
