@@ -22,7 +22,7 @@ class PlanService {
     try {
       Query<Map<String, dynamic>> plansQuery = FirebaseFirestore.instance
           .collection('planners')
-          .where('userid', isEqualTo: userId);
+          .where('userid', isEqualTo: userId).orderBy('date', descending: true);
 
       QuerySnapshot<Map<String, dynamic>> querySnapshot =
           await plansQuery.get();
