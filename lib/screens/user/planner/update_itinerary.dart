@@ -74,15 +74,21 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
   }
 
   // initialny dibikin waktu yang dipilih sama user
-  Future<void> _selectTime(BuildContext context,
-      TextEditingController controller, int hour, int minute) async {
-    final TimeOfDay? picked = await showTimePicker(
+  Future<void> _selectTime(
+      BuildContext context, TextEditingController controller) async {
+    TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay(hour: hour, minute: minute),
+      initialTime: TimeOfDay.now(),
     );
 
-    if (picked != null && context.mounted) {
-      controller.text = picked.format(context);
+    if (picked != null) {
+      DateTime tempDate =
+          DateFormat("HH:mm").parse("${picked.hour}:${picked.minute}");
+      var dateFormat = DateFormat("h:mm a");
+      var formatedTime = dateFormat.format(tempDate);
+      if (context.mounted) {
+        controller.text = formatedTime;
+      }
     }
   }
 
@@ -452,11 +458,8 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                         // ),
                         TextFormField(
                           controller: startTimeController,
-                          onTap: () => _selectTime(
-                              context,
-                              startTimeController,
-                              int.parse(startParts[0]),
-                              int.parse(startParts[0])),
+                          onTap: () =>
+                              _selectTime(context, startTimeController),
                           decoration: InputDecoration(
                             labelText: 'Pilih Waktu Awal',
                             hintText: 'Pilih Waktu Awal',
@@ -552,8 +555,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                         // ),
                         TextFormField(
                           controller: endTimeController,
-                          onTap: () => _selectTime(context, endTimeController,
-                              int.parse(endParts[0]), int.parse(endParts[0])),
+                          onTap: () => _selectTime(context, endTimeController),
                           decoration: InputDecoration(
                             labelText: 'Pilih Waktu Akhir',
                             hintText: 'Pilih Waktu Akhir',

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:tuktraapp/services/plan_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
+import 'package:tuktraapp/utils/date_time_extension.dart';
 
 class InsertPlanner extends StatefulWidget {
   const InsertPlanner({super.key});
@@ -656,18 +657,16 @@ class _InsertPlannerState extends State<InsertPlanner> {
                             } else if (_dateStartController.text.isEmpty) {
                               Alert.alertValidation(
                                   'Tanggal Awal harus diisi!', context);
-                            } else if (_selectedStartDate!.day <
-                                DateTime.now().day) {
+                            } else if (_selectedStartDate!.date
+                                .isBefore(DateTime.now().date)) {
                               Alert.alertValidation(
                                   'Pilihan tanggal harus sama atau setelah hari ini!',
                                   context);
                             } else if (_dateEndController.text.isEmpty) {
                               Alert.alertValidation(
                                   'Tanggal Akhir harus diisi!', context);
-                            } else if (_selectedEndDate!.day <
-                                    DateTime.now().day ||
-                                _selectedEndDate!.day <
-                                    _selectedStartDate!.day) {
+                            } else if (_selectedEndDate!.date
+                                .isBefore(_selectedStartDate!.date)) {
                               Alert.alertValidation(
                                   'Tanggal akhir tidak bisa sebelum tanggal awal!',
                                   context);
