@@ -252,7 +252,7 @@ class _OwnerProfileScreenState extends State<OwnerProfileScreen> {
                       }
 
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return const Text('Belum Ada Pedia yang diupload');
+                        return const Center(child: Text('Belum Ada Pedia yang diupload'));
                       }
 
                       return GridView.builder(
