@@ -73,7 +73,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
 
   @override
   Widget build(BuildContext context) {
-    List<Map<String, dynamic>>? days;
+    List<Map<String, dynamic>> days = [];
     if (plan.containsKey('days')) {
       days = (plan['days'] as List).cast<Map<String, dynamic>>();
     }
@@ -183,7 +183,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                days == null
+                                days.isEmpty
                                     ? const Center(
                                         child: Column(
                                           children: [
@@ -212,7 +212,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                         physics:
                                             const NeverScrollableScrollPhysics(),
                                         itemBuilder: (context, index) {
-                                          var day = days?[index];
+                                          var day = days[index];
                                           return Column(
                                             children: [
                                               Padding(
@@ -223,7 +223,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                     SizedBox(
                                                       width: 200,
                                                       child: Text(
-                                                        'Hari ${day?['day']}',
+                                                        'Hari ${day['day']}',
                                                         style: const TextStyle(
                                                           fontWeight:
                                                               FontWeight.w800,
@@ -252,7 +252,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                   id: widget.id,
                                                                   planTitle: plan[
                                                                       'title'],
-                                                                  day: day?[
+                                                                  day: day[
                                                                       'day'],
                                                                   type: 'sub'));
                                                         },
@@ -272,7 +272,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                   children: [
                                                     for (var i = 0;
                                                         i <
-                                                            day?['itineraries']
+                                                            day['itineraries']
                                                                 .length;
                                                         i++)
                                                       Container(
@@ -307,7 +307,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                       .start,
                                                               children: [
                                                                 Text(
-                                                                  day?['itineraries']
+                                                                  day['itineraries']
                                                                               [
                                                                               i]
                                                                           [
@@ -321,10 +321,10 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                           16.0),
                                                                 ),
                                                                 Text(
-                                                                    '${day?['itineraries'][i]['source']} - ${day?['itineraries'][i]['destination']}'),
+                                                                    '${day['itineraries'][i]['source']} - ${day['itineraries'][i]['destination']}'),
                                                                 Text(
-                                                                    '${day?['itineraries'][i]['startTime']} - ${day?['itineraries'][i]['endTime']}'),
-                                                                Text(day?['itineraries']
+                                                                    '${day['itineraries'][i]['startTime']} - ${day['itineraries'][i]['endTime']}'),
+                                                                Text(day['itineraries']
                                                                             [i][
                                                                         'transportation'] ??
                                                                     ''),
@@ -333,7 +333,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                   locale:
                                                                       'id_ID',
                                                                   symbol: 'Rp',
-                                                                ).format(day?['itineraries'][i]['transportation_cost'])}'),
+                                                                ).format(day['itineraries'][i]['transportation_cost'])}'),
                                                                 const SizedBox(
                                                                     width:
                                                                         20.0),
@@ -354,17 +354,17 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                           NavigationUtils.pushRemoveTransition(
                                                                               context,
                                                                               UpdateItinerary(
-                                                                                dayId: (int.parse(day?['day']) - 1),
+                                                                                dayId: (int.parse(day['day']) - 1),
                                                                                 id: i,
                                                                                 planId: widget.id,
                                                                                 planTitle: plan['title'],
-                                                                                title: day?['itineraries'][i]['title'],
-                                                                                source: day?['itineraries'][i]['source'],
-                                                                                destination: day?['itineraries'][i]['destination'],
-                                                                                startTime: convertToAmPm(day?['itineraries'][i]['startTime']),
-                                                                                endTime: convertToAmPm(day?['itineraries'][i]['endTime']),
-                                                                                transportation: day?['itineraries'][i]['transportation'],
-                                                                                transportationCost: day?['itineraries'][i]['transportation_cost'],
+                                                                                title: day['itineraries'][i]['title'],
+                                                                                source: day['itineraries'][i]['source'],
+                                                                                destination: day['itineraries'][i]['destination'],
+                                                                                startTime: convertToAmPm(day['itineraries'][i]['startTime']),
+                                                                                endTime: convertToAmPm(day['itineraries'][i]['endTime']),
+                                                                                transportation: day['itineraries'][i]['transportation'],
+                                                                                transportationCost: day['itineraries'][i]['transportation_cost'],
                                                                               ));
                                                                         },
                                                                         child:
@@ -395,7 +395,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                 (BuildContext context) {
                                                                               return AlertDialog(
                                                                                 content: Text(
-                                                                                  'Apakah anda yakin untuk menghapus rencana "${day?['itineraries'][i]['title']}"?',
+                                                                                  'Apakah anda yakin untuk menghapus rencana "${day['itineraries'][i]['title']}"?',
                                                                                   style: const TextStyle(fontWeight: FontWeight.w500),
                                                                                 ),
                                                                                 actions: <Widget>[
@@ -418,7 +418,7 @@ class _DetailPlannerState extends State<DetailPlanner> {
                                                                                     ),
                                                                                     onPressed: () async {
                                                                                       try {
-                                                                                        await planService.deleteSubItinerary(widget.id, (int.parse(day?['day']) - 1), i);
+                                                                                        await planService.deleteSubItinerary(widget.id, (int.parse(day['day']) - 1), i);
                                                                                         setState(() {
                                                                                           _getPlan();
                                                                                         });
@@ -475,16 +475,24 @@ class _DetailPlannerState extends State<DetailPlanner> {
                 alignment: Alignment.bottomRight,
                 child: ElevatedButton(
                     onPressed: () {
-                      if(days == null) {
+                      DateTime startDate = DateTime.parse(plan['startDate']);
+                      DateTime endDate = DateTime.parse(plan['endDate']);
+
+                      // Calculate the difference in days
+                      int diff = endDate.difference(startDate).inDays;
+                      if(days!.length >= diff) {
+                        Alert.alertValidation('Anda tidak dapat menambahkan hari lagi karena perjalanan Anda hanya berlangsung selama $diff hari!', context);
+                      }
+                      else {
                         NavigationUtils.pushTransition(
-                        context,
-                        InsertItinerary(
-                            id: widget.id,
-                            planTitle: plan['title'],
-                            day: days == null
-                                ? "1"
-                                : (days.length + 1).toString(),
-                            type: 'full'));
+                            context,
+                            InsertItinerary(
+                                id: widget.id,
+                                planTitle: plan['title'],
+                                day: days.isEmpty
+                                    ? "1"
+                                    : (days.length + 1).toString(),
+                                type: 'full'));
                       }
                       else {
                         DateTime startDate = DateTime.parse(plan['startDate']);

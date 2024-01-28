@@ -110,11 +110,11 @@ class _OwnerPediaScreenState extends State<OwnerPediaScreen> {
                     }
 
                     if (snapshot.hasError) {
-                      return Text('Error: ${snapshot.error}');
+                      return Text('Terjadi Kesalahan, Silahkan Coba Lagi Ya: ${snapshot.error}');
                     }
 
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                      return const Text('No data available');
+                      return const Text('Belum Ada Pedia Nih.');
                     }
 
                     return Align(

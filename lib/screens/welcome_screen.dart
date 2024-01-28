@@ -95,16 +95,20 @@ class _WelcomeScreenState extends State<WelcomeScreen>
         ),
         Positioned(
           bottom: 30.0,
-          left: MediaQuery.of(context).size.width / 2 - 157,
+          width:
+              MediaQuery.of(context).size.width, // Make button row full width
           child: Row(
+            mainAxisAlignment:
+                MainAxisAlignment.center, // Center buttons horizontally
             children: [
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
+                style: ElevatedButton.styleFrom(  
                   backgroundColor: Colors.black,
                   elevation: 5,
                   shadowColor: Colors.black,
                   padding: const EdgeInsets.symmetric(
-                      vertical: 15.0, horizontal: 10.0),
+                      vertical: 15.0,
+                      horizontal: 20.0), // Increase horizontal padding
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0)),
                 ),
@@ -126,7 +130,8 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                   elevation: 5,
                   shadowColor: Colors.black,
                   padding: const EdgeInsets.symmetric(
-                      vertical: 15.0, horizontal: 10.0),
+                      vertical: 15.0,
+                      horizontal: 20.0), // Increase horizontal padding
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0)),
                 ),

@@ -35,7 +35,7 @@ class PlanService {
 
       return planList;
     } catch (e) {
-      return null;
+      return [];
     }
   }
 

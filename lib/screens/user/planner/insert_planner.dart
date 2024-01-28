@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:tuktraapp/services/plan_service.dart';
 import 'package:tuktraapp/services/user_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
+import 'package:tuktraapp/utils/date_time_extension.dart';
 
 class InsertPlanner extends StatefulWidget {
   const InsertPlanner({super.key});
@@ -642,7 +643,7 @@ class _InsertPlannerState extends State<InsertPlanner> {
                     Align(
                       alignment: Alignment.bottomRight,
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           if (formKey.currentState!.validate()) {
                             if (titleTxt.text.isEmpty) {
                               Alert.alertValidation(
@@ -656,15 +657,19 @@ class _InsertPlannerState extends State<InsertPlanner> {
                             } else if (_dateStartController.text.isEmpty) {
                               Alert.alertValidation(
                                   'Tanggal Awal harus diisi!', context);
-                            } else if(_selectedStartDate!.isBefore(DateTime.now())) {
+                            } else if (_selectedStartDate!.date
+                                .isBefore(DateTime.now().date)) {
                               Alert.alertValidation(
-                                  'Pilihan tanggal harus sama atau setelah hari ini!', context);
+                                  'Pilihan tanggal harus sama atau setelah hari ini!',
+                                  context);
                             } else if (_dateEndController.text.isEmpty) {
                               Alert.alertValidation(
                                   'Tanggal Akhir harus diisi!', context);
-                            } else if(_selectedEndDate!.isBefore(_selectedStartDate!)) {
+                            } else if (_selectedEndDate!.date
+                                .isBefore(_selectedStartDate!.date)) {
                               Alert.alertValidation(
-                                  'Tanggal akhir tidak bisa sebelum tanggal awal!', context);
+                                  'Tanggal akhir tidak bisa sebelum tanggal awal!',
+                                  context);
                             } else if (budget == 0) {
                               Alert.alertValidation(
                                   'Anggaran harus lebih dari 0!', context);
@@ -674,27 +679,29 @@ class _InsertPlannerState extends State<InsertPlanner> {
                             } else {
                               setState(() {
                                 isLoading = true;
-                                try {
-                                  planService.insertPlanner(
-                                      titleTxt.text,
-                                      sourceTxt.text,
-                                      destinationTxt.text,
-                                      _dateStartController.text,
-                                      _dateEndController.text,
-                                      budget,
-                                      numOfPeople,
-                                      UserService().currUser!.uid);
+                              });
+                              try {
+                                await planService.insertPlanner(
+                                    titleTxt.text,
+                                    sourceTxt.text,
+                                    destinationTxt.text,
+                                    _dateStartController.text,
+                                    _dateEndController.text,
+                                    budget,
+                                    numOfPeople,
+                                    UserService().currUser!.uid);
+                                if (context.mounted) {
                                   Navigator.of(context).pop();
                                   Alert.successMessage(
                                       'Rencana berhasil ditambahkan.', context);
-                                } catch (e) {
-                                  if (context.mounted) {
-                                    Alert.alertValidation(
-                                        "Gagal Menambahkan Rencana, Mohon Coba Lagi Ya.",
-                                        context);
-                                  }
                                 }
-                              });
+                              } catch (e) {
+                                if (context.mounted) {
+                                  Alert.alertValidation(
+                                      "Gagal Menambahkan Rencana, Mohon Coba Lagi Ya.",
+                                      context);
+                                }
+                              }
                             }
                           }
                         },

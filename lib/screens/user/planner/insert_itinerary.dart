@@ -104,6 +104,20 @@ class _InsertItineraryState extends State<InsertItinerary> {
     });
   }
 
+  Future<bool> validateTime() async {
+    DateFormat format = DateFormat("h:mm a");
+    DateTime startTime = format.parse(startTimeController.text);
+    DateTime endTime = format.parse(endTimeController.text);
+
+    if (startTime.isAfter(endTime)) {
+      Alert.alertValidation(
+          'Waktu awal tidak bisa lebih besar tadi waktu akhir!', context);
+      return false;
+    }
+
+    return true;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -602,7 +616,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
                           padding: const EdgeInsets.only(left: 5.0),
                           child: RichText(
                             text: const TextSpan(
-                              text: 'Biaya Transportasi ',
+                              text: 'Biaya Perjalanan',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.w600,
@@ -656,7 +670,7 @@ class _InsertItineraryState extends State<InsertItinerary> {
                                   });
                                 },
                               ),
-                              labelText: 'Biaya Transportasi',
+                              labelText: 'Biaya Perjalanan',
                               focusedBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(
                                       color: Color.fromARGB(128, 170, 188, 192),
@@ -703,66 +717,55 @@ class _InsertItineraryState extends State<InsertItinerary> {
                       } else if (startTimeController.text.isEmpty ||
                           endTimeController.text.isEmpty) {
                         Alert.alertValidation('Waktu harus dipilih!', context);
-                        // } else if (selectEndTime < selectStartTime) {
-                        //   Alert.alertValidation(
-                        //       'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
-                        //       context);
                       } else if (selectTransportation == 0) {
                         Alert.alertValidation(
                             'Transportasi harus dipilih!', context);
                       } else {
+                        bool isValidTime = await validateTime();
+                        if (!isValidTime) {
+                          return;
+                        }
+
                         if (widget.type == "full") {
                           setState(() {
-                            itinerary = [
-                              {
-                                'title': titleTxt.text,
-                                'source': sourceTxt.text,
-                                'destination': destinationTxt.text,
-                                'startTime':
-                                    convertToWib(startTimeController.text),
-                                'endTime': convertToWib(endTimeController.text),
-                                'transportation': transportationController.text,
-                                'transportation_cost': budget,
-                              },
-                            ];
-
-                            days = [
-                              {
-                                'day': widget.day,
-                                'itineraries': itinerary,
-                              },
-                            ];
-                            itinerary = [
-                              {
-                                'title': titleTxt.text,
-                                'source': sourceTxt.text,
-                                'destination': destinationTxt.text,
-                                'startTime':
-                                    convertToWib(startTimeController.text),
-                                'endTime': convertToWib(endTimeController.text),
-                                'transportation': transportationController.text,
-                                'transportation_cost': budget,
-                              },
-                            ];
-
-                            days = [
-                              {
-                                'day': widget.day,
-                                'itineraries': itinerary,
-                              },
-                            ];
                             isLoading = true;
-                            try {
-                              planService.insertItinerary(widget.id, days);
-                            } catch (e) {
-                              if (context.mounted) {
-                                Alert.alertValidation(
-                                    "Gagal Menambahkan Kegiatan, Mohon Coba Lagi Ya.",
-                                    context);
-                              }
-                            }
                           });
+                          itinerary = [
+                            {
+                              'title': titleTxt.text,
+                              'source': sourceTxt.text,
+                              'destination': destinationTxt.text,
+                              'startTime':
+                                  convertToWib(startTimeController.text),
+                              'endTime': convertToWib(endTimeController.text),
+                              'transportation': transportationController.text,
+                              'transportation_cost': budget,
+                            },
+                          ];
+
+                          days = [
+                            {
+                              'day': widget.day,
+                              'itineraries': itinerary,
+                            },
+                          ];
+                          try {
+                            await planService.insertItinerary(widget.id, days);
+                          } catch (e) {
+                            if (context.mounted) {
+                              Alert.alertValidation(
+                                  "Gagal Menambahkan Kegiatan, Mohon Coba Lagi Ya.",
+                                  context);
+                            }
+                          } finally {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
                         } else if (widget.type == "sub") {
+                          setState(() {
+                            isLoading = true;
+                          });
                           subItinerary = {
                             'title': titleTxt.text,
                             'source': sourceTxt.text,
@@ -772,8 +775,20 @@ class _InsertItineraryState extends State<InsertItinerary> {
                             'transportation': transportationController.text,
                             'transportation_cost': budget,
                           };
-                          await planService.insertSubItinerary(
-                              widget.id, widget.day, subItinerary);
+                          try {
+                            await planService.insertSubItinerary(
+                                widget.id, widget.day, subItinerary);
+                          } catch (e) {
+                            if (context.mounted) {
+                              Alert.alertValidation(
+                                  "Gagal Menambahkan Kegiatan, Mohon Coba Lagi Ya.",
+                                  context);
+                            }
+                          } finally {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          }
                         }
 
                         if (context.mounted) {
