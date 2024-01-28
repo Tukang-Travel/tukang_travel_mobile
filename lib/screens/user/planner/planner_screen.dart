@@ -144,6 +144,12 @@ class _PlannerScreenState extends State<PlannerScreen> {
                     );
                   }
 
+                  planners.sort((a, b) {
+                    Timestamp timestampA = a['date'];
+                    Timestamp timestampB = b['date'];
+                    return timestampB.compareTo(timestampA);
+                  });
+
                   return SizedBox(
                     height: h * 0.55,
                     child: ListView.builder(
