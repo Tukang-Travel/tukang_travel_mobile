@@ -24,7 +24,17 @@ class _PlannerScreenState extends State<PlannerScreen> {
       getPlansStream() async* {
     while (true) {
       await Future.delayed(const Duration(seconds: 1));
-      yield await planService.getPlans(userService.currUser!.uid);
+      List<QueryDocumentSnapshot<Map<String, dynamic>>>? plans =
+          await planService.getPlans(userService.currUser!.uid);
+
+      // Sort the plans based on the "date" field in descending order
+      plans?.sort((a, b) {
+        Timestamp aTimestamp = a['date'] as Timestamp;
+        Timestamp bTimestamp = b['date'] as Timestamp;
+        return bTimestamp.compareTo(aTimestamp);
+      });
+
+      yield plans;
     }
   }
 
@@ -35,35 +45,34 @@ class _PlannerScreenState extends State<PlannerScreen> {
 
     return Scaffold(
       appBar: AppBar(
-          centerTitle: false,
-          title: Row(
-                children: [
-                  const Text(
-                    'Rencana Perjalanan',
-                    style: TextStyle(
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 8.0,
-                  ),
-                  ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100.0)),
-                          backgroundColor:
-                              const Color.fromARGB(255, 82, 114, 255)),
-                      onPressed: () {
-                        NavigationUtils.pushTransition(
-                            context, const InsertPlanner());
-                      },
-                      child: const Icon(
-                        Icons.add,
-                        color: Colors.white,
-                      ))
-                ],
+        centerTitle: false,
+        title: Row(
+          children: [
+            const Text(
+              'Rencana Perjalanan',
+              style: TextStyle(
+                fontSize: 25.0,
+                fontWeight: FontWeight.w900,
               ),
+            ),
+            const SizedBox(
+              width: 8.0,
+            ),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100.0)),
+                    backgroundColor: const Color.fromARGB(255, 82, 114, 255)),
+                onPressed: () {
+                  NavigationUtils.pushTransition(
+                      context, const InsertPlanner());
+                },
+                child: const Icon(
+                  Icons.add,
+                  color: Colors.white,
+                ))
+          ],
+        ),
       ),
       body: SafeArea(
           child: Padding(
@@ -116,7 +125,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Center(
-                      child: Text('Error: ${snapshot.error}'),
+                      child: Text(
+                          'Terjadi Kesalahan, Mohon Coba Lagi Ya: ${snapshot.error}'),
                     );
                   }
 
@@ -126,7 +136,7 @@ class _PlannerScreenState extends State<PlannerScreen> {
                     );
                   }
 
-                  var planners = snapshot.data!;
+                  var planners = snapshot.data ?? [];
 
                   if (planners.isEmpty) {
                     return const Padding(
@@ -190,7 +200,8 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                             child: Text(
                                               planner['title'],
                                               style: const TextStyle(
-                                                  fontWeight: FontWeight.w700, fontSize: 22.0),
+                                                  fontWeight: FontWeight.w700,
+                                                  fontSize: 22.0),
                                             ),
                                           ),
                                         ),
@@ -291,10 +302,15 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                     builder:
                                                         (BuildContext context) {
                                                       return AlertDialog(
-                                                        backgroundColor: Colors.white,
+                                                        backgroundColor:
+                                                            Colors.white,
                                                         content: Text(
-                                                            'Apakah anda yakin untuk menghapus rencana "${planner['title']}"?',
-                                                            style: const TextStyle(fontWeight: FontWeight.w500),),
+                                                          'Apakah anda yakin untuk menghapus rencana "${planner['title']}"?',
+                                                          style: const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w500),
+                                                        ),
                                                         actions: <Widget>[
                                                           TextButton(
                                                             onPressed: () =>
@@ -302,8 +318,11 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                                     context,
                                                                     'Cancel'),
                                                             child: const Text(
-                                                                'Batal',
-                                                                style: TextStyle(color: Colors.black),),
+                                                              'Batal',
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black),
+                                                            ),
                                                           ),
                                                           ElevatedButton(
                                                               style: ElevatedButton.styleFrom(
@@ -321,16 +340,23 @@ class _PlannerScreenState extends State<PlannerScreen> {
                                                                         .white),
                                                               ),
                                                               onPressed: () {
-                                                                try{
-                                                                planService
-                                                                    .deletePlanner(
-                                                                        plannerId);
-                                                                Navigator.of(context).pop();
-                                                                Alert.successMessage("Rencana berhasil dihapus.", context);
+                                                                try {
+                                                                  planService
+                                                                      .deletePlanner(
+                                                                          plannerId);
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                  Alert.successMessage(
+                                                                      "Rencana berhasil dihapus.",
+                                                                      context);
                                                                 } catch (e) {
-                                                                  if(context.mounted) {
-          Alert.alertValidation("Gagal Menghapus Rencana, Mohon Coba Lagi Ya.", context);
-        }
+                                                                  if (context
+                                                                      .mounted) {
+                                                                    Alert.alertValidation(
+                                                                        "Gagal Menghapus Rencana, Mohon Coba Lagi Ya.",
+                                                                        context);
+                                                                  }
                                                                 }
                                                               }),
                                                         ],

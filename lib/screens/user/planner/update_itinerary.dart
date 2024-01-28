@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:tuktraapp/screens/user/planner/detail_planner.dart';
 import 'package:tuktraapp/services/plan_service.dart';
 import 'package:tuktraapp/services/transport_service.dart';
@@ -134,6 +135,20 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
       }
     }
     return -1;
+  }
+
+  Future<bool> validateTime() async {
+    DateFormat format = DateFormat("h:mm a");
+    DateTime startTime = format.parse(startTimeController.text);
+    DateTime endTime = format.parse(endTimeController.text);
+
+    if (startTime.isAfter(endTime)) {
+      Alert.alertValidation(
+          'Waktu awal tidak bisa lebih besar tadi waktu akhir!', context);
+      return false;
+    }
+
+    return true;
   }
 
   @override
@@ -729,7 +744,7 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (titleTxt.text.isEmpty) {
                         Alert.alertValidation('Judul harus diisi!', context);
                       } else if (sourceTxt.text.isEmpty) {
@@ -738,47 +753,42 @@ class _UpdateItineraryState extends State<UpdateItinerary> {
                       } else if (destinationTxt.text.isEmpty) {
                         Alert.alertValidation(
                             'Lokasi Destinasi harus diisi!', context);
-                      } else if (startTimeController.text.isEmpty ||
-                          endTimeController.text.isEmpty) {
-                        Alert.alertValidation('Waktu harus dipilih!', context);
-                        // } else if (selectEndTime < selectStartTime) {
-                        //   Alert.alertValidation(
-                        //       'Waktu awal tidak bisa lebih besar tadi waktu akhir!',
-                        //       context);
                       } else if (transportationController.text.isEmpty) {
                         Alert.alertValidation(
                             'Transportasi harus dipilih!', context);
                       } else {
-                        setState(() async {
-                          Map<String, dynamic> itinerary = {
-                            'title': titleTxt.text,
-                            'source': sourceTxt.text,
-                            'destination': destinationTxt.text,
-                            'startTime': convertToWib(startTimeController.text),
-                            'endTime': convertToWib(endTimeController.text),
-                            'transportation': transportationController.text,
-                            'transportation_cost': budget,
-                          };
-
+                        bool isValidTime = await validateTime();
+                        if (!isValidTime) {
+                          return;
+                        }
+                        setState(() {
                           isLoading = true;
-
-                          try {
-                            await planService.updateSubItinerary(widget.planId,
-                                widget.dayId, widget.id, itinerary);
-                            if (context.mounted) {
-                              NavigationUtils.pushRemoveTransition(
-                                  context, DetailPlanner(id: widget.planId));
-                              Alert.successMessage(
-                                  'Kegiatan berhasil diperbaharui.', context);
-                            }
-                          } catch (e) {
-                            if (context.mounted) {
-                              Alert.alertValidation(
-                                  "Gagal Memperbarui Kegiatan, Mohon Coba Lagi Ya.",
-                                  context);
-                            }
-                          }
                         });
+                        Map<String, dynamic> itinerary = {
+                          'title': titleTxt.text,
+                          'source': sourceTxt.text,
+                          'destination': destinationTxt.text,
+                          'startTime': convertToWib(startTimeController.text),
+                          'endTime': convertToWib(endTimeController.text),
+                          'transportation': transportationController.text,
+                          'transportation_cost': budget,
+                        };
+                        try {
+                          await planService.updateSubItinerary(widget.planId,
+                              widget.dayId, widget.id, itinerary);
+                          if (context.mounted) {
+                            NavigationUtils.pushRemoveTransition(
+                                context, DetailPlanner(id: widget.planId));
+                            Alert.successMessage(
+                                'Kegiatan berhasil diperbaharui.', context);
+                          }
+                        } catch (e) {
+                          if (context.mounted) {
+                            Alert.alertValidation(
+                                "Gagal Memperbarui Kegiatan, Mohon Coba Lagi Ya.",
+                                context);
+                          }
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(

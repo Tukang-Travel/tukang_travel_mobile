@@ -59,11 +59,11 @@ class _FeedScreenState extends State<FeedScreen> {
                       }
 
                       if (snapshot.hasError) {
-                        return Center(child: Text('Error: ${snapshot.error}'));
+                        return Center(child: Text('Terjadi Kesalahan, Mohon Coba Lagi Ya: ${snapshot.error}'));
                       }
 
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-                        return const Center(child: Text('No data available'));
+                        return const Center(child: Text('Belum Ada Feed'));
                       }
 
                       // Create a list of indexed feeds

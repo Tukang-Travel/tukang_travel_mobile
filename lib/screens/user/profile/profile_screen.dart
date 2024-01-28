@@ -247,7 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       }
 
                       if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
+                        return Text('Terjadi Kesalahan, Mohon Coba Lagi Ya: ${snapshot.error}');
                       }
 
                       if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {

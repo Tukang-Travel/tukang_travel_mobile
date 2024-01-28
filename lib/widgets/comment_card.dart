@@ -16,7 +16,7 @@ class CommentCard extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
+          return Center(child: Text('Terjadi Kesalahan, Silahkan Coba Lagi Ya: ${snapshot.error}'));
         } else {
           final urlPhoto = snapshot.data?['profile'] ?? '';
           return Card(

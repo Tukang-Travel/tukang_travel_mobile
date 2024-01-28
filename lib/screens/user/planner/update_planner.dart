@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tuktraapp/screens/main_screen.dart';
 import 'package:tuktraapp/services/plan_service.dart';
 import 'package:tuktraapp/utils/alert.dart';
+import 'package:tuktraapp/utils/navigation_utils.dart';
 
 class UpdatePlanner extends StatefulWidget {
   final String id;
@@ -86,7 +88,9 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
           sourceTxt.text = plan!['source'];
           destinationTxt.text = plan!['destination'];
           _dateStartController.text = plan!['startDate'];
+          _selectedStartDate = DateTime.parse(_dateStartController.text);
           _dateEndController.text = plan!['endDate'];
+          _selectedEndDate = DateTime.parse(_dateEndController.text);
           budgetTxt.text =
               plan!['budget'] != null ? plan!['budget'].toString() : '0';
           bykOrgTxt.text =
@@ -647,7 +651,7 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (formKey.currentState!.validate()) {
                         if (titleTxt.text.isEmpty) {
                           Alert.alertValidation('Judul harus diisi!', context);
@@ -660,9 +664,19 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                         } else if (_dateStartController.text.isEmpty) {
                           Alert.alertValidation(
                               'Tanggal Awal harus diisi!', context);
+                        } else if (_selectedStartDate!.day <
+                            DateTime.now().day) {
+                          Alert.alertValidation(
+                              'Pilihan tanggal harus sama atau setelah hari ini!',
+                              context);
                         } else if (_dateEndController.text.isEmpty) {
                           Alert.alertValidation(
                               'Tanggal Akhir harus diisi!', context);
+                        } else if (_selectedEndDate!.day < DateTime.now().day ||
+                            _selectedEndDate!.day < _selectedStartDate!.day) {
+                          Alert.alertValidation(
+                              'Tanggal akhir tidak bisa sebelum tanggal awal!',
+                              context);
                         } else if (budget == 0) {
                           Alert.alertValidation(
                               'Anggaran harus lebih dari 0!', context);
@@ -672,27 +686,33 @@ class _UpdatePlannerState extends State<UpdatePlanner> {
                         } else {
                           setState(() {
                             isLoading = true;
-                            try {
-                              planService.updatePlanner(
-                                  widget.id,
-                                  titleTxt.text,
-                                  sourceTxt.text,
-                                  destinationTxt.text,
-                                  _dateStartController.text,
-                                  _dateEndController.text,
-                                  budget,
-                                  numOfPeople);
-                              Navigator.of(context).pop();
+                          });
+                          try {
+                            await planService.updatePlanner(
+                                widget.id,
+                                titleTxt.text,
+                                sourceTxt.text,
+                                destinationTxt.text,
+                                _dateStartController.text,
+                                _dateEndController.text,
+                                budget,
+                                numOfPeople);
+                            if (context.mounted) {
                               Alert.successMessage(
                                   'Rencana berhasil diperbaharui.', context);
-                            } catch (e) {
-                              if (context.mounted) {
-                                Alert.alertValidation(
-                                    "Gagal Memperbarui Rencana, Mohon Coba Lagi Ya.",
-                                    context);
-                              }
+                              NavigationUtils.pushRemoveTransition(
+                                  context,
+                                  const MainScreen(
+                                    page: 3,
+                                  ));
                             }
-                          });
+                          } catch (e) {
+                            if (context.mounted) {
+                              Alert.alertValidation(
+                                  "Gagal Memperbarui Rencana, Mohon Coba Lagi Ya.",
+                                  context);
+                            }
+                          }
                         }
                       }
                     },
